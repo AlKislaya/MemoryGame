@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour
     [SerializeField] private RectTransform _imageZone;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
+    [SerializeField] private Zoom _zoom;
 
     private GameSettings _gameSettings;
     private string _seconds = "s";
@@ -19,10 +20,11 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        _zoom.enabled = false;
         _startButton.onClick.AddListener(StartGame);
         _gameSettings = Settings.Instance.GameSettings;
-
     }
+
     private void Start()
     {
         _playableSpriteController.LoadVectorSprite(_svgLevelAsset);
@@ -61,6 +63,7 @@ public class GameController : MonoBehaviour
         _counterElement.SetOutlineColor(_gameSettings.ProgressColor);
 
         _playableSpriteController.OnFirstClickedCountChanged += OnOnFirstClickedCountChanged;
+        _zoom.enabled = true;
     }
     
     private void OnOnFirstClickedCountChanged(int updatedCount, int count)

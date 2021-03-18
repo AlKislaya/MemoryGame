@@ -4,19 +4,19 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class PlayableVectorSpritesController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler, IPointerEnterHandler, IPointerDownHandler
+public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
     //<new count, all>
     public event Action<int, int> OnFirstClickedCountChanged;
 
     private const float RayDistance = 5f;
-    private const float TouchZoomSpeed = 0.005f;
 
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
     [SerializeField] private SpriteRenderer _staticSpriteRendererPrefab;
     [SerializeField] private Transform _spritesContainer;
     [SerializeField] private ColorsSwatchesController _colorsController;
     [SerializeField] private LayerMask _raycastMask;
+    [SerializeField] private Camera _cameraMain;
 
     private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
     private SvgLoader _svgLoader;
@@ -24,16 +24,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IDragHandler, IBeg
     private VectorSpriteSettings _vectorSpriteSettings;
 
     //
-    private float _zoomMinBound = 1f;
-    private float _zoomMaxBound = 3f;
-
-    private float _halfWidth;
-    private float _halfHeight;
-
-    private Vector3 _lastDragPos;
-
     private float _pointerDownTime;
-
     private int _firstClickedCount = 0;
     //
 
@@ -115,84 +106,12 @@ public class PlayableVectorSpritesController : MonoBehaviour, IDragHandler, IBeg
         _colorsController.Show();
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        var worldPosition = Camera.main.ScreenToWorldPoint(eventData.position);
-#if !UNITY_EDITOR
-        if (Input.touchCount == 1)
-        {
-#endif
-            var newPos = _spritesContainer.localPosition - (_lastDragPos - worldPosition);
-            _lastDragPos = worldPosition;
-            newPos.z = _spritesContainer.localPosition.z;
-            ClampContainerInRect(newPos);
-#if !UNITY_EDITOR
-        }
-        else
-        if (Input.touchCount == 2)
-        {
-            // get current touch positions
-            Touch tZero = Input.GetTouch(0);
-            Touch tOne = Input.GetTouch(1);
-            // get touch position from the previous frame
-            Vector2 tZeroPrevious = tZero.position - tZero.deltaPosition;
-            Vector2 tOnePrevious = tOne.position - tOne.deltaPosition;
-
-            float oldTouchDistance = Vector2.Distance(tZeroPrevious, tOnePrevious);
-            float currentTouchDistance = Vector2.Distance(tZero.position, tOne.position);
-
-            // get offset value
-            float deltaDistance = oldTouchDistance - currentTouchDistance;
-            Zoom(deltaDistance, TouchZoomSpeed);
-        }
-#endif
-    }
-
-    void Zoom(float deltaMagnitudeDiff, float speed)
-    {
-        _spritesContainer.localScale = new Vector3(
-            Mathf.Clamp(_spritesContainer.localScale.x - deltaMagnitudeDiff * speed, _zoomMinBound, _zoomMaxBound),
-            Mathf.Clamp(_spritesContainer.localScale.y - deltaMagnitudeDiff * speed, _zoomMinBound, _zoomMaxBound), 
-            0);
-
-        ClampContainerInRect(_spritesContainer.localPosition);
-    }
-
-    private void ClampContainerInRect(Vector3 position)
-    {
-        var x = _halfWidth * _spritesContainer.localScale.x - _halfWidth;
-        var y = _halfHeight * _spritesContainer.localScale.y - _halfHeight;
-        _spritesContainer.localPosition = new Vector3(
-            Mathf.Clamp(position.x, -x, x),
-            Mathf.Clamp(position.y, -y, y),
-            position.z);
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        _lastDragPos = eventData.pointerCurrentRaycast.worldPosition;
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        _lastDragPos = eventData.pointerCurrentRaycast.worldPosition;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
-    {
-    }
-
     private void FitInScreenSize()
     {
-        var width = Camera.main.orthographicSize * Camera.main.aspect * 2;
+        var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
         var vectorSpriteWidth = _vectorSpriteSettings.SceneRect.width / _vectorSpriteSettings.PixelsPerUnit;
         var scaleFactor = width / vectorSpriteWidth;
         transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
-
-        _halfWidth = vectorSpriteWidth / 2;
-        _halfHeight = _vectorSpriteSettings.SceneRect.height / _vectorSpriteSettings.PixelsPerUnit / 2;
-        _zoomMinBound = Settings.Instance.GameSettings.MinZoomValue;
-        _zoomMaxBound = Settings.Instance.GameSettings.MaxZoomValue;
     }
 
     public void OnPointerClick(PointerEventData eventData)
