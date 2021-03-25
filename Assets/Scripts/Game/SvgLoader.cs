@@ -95,7 +95,6 @@ public class SvgLoader
                     //save original stroke
                     if (childShape.PathProps.Stroke != null)
                     {
-                        Debug.Log("YES STROKE");
                         var geometryListStroke = VectorUtils.TessellateScene(new Scene()
                         {
                             Root = root

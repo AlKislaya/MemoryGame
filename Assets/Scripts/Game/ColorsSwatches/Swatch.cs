@@ -21,6 +21,11 @@ public class Swatch : MonoBehaviour
     {
         _toggle.group = toggleGroup;
         _image.sprite = sprite;
+        UpdateColor(color);
+    }
+
+    public void UpdateColor(Color color)
+    {
         _image.color = color;
         Color = color;
     }
@@ -29,5 +34,10 @@ public class Swatch : MonoBehaviour
     {
         IsOn = state;
         _shadow.gameObject.SetActive(IsOn);
+    }
+
+    public void SetActive(bool isActive)
+    {
+        gameObject.SetActive(isActive);
     }
 }

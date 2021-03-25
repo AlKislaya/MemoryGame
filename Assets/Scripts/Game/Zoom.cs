@@ -4,8 +4,8 @@ using UnityEngine.EventSystems;
 public class Zoom : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler
 {
     private const float TouchZoomSpeed = 0.005f;
-    [SerializeField] private Transform _zoomContainer;
-    [SerializeField] private Camera _cameraMain;
+    private Transform _zoomContainer;
+    private Camera _cameraMain;
     private float _zoomMinValue = 1f;
     private float _zoomMaxValue = 3f;
 
@@ -18,16 +18,22 @@ public class Zoom : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
     void Start()
     {
-        var _vectorSpriteSettings = Settings.Instance.VectorSpriteSettings;
-
-        _halfWidth = _vectorSpriteSettings.SceneRect.width / _vectorSpriteSettings.PixelsPerUnit / 2;
-        _halfHeight = _vectorSpriteSettings.SceneRect.height / _vectorSpriteSettings.PixelsPerUnit / 2;
-
-        _boundX = _halfWidth * _zoomContainer.localScale.x - _halfWidth;
-        _boundY = _halfHeight * _zoomContainer.localScale.y - _halfHeight;
+        _cameraMain = Camera.main;
 
         _zoomMinValue = Settings.Instance.GameSettings.MinZoomValue;
         _zoomMaxValue = Settings.Instance.GameSettings.MaxZoomValue;
+
+        var vectorSpriteSettings = Settings.Instance.VectorSpriteSettings;
+        _halfWidth = vectorSpriteSettings.SceneRect.width / vectorSpriteSettings.PixelsPerUnit / 2;
+        _halfHeight = vectorSpriteSettings.SceneRect.height / vectorSpriteSettings.PixelsPerUnit / 2;
+    }
+
+    public void AssignZoomContainer(Transform container)
+    {
+        _zoomContainer = container;
+
+        _boundX = _halfWidth * _zoomContainer.localScale.x - _halfWidth;
+        _boundY = _halfHeight * _zoomContainer.localScale.y - _halfHeight;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -68,7 +74,7 @@ public class Zoom : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
         _zoomContainer.localScale = new Vector3(
             Mathf.Clamp(_zoomContainer.localScale.x - deltaMagnitudeDiff * speed, _zoomMinValue, _zoomMaxValue),
             Mathf.Clamp(_zoomContainer.localScale.y - deltaMagnitudeDiff * speed, _zoomMinValue, _zoomMaxValue),
-            0);
+            1);
 
         _boundX = _halfWidth * _zoomContainer.localScale.x - _halfWidth;
         _boundY = _halfHeight * _zoomContainer.localScale.y - _halfHeight;

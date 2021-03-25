@@ -10,7 +10,7 @@ public class PaintableSprite : MonoBehaviour
     private SvgLoader.PaintableVectorSprite _paintableVectorSprite;
     private Collider2D _collider;
 
-    public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite, ref int order)
+    public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite/*, ref int order*/)
     {
         _fillSpriteRenderer.sprite = paintableVectorSprite.Fill;
         //_strokeSpriteRenderer.sprite = paintableVectorSprite.Stroke;
@@ -25,9 +25,9 @@ public class PaintableSprite : MonoBehaviour
         _paintableVectorSprite = paintableVectorSprite;
 
         //sorting orders
-        _strokeSpriteRenderer.sortingOrder = order;
-        order++;
-        _fillSpriteRenderer.sortingOrder = order;
+        //_strokeSpriteRenderer.sortingOrder = order;
+        //order++;
+        //_fillSpriteRenderer.sortingOrder = order;
     }
 
     public void SetFillColor(Color color)

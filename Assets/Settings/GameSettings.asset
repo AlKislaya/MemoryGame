@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinZoomValue: 1
   MaxZoomValue: 3
-  TimerSeconds: 1
+  TimerSeconds: 2
   TimerColor: {r: 0.9098039, g: 0.57254905, b: 0, a: 1}
   ProgressColor: {r: 0, g: 0.44313726, b: 0.6431373, a: 1}

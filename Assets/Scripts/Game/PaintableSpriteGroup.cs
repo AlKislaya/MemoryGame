@@ -6,14 +6,14 @@ public class PaintableSpriteGroup : MonoBehaviour
 {
     public Color OriginalFillColor => _originalFillColor;
     public Color CurrentColor => _paintableSprites[0].Color;
-    public bool IsFirstClicked = false;
+    public bool IsFirstPainted = false;
     [SerializeField] private PaintableSprite _paintableSpritePrefab;
 
     private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
     private Color _originalFillColor;
     private int _originalStrokeOpacity;
 
-    public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup, ref int order)
+    public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup/*, ref int order*/)
     {
         _originalFillColor = paintableGroup.OriginalFillColor;
 
@@ -23,10 +23,10 @@ public class PaintableSpriteGroup : MonoBehaviour
             z -= .001f;
             var childInstance = Instantiate(_paintableSpritePrefab, transform);
             childInstance.transform.localPosition = childInstance.transform.localPosition + new Vector3(0, 0, z);
-            childInstance.Init(paintableChild, ref order);
+            childInstance.Init(paintableChild/*, ref order*/);
             _paintableSprites.Add(childInstance);
             childInstance.SetFillColor(_originalFillColor);
-            order++;
+            //order++;
         }
     }
 

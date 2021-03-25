@@ -6,30 +6,49 @@ using UnityEngine.EventSystems;
 
 public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
+    public bool BlockingSpriteEnabled
+    {
+        get => _blockingSprite.enabled;
+        set => _blockingSprite.enabled = value;
+    }
+
+    public bool ZoomEnabled
+    {
+        get => _zoom.enabled;
+        set => _zoom.enabled = value;
+    }
+
     //<new count, all>
-    public event Action<int, int> OnFirstClickedCountChanged;
+    public event Action<int, int> OnFirstPaintedCountChanged;
+    public event Action OnPaintableSpriteClicked;
 
     private const float RayDistance = 5f;
+    private const float ClickDelay = .3f;
 
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
     [SerializeField] private SpriteRenderer _staticSpriteRendererPrefab;
-    [SerializeField] private Transform _spritesContainer;
-    [SerializeField] private ColorsSwatchesController _colorsController;
+    [SerializeField] private SpriteRenderer _blockingSprite;
+    [SerializeField] private Transform _spritesContainerPrefab;
     [SerializeField] private LayerMask _raycastMask;
-    [SerializeField] private Camera _cameraMain;
+    [SerializeField] private Zoom _zoom;
 
+    private Camera _cameraMain;
+    private Transform _spritesContainer;
     private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
     private SvgLoader _svgLoader;
     private ContactFilter2D _contactFilter;
     private VectorSpriteSettings _vectorSpriteSettings;
 
     //
+    private PaintableSpriteGroup _lastClickedGroup;
     private float _pointerDownTime;
-    private int _firstClickedCount = 0;
+    private int _firstPaintedGroupsCount;
     //
 
+    //assign non-changeable variables, fit in screen size
     private void Awake()
     {
+        _cameraMain = Camera.main;
         _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
         _vectorSpriteSettings = Settings.Instance.VectorSpriteSettings;
         FitInScreenSize();
@@ -39,7 +58,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
     {
         _svgLoader = new SvgLoader(_svgAsset);
         var z = 0f;
-        int order = 1;
+        //int order = 1;
 
         var vectorSprites = _svgLoader.GetSpritesArrange(_vectorSpriteSettings);
         if (vectorSprites.Count == 0)
@@ -55,21 +74,61 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             {
                 var staticSpriteInstance = Instantiate(_staticSpriteRendererPrefab, _spritesContainer);
                 staticSpriteInstance.sprite = staticVectorSprite.Sprite;
-                staticSpriteInstance.sortingOrder = order;
+                //staticSpriteInstance.sortingOrder = order;
                 staticSpriteInstance.transform.localPosition = new Vector3(0, 0, z);
-                order++;
+                //order++;
             }
             else if (vectorSprite is SvgLoader.PaintableVectorSpriteGroup paintableVectorGroup)
             {
                 var paintableVectorInstance = Instantiate(_paintableSpriteGroupPrefab, _spritesContainer);
                 paintableVectorInstance.transform.localPosition = new Vector3(0, 0, z);
-                paintableVectorInstance.InitGroup(paintableVectorGroup, ref order);
+                paintableVectorInstance.InitGroup(paintableVectorGroup/*, ref order*/);
                 _paintableSpriteGroups.Add(paintableVectorInstance);
             }
         }
     }
 
-    public void ClearColors()
+    //reset variables, instantiate sprites container, assign in zoom, set base view settings
+    public void Reset()
+    {
+        _lastClickedGroup = null;
+        _pointerDownTime = 0;
+        _firstPaintedGroupsCount = 0;
+
+        _spritesContainer = Instantiate(_spritesContainerPrefab, transform);
+        _zoom.AssignZoomContainer(_spritesContainer);
+
+        ZoomEnabled = false;
+        BlockingSpriteEnabled = true;
+    }
+
+    //destroy sprites container
+    public void DestroyVectorSprites()
+    {
+        Destroy(_spritesContainer.gameObject);
+        _paintableSpriteGroups = new List<PaintableSpriteGroup>();
+    }
+
+    //set color to the last clicked, check first painted
+    public void SetLastClickedGroupColor(Color color)
+    {
+        if (_lastClickedGroup == null)
+        {
+            return;
+        }
+
+        _lastClickedGroup.SetFillColor(color);
+
+        _lastClickedGroup.IsFirstPainted = true;
+        if (_paintableSpriteGroups.Count(x => x.IsFirstPainted) != _firstPaintedGroupsCount)
+        {
+            _firstPaintedGroupsCount++;
+            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount, _paintableSpriteGroups.Count);
+        }
+    }
+
+    //remove and return colors
+    public List<Color> ClearColors()
     {
         _paintableSpriteGroups.ForEach(x=>
         {
@@ -77,11 +136,11 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             x.SetFillColor(_vectorSpriteSettings.ClearFillColor);
             x.SetStrokeColor(_vectorSpriteSettings.HighlightedStrokeColor);
         });
-
-        _colorsController.AddColors(_paintableSpriteGroups.Select(x => x.OriginalFillColor).ToList());
+        return _paintableSpriteGroups.Select(x => x.OriginalFillColor).ToList();
     }
 
-    public int CheckSprite()
+    //check paintables colors, set stroke colors, returns rightCount/totalCount
+    public float CheckSprite()
     {
         int rightCount = 0;
 
@@ -98,25 +157,13 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             }
         }
 
-        return rightCount;
+        return (float)rightCount / _paintableSpriteGroups.Count;
     }
 
-    public void ShowSwatches()
-    {
-        _colorsController.Show();
-    }
-
-    private void FitInScreenSize()
-    {
-        var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
-        var vectorSpriteWidth = _vectorSpriteSettings.SceneRect.width / _vectorSpriteSettings.PixelsPerUnit;
-        var scaleFactor = width / vectorSpriteWidth;
-        transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
-    }
-
+    //check click delay, generate a ray to fin objects under, invoke OnPaintableSpriteClicked if true
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (Time.time - _pointerDownTime > .3f)
+        if (Time.time - _pointerDownTime > ClickDelay)
         {
             return;
         }
@@ -124,24 +171,13 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
 
         if (Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, Vector2.zero, _contactFilter, hittedObjects, RayDistance) > 0)
         {
-            var color = Color.white;
-            if (!_colorsController.TryGetSelectedColor(ref color))
-            {
-                return;
-            }
-
             var collider = hittedObjects[0].collider;
             foreach (var paintableSpriteGroup in _paintableSpriteGroups)
             {
                 if (paintableSpriteGroup.ContainsCollider(collider))
                 {
-                    paintableSpriteGroup.SetFillColor(color);
-                    paintableSpriteGroup.IsFirstClicked = true;
-                    if (_paintableSpriteGroups.Count(x => x.IsFirstClicked) != _firstClickedCount)
-                    {
-                        _firstClickedCount++;
-                        OnFirstClickedCountChanged?.Invoke(_firstClickedCount, _paintableSpriteGroups.Count);
-                    }
+                    _lastClickedGroup = paintableSpriteGroup;
+                    OnPaintableSpriteClicked?.Invoke();
                     return;
                 }
             }
@@ -149,8 +185,18 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         }
     }
 
+    //store press time
     public void OnPointerDown(PointerEventData eventData)
     {
         _pointerDownTime = Time.time;
+    }
+
+    //scale transform to fit in screen
+    private void FitInScreenSize()
+    {
+        var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
+        var vectorSpriteWidth = _vectorSpriteSettings.SceneRect.width / _vectorSpriteSettings.PixelsPerUnit;
+        var scaleFactor = width / vectorSpriteWidth;
+        transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
     }
 }
