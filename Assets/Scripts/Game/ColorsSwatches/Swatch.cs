@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -10,7 +11,8 @@ public class Swatch : MonoBehaviour
     public bool IsOn = false;
     [SerializeField] private Toggle _toggle;
     [SerializeField] private Image _image;
-    [SerializeField] private GameObject _shadow;
+    [SerializeField] private Transform _shadow;
+    private Tween _shadowAnimation;
 
     private void Start()
     {
@@ -33,7 +35,9 @@ public class Swatch : MonoBehaviour
     private void OnToggleValueChanged(bool state)
     {
         IsOn = state;
-        _shadow.gameObject.SetActive(IsOn);
+        _shadowAnimation?.Kill();
+        _shadowAnimation = _shadow.DOScale(state ? Vector3.one : Vector3.zero, .5f);
+        //LayoutRebuilder.MarkLayoutForRebuild(transform.parent.GetComponent<RectTransform>());
     }
 
     public void SetActive(bool isActive)

@@ -22,8 +22,6 @@ public class SwatchesController : MonoBehaviour
             }
         }
 
-        Debug.Log("All colors: "+ _colorInstances.Count+", input colors: "+sortedColors.Count);
-
         var swatchImageNumber = 0;
         for (int i = 0; i < sortedColors.Count; i++)
         {

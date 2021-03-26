@@ -13,6 +13,7 @@ public class GameView : AWindowView
     [SerializeField] private RectTransform _imageZone;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
+    [SerializeField] private Button _backButton;
 
     private PlayableVectorSpritesController _playableSpriteController;
     private GameSettings _gameSettings;
@@ -47,6 +48,12 @@ public class GameView : AWindowView
         _playableSpriteController.OnPaintableSpriteClicked += OnPaintableClicked;
         _counterElement.OnButtonClicked += OnLevelDoneClicked;
         _startButton.onClick.AddListener(StartGame);
+        _backButton.onClick.AddListener(OnBackButtonClicked);
+    }
+
+    private void OnBackButtonClicked()
+    {
+        ApplicationController.Instance.UiManager.Back();
     }
 
     protected override void OnUnSubscribe()
@@ -56,6 +63,7 @@ public class GameView : AWindowView
         _playableSpriteController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
         _startButton.onClick.RemoveListener(StartGame);
+        _backButton.onClick.RemoveListener(OnBackButtonClicked);
     }
 
     //reset playable controller, load svg, reset counter, show play btn zone, close swatches
@@ -78,6 +86,7 @@ public class GameView : AWindowView
     public override void Close(bool animation = true, Action animationFinished = null)
     {
         base.Close(animation, animationFinished);
+        Debug.Log("CLOSE");
         _playableSpriteController.DestroyVectorSprites();
     }
 
@@ -148,6 +157,6 @@ public class GameView : AWindowView
     {
         Debug.Log(_playableSpriteController.CheckSprite());
         LevelsManager.Instance.SetPassedLevel(LevelsManager.Instance.CurrentLevel, _playableSpriteController.CheckSprite());
-        ApplicationController.Instance.UiManager.Close<GameController>();
+        ApplicationController.Instance.UiManager.Open<LevelFinishedController>();
     }
 }

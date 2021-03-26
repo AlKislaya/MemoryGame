@@ -59,7 +59,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         _svgLoader = new SvgLoader(_svgAsset);
         var z = 0f;
         //int order = 1;
-
+        Debug.Log("LOAD SPRITE");
         var vectorSprites = _svgLoader.GetSpritesArrange(_vectorSpriteSettings);
         if (vectorSprites.Count == 0)
         {
@@ -105,6 +105,10 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
     //destroy sprites container
     public void DestroyVectorSprites()
     {
+        if (_spritesContainer == null)
+        {
+            return;
+        }
         Destroy(_spritesContainer.gameObject);
         _paintableSpriteGroups = new List<PaintableSpriteGroup>();
     }

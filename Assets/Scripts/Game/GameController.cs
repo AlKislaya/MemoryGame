@@ -8,7 +8,7 @@ public class GameController : AWindowController<GameView>
 
     private TextAsset _svgLevelAsset;
 
-    public override void BeforeShow()
+    protected override void OnInitialize()
     {
         _svgLevelAsset = LevelsManager.Instance.CurrentLevelSvgTextAsset;
         view.InitGame(_svgLevelAsset);
