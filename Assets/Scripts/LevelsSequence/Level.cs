@@ -10,7 +10,6 @@ public class LevelsSequence
 [Serializable]
 public class Level
 {
-    //public bool IsLocked;
     public bool IsPassed;
     public float PassedPercents;
 }

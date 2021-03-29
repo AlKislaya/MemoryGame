@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections;
+using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using DG.Tweening;
 using UnityEngine;
@@ -7,16 +7,18 @@ using UnityEngine.UI;
 
 public class GameView : AWindowView
 {
+    public event Action<PassedLevelStats> OnLevelDone; 
+
     [SerializeField] private PlayableVectorSpritesController _playableControllerPrefab;
     [SerializeField] private SwatchesController _colorsController;
     [SerializeField] private Button _startButton;
     [SerializeField] private RectTransform _imageZone;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
-    [SerializeField] private Button _backButton;
 
     private PlayableVectorSpritesController _playableSpriteController;
     private GameSettings _gameSettings;
+    private Sequence _startGameAnimation;
     private string _seconds = "s";
     private string _percents = "%";
     private string _done = "Done";
@@ -48,32 +50,36 @@ public class GameView : AWindowView
         _playableSpriteController.OnPaintableSpriteClicked += OnPaintableClicked;
         _counterElement.OnButtonClicked += OnLevelDoneClicked;
         _startButton.onClick.AddListener(StartGame);
-        _backButton.onClick.AddListener(OnBackButtonClicked);
-    }
-
-    private void OnBackButtonClicked()
-    {
-        ApplicationController.Instance.UiManager.Back();
     }
 
     protected override void OnUnSubscribe()
     {
         base.OnUnSubscribe();
+        _startGameAnimation?.Kill();
         _playableSpriteController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
         _playableSpriteController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
         _startButton.onClick.RemoveListener(StartGame);
-        _backButton.onClick.RemoveListener(OnBackButtonClicked);
     }
 
-    //reset playable controller, load svg, reset counter, show play btn zone, close swatches
-    public void InitGame(TextAsset svgLevelAsset)
+    //load svg, SetDefaults()
+    public async Task InitLevel(TextAsset svgLevelAsset)
     {
-        _playableSpriteController.Reset();
-        _playableSpriteController.LoadVectorSprite(svgLevelAsset);
+        SetDefaults();
+        await _playableSpriteController.LoadVectorSprite(svgLevelAsset);
+    }
+
+    //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
+    public void SetDefaults(bool resetPaintableColors = false)
+    {
+        _playableSpriteController.SetDefaults();
+        if (resetPaintableColors)
+        {
+            _playableSpriteController.SetOriginalColors();
+        }
 
         //init timer
-        _counterElement.Reset();
+        _counterElement.SetDefaults();
         _counterElement.SetText($"{_gameSettings.TimerSeconds}{_seconds}");
         _counterElement.SetOutlineColor(_gameSettings.TimerColor);
         _counterElement.SetAmount(1);
@@ -83,10 +89,8 @@ public class GameView : AWindowView
         _colorsController.Close();
     }
 
-    public override void Close(bool animation = true, Action animationFinished = null)
+    public void DestroyLevel()
     {
-        base.Close(animation, animationFinished);
-        Debug.Log("CLOSE");
         _playableSpriteController.DestroyVectorSprites();
     }
 
@@ -99,17 +103,17 @@ public class GameView : AWindowView
         //init timer
         int time = _gameSettings.TimerSeconds;
 
-        var sequence = DOTween.Sequence();
+        _startGameAnimation = DOTween.Sequence();
         for (int i = 0; i < time; i++)
         {
             var currSeconds = time - i - 1;
-            sequence.AppendInterval(1f).AppendCallback(() =>
+            _startGameAnimation.AppendInterval(1f).AppendCallback(() =>
             {
                 _counterElement.SetText($"{currSeconds}{_seconds}");
             });
         }
 
-        sequence
+        _startGameAnimation
             .AppendCallback(() => _playableSpriteController.BlockingSpriteEnabled = true)
             .AppendInterval(1f)
             .AppendCallback(() =>
@@ -125,7 +129,7 @@ public class GameView : AWindowView
                 _playableSpriteController.ZoomEnabled = true;
             });
 
-        sequence.Play();
+        _startGameAnimation.Play();
 
         //animating timer outline
         _counterElement.SetAmount(0, time);
@@ -155,8 +159,6 @@ public class GameView : AWindowView
 
     private void OnLevelDoneClicked()
     {
-        Debug.Log(_playableSpriteController.CheckSprite());
-        LevelsManager.Instance.SetPassedLevel(LevelsManager.Instance.CurrentLevel, _playableSpriteController.CheckSprite());
-        ApplicationController.Instance.UiManager.Open<LevelFinishedController>();
+        OnLevelDone?.Invoke(_playableSpriteController.CheckSprite());
     }
 }

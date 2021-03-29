@@ -1,8 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+public class PassedLevelStats
+{
+    public int PaintablesCount;
+    public int RightPaintablesCount;
+    public float Percents;
+}
 
 public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
@@ -54,13 +62,17 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         FitInScreenSize();
     }
 
-    public void LoadVectorSprite(TextAsset _svgAsset)
+    public async Task LoadVectorSprite(TextAsset _svgAsset)
     {
         _svgLoader = new SvgLoader(_svgAsset);
+
         var z = 0f;
         //int order = 1;
-        Debug.Log("LOAD SPRITE");
-        var vectorSprites = _svgLoader.GetSpritesArrange(_vectorSpriteSettings);
+
+        Debug.Log("LOADING Sprites STARTED");
+        var vectorSprites = await _svgLoader.GetSpritesArrange(_vectorSpriteSettings);
+        Debug.Log("LOADING Sprites ENDED");
+
         if (vectorSprites.Count == 0)
         {
             Debug.LogError("0 sprites");
@@ -88,18 +100,30 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         }
     }
 
-    //reset variables, instantiate sprites container, assign in zoom, set base view settings
-    public void Reset()
+    //reset variables, instantiate sprites container if !null, assign in zoom, set base view settings
+    public void SetDefaults()
     {
         _lastClickedGroup = null;
         _pointerDownTime = 0;
         _firstPaintedGroupsCount = 0;
 
-        _spritesContainer = Instantiate(_spritesContainerPrefab, transform);
+        if (_spritesContainer == null)
+        {
+            _spritesContainer = Instantiate(_spritesContainerPrefab, transform);
+        }
         _zoom.AssignZoomContainer(_spritesContainer);
 
         ZoomEnabled = false;
         BlockingSpriteEnabled = true;
+    }
+
+    public void SetOriginalColors()
+    {
+        _paintableSpriteGroups.ForEach(x =>
+        {
+            x.SetActiveOriginalStroke(true);
+            x.SetFillColor(x.OriginalFillColor);
+        });
     }
 
     //destroy sprites container
@@ -110,6 +134,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             return;
         }
         Destroy(_spritesContainer.gameObject);
+        _spritesContainer = null;
         _paintableSpriteGroups = new List<PaintableSpriteGroup>();
     }
 
@@ -143,8 +168,8 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         return _paintableSpriteGroups.Select(x => x.OriginalFillColor).ToList();
     }
 
-    //check paintables colors, set stroke colors, returns rightCount/totalCount
-    public float CheckSprite()
+    //check paintables colors, set stroke colors, returns PassedLevelStats
+    public PassedLevelStats CheckSprite()
     {
         int rightCount = 0;
 
@@ -161,7 +186,12 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             }
         }
 
-        return (float)rightCount / _paintableSpriteGroups.Count;
+        return new PassedLevelStats() 
+        { 
+            PaintablesCount = _paintableSpriteGroups.Count, 
+            RightPaintablesCount = rightCount, 
+            Percents = (float)rightCount / _paintableSpriteGroups.Count
+        };
     }
 
     //check click delay, generate a ray to fin objects under, invoke OnPaintableSpriteClicked if true

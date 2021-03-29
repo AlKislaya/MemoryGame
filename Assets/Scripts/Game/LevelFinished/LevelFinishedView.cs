@@ -19,10 +19,15 @@ public class LevelFinishedView : AWindowView
 
     public void SetProgress(float percents, string range)
     {
-        _percentsText.text = ((int)percents * 100).ToString();
+        _percentsText.text = ((int)(percents * 100)).ToString();
         _rangeText.text = range;
 
         _progressFillAmountImage.fillAmount = percents;
+    }
+
+    public void SetActivePlayButton(bool isActive)
+    {
+        _playButton.gameObject.SetActive(isActive);
     }
 
     protected override void OnSubscribe()

@@ -1,8 +1,28 @@
 using Dainty.UI.WindowBase;
 
-public class LevelFinishedController : AWindowController<LevelFinishedView>
+public class LevelFinishedSettings
 {
+    public PassedLevelStats Stats;
+}
+
+public class LevelFinishedController : AWindowController<LevelFinishedView>, IConfigurableWindow<LevelFinishedSettings>
+{
+    private const string Of = "of";
+    private LevelsManager _levelsManager;
     public override string WindowId { get; }
+    protected override void OnInitialize()
+    {
+        base.OnInitialize();
+
+        _levelsManager = LevelsManager.Instance;
+
+        view.SetActivePlayButton(_levelsManager.CurrentLevel != _levelsManager.LevelsSvgAssetsSequence.SvgLevelsAssets.Count - 1);
+    }
+    public void Initialize(LevelFinishedSettings levelFinishedSettings)
+    {
+        var stats = levelFinishedSettings.Stats;
+        view.SetProgress(stats.Percents, $"{stats.RightPaintablesCount} {Of} {stats.PaintablesCount}");
+    }
 
     protected override void OnSubscribe()
     {
@@ -19,12 +39,13 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>
 
     private void ViewOnOnReplayButtonClicked()
     {
-        
+        OpenGame();
     }
 
     private void ViewOnOnPlayButtonClicked()
     {
-
+        _levelsManager.CurrentLevel++;
+        OpenGame();
     }
 
     private void ViewOnOnMenuButtonClicked()
@@ -32,5 +53,10 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>
         var manager = ApplicationController.Instance.UiManager;
         manager.Back();
         manager.Back();
+    }
+
+    private void OpenGame()
+    {
+        ApplicationController.Instance.UiManager.Back();
     }
 }

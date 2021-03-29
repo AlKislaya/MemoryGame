@@ -18,7 +18,7 @@ public class CounterElement : MonoBehaviour
     private Vector2 _initialSizeDelta;
     private RectTransform _outlineRect;
     private Tween _animation;
-    private Tween _transformToButtonAnimation;
+    private Sequence _transformToButtonAnimation;
 
     //init _outlineRect and sizes
     private void Awake()
@@ -49,7 +49,7 @@ public class CounterElement : MonoBehaviour
         OnButtonClicked?.Invoke();
     }
 
-    public void Reset()
+    public void SetDefaults()
     {
         _filledOutline.type = Image.Type.Filled;
         _filledOutline.sprite = _circleSprite;

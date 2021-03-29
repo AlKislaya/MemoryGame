@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 8212213115125928570}
   - component: {fileID: 6480036395001552042}
   - component: {fileID: 819409014053397758}
-  - component: {fileID: 7965085294055994640}
+  - component: {fileID: 6776390321445066506}
   m_Layer: 5
   m_Name: AnimatedButton
   m_TagString: Untagged
@@ -173,7 +173,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 3
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
@@ -198,25 +198,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!95 &7965085294055994640
-Animator:
-  serializedVersion: 3
+--- !u!114 &6776390321445066506
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8590895921338087994}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d8a87b635fe94784e94272a284e479f7, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f80a6d7b153989741a1c4dbd26612ff4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shadow: {fileID: 6137807373541806738}
+  _icon: {fileID: 5818212943734426016}
+  _targetScale: {x: 0.9, y: 0.9, z: 1}
+  _targetShadowPosition: {x: 0, y: 0, z: 0}
+  _duration: 0.5
 --- !u!1001 &2077497900253887495
 PrefabInstance:
   m_ObjectHideFlags: 0

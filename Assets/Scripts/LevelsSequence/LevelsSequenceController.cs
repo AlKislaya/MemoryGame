@@ -24,6 +24,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>
     private void OnLevelClicked(int levelNumber)
     {
         LevelsManager.Instance.CurrentLevel = levelNumber;
+        //ApplicationController.Instance.UiManager.Open<GameController, GameWindowSettings>(new GameWindowSettings());
         ApplicationController.Instance.UiManager.Open<GameController>();
     }
 
