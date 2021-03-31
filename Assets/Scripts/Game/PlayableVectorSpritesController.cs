@@ -64,6 +64,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
 
     public async Task LoadVectorSprite(TextAsset _svgAsset)
     {
+        //await Task.Delay((int)(Time.deltaTime * 10));
         _svgLoader = new SvgLoader(_svgAsset);
 
         var z = 0f;

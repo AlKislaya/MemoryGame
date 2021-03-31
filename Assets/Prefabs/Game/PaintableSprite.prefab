@@ -114,6 +114,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stroke
       objectReference: {fileID: 0}
+    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31b2071e53c60fe47b21ed362038bb50, type: 3}
 --- !u!4 &2563902855050862524 stripped
@@ -199,6 +204,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31b2071e53c60fe47b21ed362038bb50, type: 3}

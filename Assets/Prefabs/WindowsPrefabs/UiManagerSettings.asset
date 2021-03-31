@@ -13,7 +13,6 @@ MonoBehaviour:
   m_Name: UiManagerSettings
   m_EditorClassIdentifier: 
   _views:
-  - {fileID: 7900045425768234866, guid: 08758b4d10f220545883326302ce0e85, type: 3}
   - {fileID: 3351774046752579809, guid: 38ca995ce32eadf468015f066877a1d4, type: 3}
   - {fileID: 4925562870690273178, guid: ef8848ebaa7f7674d96e154328bb5ef0, type: 3}
   - {fileID: -4135673796195702792, guid: 93a0d289e484ccd4badd165e8dca4c5d, type: 3}
