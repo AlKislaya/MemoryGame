@@ -1,5 +1,7 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class PaintableSprite : MonoBehaviour
 {
     public Collider2D Collider2D => _collider;
@@ -7,8 +9,8 @@ public class PaintableSprite : MonoBehaviour
 
     [SerializeField] private SpriteRenderer _fillSpriteRenderer;
     [SerializeField] private SpriteRenderer _strokeSpriteRenderer;
-    private SvgLoader.PaintableVectorSprite _paintableVectorSprite;
-    private Collider2D _collider;
+    [HideInInspector] [SerializeField] private SvgLoader.PaintableVectorSprite _paintableVectorSprite;
+    [HideInInspector] [SerializeField] private Collider2D _collider;
 
     public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite/*, ref int order*/)
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LevelsManager : Singleton<LevelsManager>
 {
-    public TextAsset CurrentLevelSvgTextAsset => _levelsSvgAssetsSequence.SvgLevelsAssets[CurrentLevel];
+    public Level CurrentLevelAsset => _levelsSequence.Levels[CurrentLevel];
 
     public int CurrentLevel {
         get
@@ -13,10 +13,10 @@ public class LevelsManager : Singleton<LevelsManager>
         }
         set
         {
-            if (value >= _levelsSvgAssetsSequence.SvgLevelsAssets.Count)
+            if (value >= _levelsSequence.Levels.Count)
             {
                 Debug.LogError("Current level More than svg assets count! " + value);
-                _currentLevel = _levelsSvgAssetsSequence.SvgLevelsAssets.Count - 1;
+                _currentLevel = _levelsSequence.Levels.Count - 1;
             }
             else if (value < 0)
             {
@@ -30,11 +30,11 @@ public class LevelsManager : Singleton<LevelsManager>
         }
     }
 
-    public LevelsTextAssetsSequence LevelsSvgAssetsSequence => _levelsSvgAssetsSequence;
     public LevelsSequence LevelsSequence => _levelsSequence;
+    public LevelsProgress LevelsProgress => _levelsProgress;
 
-    [SerializeField] private LevelsTextAssetsSequence _levelsSvgAssetsSequence;
-    private LevelsSequence _levelsSequence = new LevelsSequence();
+    [SerializeField] private LevelsSequence _levelsSequence;
+    private LevelsProgress _levelsProgress = new LevelsProgress();
     private int _currentLevel;
 
     protected override void Awake()
@@ -50,7 +50,7 @@ public class LevelsManager : Singleton<LevelsManager>
         {
             try
             {
-                _levelsSequence = JsonUtility.FromJson<LevelsSequence>(levelsJson);
+                _levelsProgress = JsonUtility.FromJson<LevelsProgress>(levelsJson);
             }
             catch (Exception e)
             {
@@ -62,21 +62,21 @@ public class LevelsManager : Singleton<LevelsManager>
 
     private void InitLevelSequence()
     {
-        _levelsSequence = new LevelsSequence
+        _levelsProgress = new LevelsProgress
         {
-            Levels = new List<Level>() { new Level() { IsPassed = false } }
+            Levels = new List<LevelProgress>() { new LevelProgress() { IsPassed = false } }
         };
         SaveLevelsProgress();
     }
 
     public void SetPassedLevel(int levelIndex, float passedPercents)
     {
-        var passedLevel = _levelsSequence.Levels[levelIndex];
+        var passedLevel = _levelsProgress.Levels[levelIndex];
         passedLevel.PassedPercents = passedPercents;
         passedLevel.IsPassed = true;
-        if (levelIndex == _levelsSequence.Levels.Count - 1 && _levelsSequence.Levels.Count < _levelsSvgAssetsSequence.SvgLevelsAssets.Count)
+        if (levelIndex == _levelsProgress.Levels.Count - 1 && _levelsProgress.Levels.Count < _levelsSequence.Levels.Count)
         {
-            _levelsSequence.Levels.Add(new Level(){ IsPassed = false });
+            _levelsProgress.Levels.Add(new LevelProgress(){ IsPassed = false });
         }
 
         SaveLevelsProgress();
@@ -84,7 +84,7 @@ public class LevelsManager : Singleton<LevelsManager>
 
     private void SaveLevelsProgress()
     {
-        Debug.Log("SAVED!     " + JsonUtility.ToJson(_levelsSequence));
-        PlayerPrefs.SetString(PlayerPrefsKeys.LevelsSequenceKey, JsonUtility.ToJson(_levelsSequence));
+        Debug.Log("SAVED!     " + JsonUtility.ToJson(_levelsProgress));
+        PlayerPrefs.SetString(PlayerPrefsKeys.LevelsSequenceKey, JsonUtility.ToJson(_levelsProgress));
     }
 }

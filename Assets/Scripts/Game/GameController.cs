@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
@@ -6,17 +7,16 @@ public class GameController : AWindowController<GameView>
 {
     public override string WindowId { get; }
     private int _currentLevel = -1;
-    private TextAsset _svgLevelAsset;
 
     public override void BeforeShow()
     {
         base.BeforeShow();
 
+        var newLevelNumber = LevelsManager.Instance.CurrentLevel;
 
-        var newLevel = LevelsManager.Instance.CurrentLevel;
-
-        if (_currentLevel == newLevel)
+        if (_currentLevel == newLevelNumber)
         {
+            //if level is already loaded
             //true - reset level colors to originals
             view.SetDefaults(true);
         }
@@ -24,17 +24,18 @@ public class GameController : AWindowController<GameView>
         {
             ApplicationController.Instance.SetActiveLoader(true);
 
+            //destroy sprites container
             view.DestroyLevel();
-            _svgLevelAsset = LevelsManager.Instance.CurrentLevelSvgTextAsset;
 
-            view.InitLevel(_svgLevelAsset).ContinueWith(task =>
+            var levelAsset = LevelsManager.Instance.CurrentLevelAsset;
+
+            view.InitLevel(levelAsset).ContinueWith(task =>
             {
-                Debug.Log("after init level");
                 ApplicationController.Instance.SetActiveLoader(false);
             }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        _currentLevel = newLevel;
+        _currentLevel = newLevelNumber;
     }
 
     protected override void OnSubscribe()

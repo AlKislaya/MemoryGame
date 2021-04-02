@@ -16,7 +16,7 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
 
         _levelsManager = LevelsManager.Instance;
 
-        view.SetActivePlayButton(_levelsManager.CurrentLevel != _levelsManager.LevelsSvgAssetsSequence.SvgLevelsAssets.Count - 1);
+        view.SetActivePlayButton(_levelsManager.CurrentLevel != _levelsManager.LevelsSequence.Levels.Count - 1);
     }
     public void Initialize(LevelFinishedSettings levelFinishedSettings)
     {

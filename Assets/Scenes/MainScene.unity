@@ -771,8 +771,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 240d4604b93c63e418d87f4037dfc1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _levelsSvgAssetsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35,
-    type: 2}
+  _levelsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35, type: 2}
 --- !u!4 &1410480237
 Transform:
   m_ObjectHideFlags: 0

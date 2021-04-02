@@ -12,12 +12,19 @@ public class PassedLevelStats
     public float Percents;
 }
 
-public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
+public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
+    public int PaintablesCount => _paintableGroups.Count;
+
     public bool BlockingSpriteEnabled
     {
-        get => _blockingSprite.enabled;
-        set => _blockingSprite.enabled = value;
+        set
+        {
+            if (_levelObjects != null && _levelObjects.Count > 0)
+            {
+                _levelObjects.ForEach(x => x.HideImage(value));
+            }
+        }
     }
 
     public bool ZoomEnabled
@@ -33,19 +40,17 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
     private const float RayDistance = 5f;
     private const float ClickDelay = .3f;
 
-    [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
-    [SerializeField] private SpriteRenderer _staticSpriteRendererPrefab;
-    [SerializeField] private SpriteRenderer _blockingSprite;
+    [SerializeField] private LevelObjectController _levelObjectPrefab;
     [SerializeField] private Transform _spritesContainerPrefab;
     [SerializeField] private LayerMask _raycastMask;
     [SerializeField] private Zoom _zoom;
 
     private Camera _cameraMain;
     private Transform _spritesContainer;
-    private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
-    private SvgLoader _svgLoader;
     private ContactFilter2D _contactFilter;
     private VectorSpriteSettings _vectorSpriteSettings;
+    private List<LevelObjectController> _levelObjects = new List<LevelObjectController>();
+    private List<PaintableSpriteGroup> _paintableGroups = new List<PaintableSpriteGroup>();
 
     //
     private PaintableSpriteGroup _lastClickedGroup;
@@ -62,17 +67,15 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         FitInScreenSize();
     }
 
-    public async Task LoadVectorSprite(TextAsset _svgAsset)
+    public async Task LoadLevelObject(LevelObject levelObject)
     {
-        //await Task.Delay((int)(Time.deltaTime * 10));
-        _svgLoader = new SvgLoader(_svgAsset);
+        //await Task.Delay((int)(Time.deltaTime * 100));
+        var svgLoader = new SvgLoader(levelObject.SvgTextAsset);
 
-        var z = 0f;
-        //int order = 1;
-
-        Debug.Log("LOADING Sprites STARTED");
-        var vectorSprites = await _svgLoader.GetSpritesArrange(_vectorSpriteSettings);
-        Debug.Log("LOADING Sprites ENDED");
+        Debug.Log("LOADING STARTED "+ levelObject.SvgTextAsset.name);
+        //tesselate and build sprites
+        var vectorSprites = await svgLoader.GetSpritesArrange(_vectorSpriteSettings);
+        Debug.Log("LOADING ENDED " + levelObject.SvgTextAsset.name);
 
         if (vectorSprites.Count == 0)
         {
@@ -80,28 +83,34 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             return;
         }
 
-        foreach (var vectorSprite in vectorSprites)
+
+        for (int i = 0; i < levelObject.CopiesSettings.Count; i++)
         {
-            z -= .01f;
-            if (vectorSprite is SvgLoader.StaticVectorSprite staticVectorSprite)
-            {
-                var staticSpriteInstance = Instantiate(_staticSpriteRendererPrefab, _spritesContainer);
-                staticSpriteInstance.sprite = staticVectorSprite.Sprite;
-                //staticSpriteInstance.sortingOrder = order;
-                staticSpriteInstance.transform.localPosition = new Vector3(0, 0, z);
-                //order++;
-            }
-            else if (vectorSprite is SvgLoader.PaintableVectorSpriteGroup paintableVectorGroup)
-            {
-                var paintableVectorInstance = Instantiate(_paintableSpriteGroupPrefab, _spritesContainer);
-                paintableVectorInstance.transform.localPosition = new Vector3(0, 0, z);
-                paintableVectorInstance.InitGroup(paintableVectorGroup/*, ref order*/);
-                _paintableSpriteGroups.Add(paintableVectorInstance);
-            }
+            var objectInstance = Instantiate(_levelObjectPrefab, _spritesContainer);
+
+            objectInstance.Init(vectorSprites);
+            objectInstance.InitSettings(levelObject.CopiesSettings[i]);
+            _paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
+            _levelObjects.Add(objectInstance);
         }
+
+        //var objectInstance = Instantiate(_levelObjectPrefab, _spritesContainer);
+        //objectInstance.Init(vectorSprites);
+        //objectInstance.InitSettings(levelObject.CopiesSettings[0]);
+        //_paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
+        //_levelObjects.Add(objectInstance);
+
+        //for (int i = 1; i < levelObject.CopiesSettings.Count; i++)
+        //{
+        //    var copySettings = levelObject.CopiesSettings[i];
+        //    var objectCopyInstance = Instantiate(objectInstance, _spritesContainer);
+        //    objectCopyInstance.InitSettings(copySettings);
+        //    _paintableGroups.AddRange(objectCopyInstance.PaintableSpriteGroups);
+        //    _levelObjects.Add(objectCopyInstance);
+        //}
     }
 
-    //reset variables, instantiate sprites container if !null, assign in zoom, set base view settings
+    //reset variables, instantiate sprites container if null, assign in zoom, set base view settings
     public void SetDefaults()
     {
         _lastClickedGroup = null;
@@ -112,6 +121,11 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         {
             _spritesContainer = Instantiate(_spritesContainerPrefab, transform);
         }
+        else if (_paintableGroups != null && _paintableGroups.Count > 0)
+        {
+            _paintableGroups.ForEach(x => x.IsFirstPainted = false);
+        }
+
         _zoom.AssignZoomContainer(_spritesContainer);
 
         ZoomEnabled = false;
@@ -120,7 +134,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
 
     public void SetOriginalColors()
     {
-        _paintableSpriteGroups.ForEach(x =>
+        _paintableGroups.ForEach(x =>
         {
             x.SetActiveOriginalStroke(true);
             x.SetFillColor(x.OriginalFillColor);
@@ -136,7 +150,8 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         }
         Destroy(_spritesContainer.gameObject);
         _spritesContainer = null;
-        _paintableSpriteGroups = new List<PaintableSpriteGroup>();
+        _levelObjects = new List<LevelObjectController>();
+        _paintableGroups = new List<PaintableSpriteGroup>();
     }
 
     //set color to the last clicked, check first painted
@@ -150,23 +165,25 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         _lastClickedGroup.SetFillColor(color);
 
         _lastClickedGroup.IsFirstPainted = true;
-        if (_paintableSpriteGroups.Count(x => x.IsFirstPainted) != _firstPaintedGroupsCount)
+        if (_paintableGroups.Count(x=>x.IsFirstPainted) != _firstPaintedGroupsCount)
         {
             _firstPaintedGroupsCount++;
-            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount, _paintableSpriteGroups.Count);
+            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount, _paintableGroups.Count);
         }
     }
 
     //remove and return colors
     public List<Color> ClearColors()
     {
-        _paintableSpriteGroups.ForEach(x=>
+        var originalColors = new List<Color>();
+       _paintableGroups.ForEach(x=>
         {
             x.SetActiveOriginalStroke(false);
             x.SetFillColor(_vectorSpriteSettings.ClearFillColor);
             x.SetStrokeColor(_vectorSpriteSettings.HighlightedStrokeColor);
+            originalColors.Add(x.OriginalFillColor);
         });
-        return _paintableSpriteGroups.Select(x => x.OriginalFillColor).ToList();
+        return originalColors;
     }
 
     //check paintables colors, set stroke colors, returns PassedLevelStats
@@ -174,7 +191,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
     {
         int rightCount = 0;
 
-        foreach (var paintableSpriteGroup in _paintableSpriteGroups)
+        foreach (var paintableSpriteGroup in _paintableGroups)
         {
             if (paintableSpriteGroup.CurrentColor == paintableSpriteGroup.OriginalFillColor)
             {
@@ -187,11 +204,11 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
             }
         }
 
-        return new PassedLevelStats() 
-        { 
-            PaintablesCount = _paintableSpriteGroups.Count, 
-            RightPaintablesCount = rightCount, 
-            Percents = (float)rightCount / _paintableSpriteGroups.Count
+        return new PassedLevelStats()
+        {
+            PaintablesCount = _paintableGroups.Count,
+            RightPaintablesCount = rightCount,
+            Percents = (float)rightCount / _paintableGroups.Count
         };
     }
 
@@ -207,7 +224,7 @@ public class PlayableVectorSpritesController : MonoBehaviour, IPointerClickHandl
         if (Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, Vector2.zero, _contactFilter, hittedObjects, RayDistance) > 0)
         {
             var collider = hittedObjects[0].collider;
-            foreach (var paintableSpriteGroup in _paintableSpriteGroups)
+            foreach (var paintableSpriteGroup in _paintableGroups)
             {
                 if (paintableSpriteGroup.ContainsCollider(collider))
                 {

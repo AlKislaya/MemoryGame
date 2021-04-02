@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
-public class LevelsSequence
+public class LevelsProgress
 {
-    public List<Level> Levels;
+    public List<LevelProgress> Levels;
 }
 
 [Serializable]
-public class Level
+public class LevelProgress
 {
     public bool IsPassed;
     public float PassedPercents;

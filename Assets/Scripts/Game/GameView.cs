@@ -9,18 +9,19 @@ public class GameView : AWindowView
 {
     public event Action<PassedLevelStats> OnLevelDone; 
 
-    [SerializeField] private PlayableVectorSpritesController _playableControllerPrefab;
+    [SerializeField] private PlayableObjectsController _playableControllerPrefab;
     [SerializeField] private SwatchesController _colorsController;
     [SerializeField] private Button _startButton;
     [SerializeField] private RectTransform _imageZone;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
 
-    private PlayableVectorSpritesController _playableSpriteController;
+    private PlayableObjectsController _playableObjectsController;
     private GameSettings _gameSettings;
     private Sequence _startGameAnimation;
     private string _seconds = "s";
     private string _percents = "%";
+    private string _of = "of";
     private string _done = "Done";
     private bool _imageZoneActiveSelf
     {
@@ -32,7 +33,7 @@ public class GameView : AWindowView
     {
         _gameSettings = Settings.Instance.GameSettings;
 
-        _playableSpriteController = Instantiate(_playableControllerPrefab, null);
+        _playableObjectsController = Instantiate(_playableControllerPrefab, null);
 
         //UpdateImageZone - waiting before layout initialized
         DOTween.Sequence().AppendInterval(.5f).AppendCallback(() =>
@@ -46,8 +47,8 @@ public class GameView : AWindowView
     protected override void OnSubscribe()
     {
         base.OnSubscribe();
-        _playableSpriteController.OnFirstPaintedCountChanged += OnOnFirstClickedCountChanged;
-        _playableSpriteController.OnPaintableSpriteClicked += OnPaintableClicked;
+        _playableObjectsController.OnFirstPaintedCountChanged += OnOnFirstClickedCountChanged;
+        _playableObjectsController.OnPaintableSpriteClicked += OnPaintableClicked;
         _counterElement.OnButtonClicked += OnLevelDoneClicked;
         _startButton.onClick.AddListener(StartGame);
     }
@@ -56,26 +57,38 @@ public class GameView : AWindowView
     {
         base.OnUnSubscribe();
         _startGameAnimation?.Kill();
-        _playableSpriteController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
-        _playableSpriteController.OnPaintableSpriteClicked -= OnPaintableClicked;
+        _playableObjectsController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
+        _playableObjectsController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
         _startButton.onClick.RemoveListener(StartGame);
     }
 
-    //load svg, SetDefaults()
-    public async Task InitLevel(TextAsset svgLevelAsset)
+    //load level by sending objects into playable objects controller, SetDefaults()
+    public async Task InitLevel(Level levelAsset)
     {
         SetDefaults();
-        await _playableSpriteController.LoadVectorSprite(svgLevelAsset);
+        foreach (var levelObject in levelAsset.LevelObjects)
+        {
+            //check copies count in object
+            if (levelObject.CopiesSettings == null || levelObject.CopiesSettings.Count == 0)
+            {
+                Debug.LogError("No copies in "+ levelObject.SvgTextAsset.name);
+                continue;
+            }
+
+            await _playableObjectsController.LoadLevelObject(levelObject);
+        }
+
+        _playableObjectsController.BlockingSpriteEnabled = true;
     }
 
     //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
     public void SetDefaults(bool resetPaintableColors = false)
     {
-        _playableSpriteController.SetDefaults();
+        _playableObjectsController.SetDefaults();
         if (resetPaintableColors)
         {
-            _playableSpriteController.SetOriginalColors();
+            _playableObjectsController.SetOriginalColors();
         }
 
         //init timer
@@ -91,13 +104,13 @@ public class GameView : AWindowView
 
     public void DestroyLevel()
     {
-        _playableSpriteController.DestroyVectorSprites();
+        _playableObjectsController.DestroyVectorSprites();
     }
 
     private void StartGame()
     {
         //show image
-        _playableSpriteController.BlockingSpriteEnabled = false;
+        _playableObjectsController.BlockingSpriteEnabled = false;
         _imageZoneActiveSelf = false;
 
         //init timer
@@ -114,19 +127,19 @@ public class GameView : AWindowView
         }
 
         _startGameAnimation
-            .AppendCallback(() => _playableSpriteController.BlockingSpriteEnabled = true)
+            .AppendCallback(() => _playableObjectsController.BlockingSpriteEnabled = true)
             .AppendInterval(1f)
             .AppendCallback(() =>
             {
-                _colorsController.AddColors(_playableSpriteController.ClearColors());
-                _playableSpriteController.BlockingSpriteEnabled = false;
+                _colorsController.AddColors(_playableObjectsController.ClearColors());
+                _playableObjectsController.BlockingSpriteEnabled = false;
                 _colorsController.Show();
 
-                _counterElement.SetText($"0{_percents}");
+                _counterElement.SetText($"0 {_of} {_playableObjectsController.PaintablesCount}");
                 _counterElement.SetAmount(0);
                 _counterElement.SetOutlineColor(_gameSettings.ProgressColor);
 
-                _playableSpriteController.ZoomEnabled = true;
+                _playableObjectsController.ZoomEnabled = true;
             });
 
         _startGameAnimation.Play();
@@ -143,13 +156,13 @@ public class GameView : AWindowView
             return;
         }
 
-        _playableSpriteController.SetLastClickedGroupColor(color);
+        _playableObjectsController.SetLastClickedGroupColor(color);
     }
 
     private void OnOnFirstClickedCountChanged(int updatedCount, int count)
     {
         var percents = (float)updatedCount / count;
-        _counterElement.SetText($"{(int)(percents * 100)}{_percents}");
+        _counterElement.SetText($"{updatedCount} {_of} {count}");
         _counterElement.SetAmount(percents, .5f, Ease.InSine);
         if (updatedCount == count)
         {
@@ -159,6 +172,6 @@ public class GameView : AWindowView
 
     private void OnLevelDoneClicked()
     {
-        OnLevelDone?.Invoke(_playableSpriteController.CheckSprite());
+        OnLevelDone?.Invoke(_playableObjectsController.CheckSprite());
     }
 }

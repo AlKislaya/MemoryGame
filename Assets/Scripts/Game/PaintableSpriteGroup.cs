@@ -1,22 +1,22 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class PaintableSpriteGroup : MonoBehaviour
 {
-    public Color OriginalFillColor => _originalFillColor;
+    [HideInInspector] [SerializeField] public string Key;
+    [HideInInspector] [SerializeField] public Color OriginalFillColor;
     public Color CurrentColor => _paintableSprites[0].Color;
     public bool IsFirstPainted = false;
     [SerializeField] private PaintableSprite _paintableSpritePrefab;
 
-    private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
-    private Color _originalFillColor;
-    private int _originalStrokeOpacity;
+    [HideInInspector] [SerializeField] private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
 
     public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup/*, ref int order*/)
     {
-        _originalFillColor = paintableGroup.OriginalFillColor;
-
+        Key = paintableGroup.Key;
         var z = -.001f;
         foreach (var paintableChild in paintableGroup.Children)
         {
@@ -25,7 +25,6 @@ public class PaintableSpriteGroup : MonoBehaviour
             childInstance.transform.localPosition = childInstance.transform.localPosition + new Vector3(0, 0, z);
             childInstance.Init(paintableChild/*, ref order*/);
             _paintableSprites.Add(childInstance);
-            childInstance.SetFillColor(_originalFillColor);
             //order++;
         }
     }

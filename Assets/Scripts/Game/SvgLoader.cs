@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
@@ -18,8 +20,8 @@ public class SvgLoader
     }
     public class PaintableVectorSpriteGroup : VectorSprite
     {
+        public string Key;
         public List<PaintableVectorSprite> Children;
-        public Color OriginalFillColor;
     }
     public class PaintableVectorSprite
     {
@@ -36,13 +38,17 @@ public class SvgLoader
     public SvgLoader(TextAsset textAsset)
     {
         _textAsset = textAsset;
-        _sceneInfo = SVGParser.ImportSVG(new StringReader(_textAsset.text));
+        _sceneInfo = SVGParser.ImportSVG(new StringReader(_textAsset.text), ViewportOptions.OnlyApplyRootViewBox);
     }
 
     public async Task<List<VectorSprite>> GetSpritesArrange(VectorSpriteSettings settings)
     {
         var pixelsPerUnit = settings.PixelsPerUnit;
         var targetResolution = settings.TargetResolution;
+        var tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, pixelsPerUnit, targetResolution);
+
+        var sceneRect = _sceneInfo.SceneViewport;
+
         Stroke _basicStroke = new Stroke()
         {
             Color = Color.white,
@@ -55,32 +61,35 @@ public class SvgLoader
         };
 
         var sceneMatrix = _sceneInfo.Scene.Root.Transform;
-        var paintableShapes = new List<SceneNode>();
+        var paintableShapes = new Dictionary<string, SceneNode>();
 
         foreach (var sceneNodeID in _sceneInfo.NodeIDs)
         {
             if (sceneNodeID.Key.Contains(settings.PaintableGroupKey))
             {
-                paintableShapes.Add(sceneNodeID.Value);
+                paintableShapes.Add(sceneNodeID.Key, sceneNodeID.Value);
+                Debug.Log(sceneNodeID.Key);
             }
         }
 
         var vectorSprites = new List<VectorSprite>();
 
+        //CHECK NODE OPACITY!!!!
         foreach (var rootChild in _sceneInfo.Scene.Root.Children)
         {
-            if (paintableShapes.Contains(rootChild))
+            var paintable = paintableShapes.FirstOrDefault(x => x.Value == rootChild);
+
+            if (paintable.Value != null)
             {
                 PaintableVectorSpriteGroup paintableGroup = new PaintableVectorSpriteGroup();
+                paintableGroup.Key = paintable.Key;
                 paintableGroup.Children = new List<PaintableVectorSprite>();
                 var childrenShapes = GetShapes(rootChild);
                 if (childrenShapes.Count == 0)
                 {
                     Debug.Log("No shapes detected");
-                    break;
+                    continue;
                 }
-
-                paintableGroup.OriginalFillColor = (childrenShapes[0].Fill as SolidFill).Color;
 
                 foreach (var childShape in childrenShapes)
                 {
@@ -99,12 +108,12 @@ public class SvgLoader
                         var geometryListStroke = await Task.Run(() => VectorUtils.TessellateScene(new Scene()
                         {
                             Root = root
-                        }, CalculateTesselationSettings(root, pixelsPerUnit, targetResolution)));
+                        }, tesselationSettings, _sceneInfo.NodeOpacity));
 
                         if (geometryListStroke.Count > 1)
                         {
                             childPaintableObject.OriginalStroke = VectorUtils.BuildSprite(
-                                new List<VectorUtils.Geometry>() { geometryListStroke[1] }, settings.SceneRect, pixelsPerUnit,
+                                new List<VectorUtils.Geometry>() { geometryListStroke[1] }, sceneRect, pixelsPerUnit,
                                 SpriteAlignment, SpritePivot, settings.GradientResolution, FlipYAxis);
                         }
                     }
@@ -113,20 +122,20 @@ public class SvgLoader
                     var geometryList = await Task.Run(() => VectorUtils.TessellateScene(new Scene()
                     {
                         Root = root
-                    }, CalculateTesselationSettings(root, pixelsPerUnit, targetResolution)));
+                    }, tesselationSettings, _sceneInfo.NodeOpacity));
 
                     geometryList[0].Color = Color.white;
 
                     //set fill
                     childPaintableObject.Fill = VectorUtils.BuildSprite(
-                        new List<VectorUtils.Geometry>() { geometryList[0] }, settings.SceneRect, pixelsPerUnit,
+                        new List<VectorUtils.Geometry>() { geometryList[0] }, sceneRect, pixelsPerUnit,
                         SpriteAlignment, SpritePivot, settings.GradientResolution, FlipYAxis);
 
                     //calculate size and position for future collider
                     var fillBounds = geometryList[0].UnclippedBounds;
                     childPaintableObject.Size = new Vector2(fillBounds.size.x / pixelsPerUnit, fillBounds.size.y / pixelsPerUnit);
-                    var posX = (childPaintableObject.Size.x / 2) - (settings.SceneRect.width / pixelsPerUnit / 2) + (fillBounds.position.x / pixelsPerUnit);
-                    var posY = (settings.SceneRect.height / pixelsPerUnit / 2) - (childPaintableObject.Size.y / 2) - (fillBounds.position.y / pixelsPerUnit);
+                    var posX = (childPaintableObject.Size.x / 2) - (sceneRect.width / pixelsPerUnit / 2) + (fillBounds.position.x / pixelsPerUnit);
+                    var posY = (sceneRect.height / pixelsPerUnit / 2) - (childPaintableObject.Size.y / 2) - (fillBounds.position.y / pixelsPerUnit);
                     childPaintableObject.Position = new Vector2(posX, posY);
 
                     //set stroke
@@ -134,7 +143,7 @@ public class SvgLoader
                     {
                         geometryList[1].Color = Color.white;
                         childPaintableObject.Stroke = VectorUtils.BuildSprite(
-                            new List<VectorUtils.Geometry>() { geometryList[1] }, settings.SceneRect, pixelsPerUnit,
+                            new List<VectorUtils.Geometry>() { geometryList[1] }, sceneRect, pixelsPerUnit,
                             SpriteAlignment, SpritePivot, settings.GradientResolution, FlipYAxis);
                     }
                     else
@@ -151,8 +160,8 @@ public class SvgLoader
                 StaticVectorSprite staticVectorSprite = new StaticVectorSprite();
 
                 var geometry = await Task.Run(() => VectorUtils.TessellateScene(new Scene() { Root = rootChild },
-                    CalculateTesselationSettings(rootChild, pixelsPerUnit, targetResolution)));
-                staticVectorSprite.Sprite = VectorUtils.BuildSprite(geometry, settings.SceneRect, pixelsPerUnit,
+                    tesselationSettings, _sceneInfo.NodeOpacity));
+                staticVectorSprite.Sprite = VectorUtils.BuildSprite(geometry, sceneRect, pixelsPerUnit,
                         SpriteAlignment, SpritePivot, settings.GradientResolution, FlipYAxis);
 
                 vectorSprites.Add(staticVectorSprite);

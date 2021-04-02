@@ -7,8 +7,8 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>
 
     public override void BeforeShow()
     {
-        var levelsAssetsCount = LevelsManager.Instance.LevelsSvgAssetsSequence.SvgLevelsAssets.Count;
-        var levelsSequence = LevelsManager.Instance.LevelsSequence.Levels;
+        var levelsAssetsCount = LevelsManager.Instance.LevelsSequence.Levels.Count;
+        var levelsSequence = LevelsManager.Instance.LevelsProgress.Levels;
 
         for (int i = 0; i < levelsSequence.Count; i++)
         {

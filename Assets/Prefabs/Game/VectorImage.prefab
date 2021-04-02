@@ -47,11 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e753d0dd6ae6747418617a32a24fce4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _paintableSpriteGroupPrefab: {fileID: 1625340009104276153, guid: c3f953780d307244882decfa80980aac,
+  _levelObjectPrefab: {fileID: 6174549656040575958, guid: f26fccbb4556de245b1e28b86002c322,
     type: 3}
-  _staticSpriteRendererPrefab: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-    type: 3}
-  _blockingSprite: {fileID: 7618969790841567210}
   _spritesContainerPrefab: {fileID: 6267632544237857105, guid: 084525244d0fb6e4196b8d91dcb427b0,
     type: 3}
   _raycastMask:
