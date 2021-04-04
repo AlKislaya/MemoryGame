@@ -1,5 +1,4 @@
 using Dainty.UI.WindowBase;
-using UnityEngine;
 
 public class LevelsSequenceController : AWindowController<LevelsSequenceView>
 {
@@ -7,7 +6,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>
 
     public override void BeforeShow()
     {
-        var levelsAssetsCount = LevelsManager.Instance.LevelsSequence.Levels.Count;
+        var levelsAssetsCount = LevelsManager.Instance.LevelsAssetSequence.Levels.Count;
         var levelsSequence = LevelsManager.Instance.LevelsProgress.Levels;
 
         for (int i = 0; i < levelsSequence.Count; i++)
@@ -23,7 +22,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>
 
     private void OnLevelClicked(int levelNumber)
     {
-        LevelsManager.Instance.CurrentLevel = levelNumber;
+        LevelsManager.Instance.CurrentLevelNumber = levelNumber;
         //ApplicationController.Instance.UiManager.Open<GameController, GameWindowSettings>(new GameWindowSettings());
         ApplicationController.Instance.UiManager.Open<GameController>();
     }

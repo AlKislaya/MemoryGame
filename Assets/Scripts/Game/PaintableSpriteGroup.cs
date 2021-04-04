@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-[Serializable]
 public class PaintableSpriteGroup : MonoBehaviour
 {
     [HideInInspector] [SerializeField] public string Key;
@@ -39,9 +37,14 @@ public class PaintableSpriteGroup : MonoBehaviour
         _paintableSprites.ForEach(x => x.SetStrokeColor(color));
     }
 
+    //bug: if stroke will have alpha != 255 
     public void SetActiveOriginalStroke(bool isActive)
     {
-        _paintableSprites.ForEach(x => x.SetActiveOriginalStroke(isActive));
+        _paintableSprites.ForEach(x =>
+        {
+            x.SetActiveOriginalStroke(isActive);
+            x.SetStrokeColor(Color.white);
+        });
     }
 
     public bool ContainsCollider(Collider2D collider)

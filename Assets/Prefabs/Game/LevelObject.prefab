@@ -24,14 +24,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3408793866836346133}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7504439877598675629}
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!114 &6174549656040575958
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -48,7 +48,7 @@ MonoBehaviour:
     type: 3}
   _staticSpriteRendererPrefab: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
     type: 3}
-  _blockingSprite: {fileID: 660220282539318785}
+  _paintableSpriteGroups: []
 --- !u!1001 &6421391212824951054
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -147,12 +147,6 @@ PrefabInstance:
 --- !u!4 &7504439877598675629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-    type: 3}
-  m_PrefabInstance: {fileID: 6421391212824951054}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &660220282539318785 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
     type: 3}
   m_PrefabInstance: {fileID: 6421391212824951054}
   m_PrefabAsset: {fileID: 0}

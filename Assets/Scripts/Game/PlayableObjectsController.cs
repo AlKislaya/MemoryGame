@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -15,16 +16,9 @@ public class PassedLevelStats
 public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
     public int PaintablesCount => _paintableGroups.Count;
-
-    public bool BlockingSpriteEnabled
+    public bool SpriteMaskEnabled
     {
-        set
-        {
-            if (_levelObjects != null && _levelObjects.Count > 0)
-            {
-                _levelObjects.ForEach(x => x.HideImage(value));
-            }
-        }
+        set => _spriteMask.enabled = value;
     }
 
     public bool ZoomEnabled
@@ -41,14 +35,15 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private const float ClickDelay = .3f;
 
     [SerializeField] private LevelObjectController _levelObjectPrefab;
-    [SerializeField] private Transform _spritesContainerPrefab;
+    [SerializeField] private Transform _levelObjectsContainerPrefab;
     [SerializeField] private LayerMask _raycastMask;
+    [SerializeField] private SpriteMask _spriteMask;
     [SerializeField] private Zoom _zoom;
 
     private Camera _cameraMain;
-    private Transform _spritesContainer;
+    private Transform _objectsContainer;
     private ContactFilter2D _contactFilter;
-    private VectorSpriteSettings _vectorSpriteSettings;
+    private VectorSpriteSettings _levelObjectsSettings;
     private List<LevelObjectController> _levelObjects = new List<LevelObjectController>();
     private List<PaintableSpriteGroup> _paintableGroups = new List<PaintableSpriteGroup>();
 
@@ -63,7 +58,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     {
         _cameraMain = Camera.main;
         _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
-        _vectorSpriteSettings = Settings.Instance.VectorSpriteSettings;
+        _levelObjectsSettings = Settings.Instance.VectorSpriteSettings;
         FitInScreenSize();
     }
 
@@ -74,7 +69,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
         Debug.Log("LOADING STARTED "+ levelObject.SvgTextAsset.name);
         //tesselate and build sprites
-        var vectorSprites = await svgLoader.GetSpritesArrange(_vectorSpriteSettings);
+        var vectorSprites = await svgLoader.GetSpritesArrange(_levelObjectsSettings);
         Debug.Log("LOADING ENDED " + levelObject.SvgTextAsset.name);
 
         if (vectorSprites.Count == 0)
@@ -86,7 +81,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
         for (int i = 0; i < levelObject.CopiesSettings.Count; i++)
         {
-            var objectInstance = Instantiate(_levelObjectPrefab, _spritesContainer);
+            var objectInstance = Instantiate(_levelObjectPrefab, _objectsContainer);
 
             objectInstance.Init(vectorSprites);
             objectInstance.InitSettings(levelObject.CopiesSettings[i]);
@@ -110,6 +105,40 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         //}
     }
 
+    public Sequence OpenLevelObjects(bool isOpen)
+    {
+        var tweenDuration = .5f;
+        var tweenShift = .1f;
+
+        var sequence = DOTween.Sequence();
+        if (_levelObjects != null)
+        {
+            for (int i = 0; i < _levelObjects.Count; i++)
+            {
+                sequence.Insert(tweenShift * i, _levelObjects[i].OpenObjectAnimation(tweenDuration, isOpen));
+            }
+        }
+        return sequence;
+    }
+
+    public Sequence PlaceLevelObjects()
+    {
+        _levelObjects = _levelObjects.OrderBy(x=>x.transform.localPosition.x).ToList();
+
+        var tweenDuration = .5f;
+        var tweenShift = .3f;
+
+        var sequence = DOTween.Sequence();
+        if (_levelObjects != null)
+        {
+            for (int i = 0; i < _levelObjects.Count; i++)
+            {
+                sequence.Insert(tweenShift * i, _levelObjects[i].PlaceObjectAnimation(tweenDuration));
+            }
+        }
+        return sequence;
+    }
+
     //reset variables, instantiate sprites container if null, assign in zoom, set base view settings
     public void SetDefaults()
     {
@@ -117,39 +146,45 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         _pointerDownTime = 0;
         _firstPaintedGroupsCount = 0;
 
-        if (_spritesContainer == null)
+        if (_objectsContainer == null)
         {
-            _spritesContainer = Instantiate(_spritesContainerPrefab, transform);
+            _objectsContainer = Instantiate(_levelObjectsContainerPrefab, transform);
         }
-        else if (_paintableGroups != null && _paintableGroups.Count > 0)
+        else if (_levelObjects != null && _levelObjects.Count > 0)
         {
-            _paintableGroups.ForEach(x => x.IsFirstPainted = false);
+            _levelObjects.ForEach(x => x.OpenObject(false));
+            _paintableGroups.ForEach(x =>
+            {
+                x.IsFirstPainted = false;
+                x.SetActiveOriginalStroke(true);
+                x.SetFillColor(x.OriginalFillColor);
+            });
         }
 
-        _zoom.AssignZoomContainer(_spritesContainer);
+        _zoom.AssignZoomContainer(_objectsContainer);
 
+        SpriteMaskEnabled = false;
         ZoomEnabled = false;
-        BlockingSpriteEnabled = true;
     }
 
-    public void SetOriginalColors()
-    {
-        _paintableGroups.ForEach(x =>
-        {
-            x.SetActiveOriginalStroke(true);
-            x.SetFillColor(x.OriginalFillColor);
-        });
-    }
+    //public void SetOriginalColors()
+    //{
+    //    _paintableGroups.ForEach(x =>
+    //    {
+    //        x.SetActiveOriginalStroke(true);
+    //        x.SetFillColor(x.OriginalFillColor);
+    //    });
+    //}
 
     //destroy sprites container
     public void DestroyVectorSprites()
     {
-        if (_spritesContainer == null)
+        if (_objectsContainer == null)
         {
             return;
         }
-        Destroy(_spritesContainer.gameObject);
-        _spritesContainer = null;
+        Destroy(_objectsContainer.gameObject);
+        _objectsContainer = null;
         _levelObjects = new List<LevelObjectController>();
         _paintableGroups = new List<PaintableSpriteGroup>();
     }
@@ -179,8 +214,8 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
        _paintableGroups.ForEach(x=>
         {
             x.SetActiveOriginalStroke(false);
-            x.SetFillColor(_vectorSpriteSettings.ClearFillColor);
-            x.SetStrokeColor(_vectorSpriteSettings.HighlightedStrokeColor);
+            x.SetFillColor(_levelObjectsSettings.ClearFillColor);
+            x.SetStrokeColor(_levelObjectsSettings.HighlightedStrokeColor);
             originalColors.Add(x.OriginalFillColor);
         });
         return originalColors;
@@ -195,12 +230,12 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         {
             if (paintableSpriteGroup.CurrentColor == paintableSpriteGroup.OriginalFillColor)
             {
-                paintableSpriteGroup.SetStrokeColor(_vectorSpriteSettings.RightStrokeColor);
+                paintableSpriteGroup.SetStrokeColor(_levelObjectsSettings.RightStrokeColor);
                 rightCount++;
             }
             else
             {
-                paintableSpriteGroup.SetStrokeColor(_vectorSpriteSettings.WrongStrokeColor);
+                paintableSpriteGroup.SetStrokeColor(_levelObjectsSettings.WrongStrokeColor);
             }
         }
 
@@ -247,7 +282,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private void FitInScreenSize()
     {
         var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
-        var vectorSpriteWidth = _vectorSpriteSettings.SceneRect.width / _vectorSpriteSettings.PixelsPerUnit;
+        var vectorSpriteWidth = _levelObjectsSettings.SceneRect.width / _levelObjectsSettings.PixelsPerUnit;
         var scaleFactor = width / vectorSpriteWidth;
         transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
     }

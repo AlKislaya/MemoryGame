@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class LevelsManager : Singleton<LevelsManager>
 {
-    public Level CurrentLevelAsset => _levelsSequence.Levels[CurrentLevel];
+    public Level CurrentLevelAsset => _levelsAssetSequence.Levels[CurrentLevelNumber];
 
-    public int CurrentLevel {
+    public int CurrentLevelNumber {
         get
         {
             return _currentLevel;
         }
         set
         {
-            if (value >= _levelsSequence.Levels.Count)
+            if (value >= _levelsAssetSequence.Levels.Count)
             {
                 Debug.LogError("Current level More than svg assets count! " + value);
-                _currentLevel = _levelsSequence.Levels.Count - 1;
+                _currentLevel = _levelsAssetSequence.Levels.Count - 1;
             }
             else if (value < 0)
             {
@@ -30,10 +30,10 @@ public class LevelsManager : Singleton<LevelsManager>
         }
     }
 
-    public LevelsSequence LevelsSequence => _levelsSequence;
+    public LevelsSequence LevelsAssetSequence => _levelsAssetSequence;
     public LevelsProgress LevelsProgress => _levelsProgress;
 
-    [SerializeField] private LevelsSequence _levelsSequence;
+    [SerializeField] private LevelsSequence _levelsAssetSequence;
     private LevelsProgress _levelsProgress = new LevelsProgress();
     private int _currentLevel;
 
@@ -74,7 +74,7 @@ public class LevelsManager : Singleton<LevelsManager>
         var passedLevel = _levelsProgress.Levels[levelIndex];
         passedLevel.PassedPercents = passedPercents;
         passedLevel.IsPassed = true;
-        if (levelIndex == _levelsProgress.Levels.Count - 1 && _levelsProgress.Levels.Count < _levelsSequence.Levels.Count)
+        if (levelIndex == _levelsProgress.Levels.Count - 1 && _levelsProgress.Levels.Count < _levelsAssetSequence.Levels.Count)
         {
             _levelsProgress.Levels.Add(new LevelProgress(){ IsPassed = false });
         }

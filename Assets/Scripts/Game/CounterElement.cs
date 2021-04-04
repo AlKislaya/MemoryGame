@@ -63,6 +63,19 @@ public class CounterElement : MonoBehaviour
         _text.text = text;
     }
 
+    public Sequence TimerTween(int seconds, string secondsText)
+    {
+        var sequence = DOTween.Sequence();
+        sequence.Append(_filledOutline.DOFillAmount(0, seconds).SetEase(Ease.Linear));
+        for (int i = 0; i <= seconds; i++)
+        {
+            var currSeconds = seconds - i;
+            sequence.InsertCallback(i, () => SetText($"{currSeconds}{secondsText}"));
+        }
+
+        return sequence;
+    }
+
     public void SetAmount(float fillAmount, float duration = 0, Ease ease = Ease.Linear)
     {
         _animation?.Kill();

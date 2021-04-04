@@ -1,10 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 
 //stores individual level object(card, paintables, static sprites)
-[Serializable]
 public class LevelObjectController : MonoBehaviour
 {
     public List<PaintableSpriteGroup> PaintableSpriteGroups => _paintableSpriteGroups;
@@ -12,6 +11,7 @@ public class LevelObjectController : MonoBehaviour
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
     [SerializeField] private SpriteRenderer _staticSpriteRendererPrefab;
     [HideInInspector] [SerializeField] private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
+    private float _localRotationZ;
 
     //instantiate and init sprites groups
     public void Init(List<SvgLoader.VectorSprite> vectorSprites)
@@ -45,9 +45,12 @@ public class LevelObjectController : MonoBehaviour
     {
         transform.localPosition = settings.Position;
         transform.localScale = new Vector3(settings.Scale.x, settings.Scale.y, 1);
-        if (settings.Rotation != 0)
+        _localRotationZ = settings.Rotation;
+        if (_localRotationZ != 0)
         {
-            transform.rotation = Quaternion.Euler(0, 0, settings.Rotation);
+            var rotation = transform.localRotation.eulerAngles;
+            rotation.z = _localRotationZ;
+            transform.localRotation = Quaternion.Euler(rotation);
         }
 
         foreach (var paintableColor in settings.PaintableColors)
@@ -65,7 +68,21 @@ public class LevelObjectController : MonoBehaviour
         }
     }
 
-    public void HideImage(bool isHiding = true)
+    public void OpenObject(bool isOpen = true)
     {
+        transform.localRotation = Quaternion.Euler(new Vector3(0, isOpen ? 0 : 180, _localRotationZ));
+    }
+
+    public Tween OpenObjectAnimation(float duration, bool isOpen = true)
+    {
+        return DOTween.Sequence().Append(transform.DOLocalRotate(new Vector3(0, isOpen ? 0 : 180, _localRotationZ), duration));
+    }
+
+    public Tween PlaceObjectAnimation(float duration)
+    {
+        transform.localScale = new Vector3(1.1f, 1.1f, 1);
+        gameObject.SetActive(false);
+
+        return DOTween.Sequence().AppendCallback(() => gameObject.SetActive(true)).Append(transform.DOScale(new Vector3(1, 1, 1), duration));
     }
 }

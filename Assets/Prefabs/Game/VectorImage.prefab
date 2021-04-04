@@ -49,11 +49,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelObjectPrefab: {fileID: 6174549656040575958, guid: f26fccbb4556de245b1e28b86002c322,
     type: 3}
-  _spritesContainerPrefab: {fileID: 6267632544237857105, guid: 084525244d0fb6e4196b8d91dcb427b0,
+  _levelObjectsContainerPrefab: {fileID: 6267632544237857105, guid: 084525244d0fb6e4196b8d91dcb427b0,
     type: 3}
   _raycastMask:
     serializedVersion: 2
     m_Bits: 128
+  _spriteMask: {fileID: 7618969790179758542}
   _zoom: {fileID: 7618969789928288391}
 --- !u!114 &7618969789928288391
 MonoBehaviour:

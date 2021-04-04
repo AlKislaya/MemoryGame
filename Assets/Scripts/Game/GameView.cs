@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using DG.Tweening;
@@ -15,12 +16,15 @@ public class GameView : AWindowView
     [SerializeField] private RectTransform _imageZone;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
+    [SerializeField] private GameObject _loader;
 
     private PlayableObjectsController _playableObjectsController;
     private GameSettings _gameSettings;
     private Sequence _startGameAnimation;
+    private Sequence _placeObjectsAnimation;
+    private Sequence _destroyPlayableImage;
+
     private string _seconds = "s";
-    private string _percents = "%";
     private string _of = "of";
     private string _done = "Done";
     private bool _imageZoneActiveSelf
@@ -56,19 +60,30 @@ public class GameView : AWindowView
     protected override void OnUnSubscribe()
     {
         base.OnUnSubscribe();
-        _startGameAnimation?.Kill();
         _playableObjectsController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
         _playableObjectsController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
         _startButton.onClick.RemoveListener(StartGame);
     }
 
-    //load level by sending objects into playable objects controller, SetDefaults()
-    public async Task InitLevel(Level levelAsset)
+    //waiting for destroying playable image if it's playing
+    //load level: sending objects into playable objects controller
+    public async Task InitLevel(Level levelAsset, CancellationToken token)
     {
-        SetDefaults();
+        if (_destroyPlayableImage != null && _destroyPlayableImage.IsPlaying())
+        {
+            Debug.Log("Waiting for image destroying");
+            await Task.Delay(30);
+        }
+
         foreach (var levelObject in levelAsset.LevelObjects)
         {
+            if (token.IsCancellationRequested)
+            {
+                Debug.Log("Canceled Loading level");
+                return;
+            }
+
             //check copies count in object
             if (levelObject.CopiesSettings == null || levelObject.CopiesSettings.Count == 0)
             {
@@ -78,18 +93,28 @@ public class GameView : AWindowView
 
             await _playableObjectsController.LoadLevelObject(levelObject);
         }
+    }
 
-        _playableObjectsController.BlockingSpriteEnabled = true;
+    public void ShowLoader(bool show)
+    {
+        _loader.SetActive(show);
+    }
+
+    //place objects animation
+    public void PlaceObjects()
+    {
+        _placeObjectsAnimation = _playableObjectsController.PlaceLevelObjects();
+        _placeObjectsAnimation.AppendCallback(() => _imageZoneActiveSelf = true);
+
+        _playableObjectsController.SpriteMaskEnabled = true;
+
+        _placeObjectsAnimation.Play();
     }
 
     //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
-    public void SetDefaults(bool resetPaintableColors = false)
+    public void SetDefaults()
     {
         _playableObjectsController.SetDefaults();
-        if (resetPaintableColors)
-        {
-            _playableObjectsController.SetOriginalColors();
-        }
 
         //init timer
         _counterElement.SetDefaults();
@@ -97,42 +122,51 @@ public class GameView : AWindowView
         _counterElement.SetOutlineColor(_gameSettings.TimerColor);
         _counterElement.SetAmount(1);
 
-        _imageZoneActiveSelf = true;
-
         _colorsController.Close();
     }
 
-    public void DestroyLevel()
+    public void DestroyLevel(float delay)
     {
-        _playableObjectsController.DestroyVectorSprites();
+        if (delay == 0)
+        {
+            _playableObjectsController.DestroyVectorSprites();
+            return;
+        }
+        _destroyPlayableImage = DOTween.Sequence()
+            .AppendInterval(delay)
+            .AppendCallback(() =>
+            {
+                Debug.Log("Destroy sprites");
+                _playableObjectsController.DestroyVectorSprites();
+            })
+            .OnComplete(() => _destroyPlayableImage = null);
+        _destroyPlayableImage.Play();
+    }
+
+    public void StopAnimations()
+    {
+        _startGameAnimation?.Kill();
+        _placeObjectsAnimation?.Kill();
     }
 
     private void StartGame()
     {
         //show image
-        _playableObjectsController.BlockingSpriteEnabled = false;
+        _startGameAnimation = DOTween.Sequence();
+        _startGameAnimation.Append(_playableObjectsController.OpenLevelObjects(true));
         _imageZoneActiveSelf = false;
 
         //init timer
         int time = _gameSettings.TimerSeconds;
 
-        _startGameAnimation = DOTween.Sequence();
-        for (int i = 0; i < time; i++)
-        {
-            var currSeconds = time - i - 1;
-            _startGameAnimation.AppendInterval(1f).AppendCallback(() =>
-            {
-                _counterElement.SetText($"{currSeconds}{_seconds}");
-            });
-        }
-
         _startGameAnimation
-            .AppendCallback(() => _playableObjectsController.BlockingSpriteEnabled = true)
+            .Append(_counterElement.TimerTween(time, _seconds))
+            .Append(_playableObjectsController.OpenLevelObjects(false))
             .AppendInterval(1f)
             .AppendCallback(() =>
             {
                 _colorsController.AddColors(_playableObjectsController.ClearColors());
-                _playableObjectsController.BlockingSpriteEnabled = false;
+                _playableObjectsController.OpenLevelObjects(true).Play();
                 _colorsController.Show();
 
                 _counterElement.SetText($"0 {_of} {_playableObjectsController.PaintablesCount}");
@@ -143,9 +177,6 @@ public class GameView : AWindowView
             });
 
         _startGameAnimation.Play();
-
-        //animating timer outline
-        _counterElement.SetAmount(0, time);
     }
 
     private void OnPaintableClicked()
