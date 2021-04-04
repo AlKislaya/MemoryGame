@@ -17,11 +17,11 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 480
-    height: 480
+    width: 500
+    height: 500
   PixelsPerUnit: 100
-  TargetResolution: 480
-  GradientResolution: 64
+  TargetResolution: 500
+  GradientResolution: 128
   StrokeHalfThickness: 3
   ClearFillColor: {r: 1, g: 1, b: 1, a: 1}
   HighlightedStrokeColor: {r: 1, g: 1, b: 0, a: 0.19607843}

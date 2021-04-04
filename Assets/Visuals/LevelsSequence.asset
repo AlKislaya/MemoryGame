@@ -14,40 +14,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Levels:
   - LevelObjects:
-    - SvgTextAsset: {fileID: 4900000, guid: 042e1e90908c8784089036931fa30514, type: 3}
-      CopiesSettings:
-      - PaintableColors:
-        - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_1_
-          Color: {r: 0.91764706, g: 0.41176465, b: 0.7445718, a: 1}
-        Position: {x: 0, y: 0}
-        Scale: {x: 1, y: 1}
-        Rotation: 0
-      - PaintableColors:
-        - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_2_
-          Color: {r: 0.4794719, g: 0.91764706, b: 0.41176465, a: 1}
-        Position: {x: 2, y: 2}
-        Scale: {x: 1, y: 1}
-        Rotation: 0
-  - LevelObjects:
     - SvgTextAsset: {fileID: 4900000, guid: d5c115f03197ad949a961e191cb9a80c, type: 3}
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
           Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_1_
-          Color: {r: 0.91764706, g: 0.41176465, b: 0.7445718, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0
       - PaintableColors:
         - Key: Paintable
           Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_2_
-          Color: {r: 0.4794719, g: 0.91764706, b: 0.41176465, a: 1}
         Position: {x: 2, y: 2}
         Scale: {x: 1, y: 1}
         Rotation: 0
@@ -56,16 +33,41 @@ MonoBehaviour:
       - PaintableColors:
         - Key: Paintable
           Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_1_
-          Color: {r: 0.91764706, g: 0.41176465, b: 0.7445718, a: 1}
         Position: {x: 2, y: -2}
         Scale: {x: 1, y: 1}
         Rotation: 45
       - PaintableColors:
         - Key: Paintable
           Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
-        - Key: Paintable_2_
-          Color: {r: 0.4794719, g: 0.91764706, b: 0.41176465, a: 1}
         Position: {x: -2, y: 2}
+        Scale: {x: 0.5, y: 0.5}
+        Rotation: 0
+  - LevelObjects:
+    - SvgTextAsset: {fileID: 4900000, guid: d5c115f03197ad949a961e191cb9a80c, type: 3}
+      CopiesSettings:
+      - PaintableColors:
+        - Key: Paintable
+          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+        Position: {x: 0, y: 0}
+        Scale: {x: 1, y: 1}
+        Rotation: 0
+      - PaintableColors:
+        - Key: Paintable
+          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+        Position: {x: -1.5, y: 0}
+        Scale: {x: 1, y: 1}
+        Rotation: 0
+    - SvgTextAsset: {fileID: 4900000, guid: c4bd02cb446066d4fae7fcd9403d8048, type: 3}
+      CopiesSettings:
+      - PaintableColors:
+        - Key: Paintable
+          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+        Position: {x: 1.5, y: 0}
+        Scale: {x: 1, y: 1}
+        Rotation: 45
+      - PaintableColors:
+        - Key: Paintable
+          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+        Position: {x: 2.5, y: 0}
         Scale: {x: 0.5, y: 0.5}
         Rotation: 0
