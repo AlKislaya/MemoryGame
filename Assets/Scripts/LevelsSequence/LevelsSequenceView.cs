@@ -10,44 +10,55 @@ public class LevelsSequenceView : AWindowView
     private List<LevelItem> _levelInstances = new List<LevelItem>();
     public event Action<int> OnLevelClicked;
 
-    public void AddLevel(int levelIndex, bool isOpened, float passedPercents = 0)
+    public void AddLevel(int levelIndex, bool isOpened, LevelProgress levelProgress = null, Sprite preview = null)
     {
+        LevelItem levelInstance;
         if (_levelInstances.Count - 1 >= levelIndex)
         {
-            var levelInstance = _levelInstances[levelIndex];
-
-            if (isOpened)
-            {
-                if (levelInstance.IsOpened)
-                {
-                    levelInstance.UpdateLevel(passedPercents);
-                }
-                else
-                {
-                    levelInstance.SetAsOpenedLevel(passedPercents);
-                }
-            }
-            else if (levelInstance.IsOpened)
-            {
-                levelInstance.SetAsLockedLevel();
-            }
-
-            return;
-        }
-
-        var newLevelInstance = Instantiate(_levelPrefab, _levelsContainer);
-        newLevelInstance.Initialize(levelIndex, onLevelClicked);
-
-        if (isOpened)
-        {
-            newLevelInstance.SetAsOpenedLevel(passedPercents);
+            levelInstance = _levelInstances[levelIndex];
         }
         else
         {
-            newLevelInstance.SetAsLockedLevel();
+            levelInstance = Instantiate(_levelPrefab, _levelsContainer);
+            levelInstance.Initialize(levelIndex, onLevelClicked);
+            _levelInstances.Add(levelInstance);
         }
 
-        _levelInstances.Add(newLevelInstance);
+        if (isOpened && levelProgress != null)
+        {
+            if (levelProgress.IsPassed)
+            {
+                levelInstance.SetAsOpenedLevel(preview, levelProgress.PassedPercents);
+            }
+            else
+            {
+                levelInstance.SetAsNewLevel();
+            }
+        }
+        else
+        {
+            levelInstance.SetAsClosedLevel();
+        }
+    }
+
+    public void SetLevelsCapacity(int capacity)
+    {
+        for (int i = _levelInstances.Count; i < capacity; i++)
+        {
+            var levelInstance = Instantiate(_levelPrefab, _levelsContainer);
+            levelInstance.Initialize(i, onLevelClicked);
+            _levelInstances.Add(levelInstance);
+        }
+
+        for (int i = 0; i < capacity; i++)
+        {
+            _levelInstances[i].gameObject.SetActive(true);
+        }
+
+        for (int i = capacity; i < _levelInstances.Count; i++)
+        {
+            _levelInstances[i].gameObject.SetActive(false);
+        }
     }
 
     private void onLevelClicked(int levelIndex)

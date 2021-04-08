@@ -1,4 +1,4 @@
 public static class PlayerPrefsKeys
 {
-    public const string LevelsSequenceKey = "levels";
+    //public const string LevelsSequenceKey = "levels";
 }

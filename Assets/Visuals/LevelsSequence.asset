@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: LevelsSequence
   m_EditorClassIdentifier: 
   Levels:
-  - LevelObjects:
+  - Preview: {fileID: 3286163911610860551, guid: 391178bf25dcd6c4ba548ddda92abb5e,
+      type: 3}
+    LevelObjects:
     - SvgTextAsset: {fileID: 4900000, guid: d5c115f03197ad949a961e191cb9a80c, type: 3}
       CopiesSettings:
       - PaintableColors:
@@ -42,7 +44,8 @@ MonoBehaviour:
         Position: {x: -2, y: 2}
         Scale: {x: 0.5, y: 0.5}
         Rotation: 0
-  - LevelObjects:
+  - Preview: {fileID: 21300000, guid: 9f60dbf54276022448d928df3a60acd9, type: 3}
+    LevelObjects:
     - SvgTextAsset: {fileID: 4900000, guid: d5c115f03197ad949a961e191cb9a80c, type: 3}
       CopiesSettings:
       - PaintableColors:

@@ -1,7 +1,10 @@
 using Dainty.UI.WindowBase;
+using UnityEngine;
 
 public class LevelFinishedSettings
 {
+    public string CategoryKey;
+    public int LevelIndex;
     public PassedLevelStats Stats;
     public GameController GameController;
 }
@@ -11,20 +14,40 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
     private const string Of = "of";
     private LevelsManager _levelsManager;
     private GameController _gameController;
+    private LevelFinishedSettings _levelFinishedSettings;
     public override string WindowId { get; }
     protected override void OnInitialize()
     {
         base.OnInitialize();
 
         _levelsManager = LevelsManager.Instance;
-
-        view.SetActivePlayButton(_levelsManager.CurrentLevelNumber != _levelsManager.LevelsAssetSequence.Levels.Count - 1);
     }
+
     public void Initialize(LevelFinishedSettings levelFinishedSettings)
     {
-        var stats = levelFinishedSettings.Stats;
         _gameController = levelFinishedSettings.GameController;
+        _levelFinishedSettings = levelFinishedSettings;
+        var levelIndex = levelFinishedSettings.LevelIndex;
+        var stats = levelFinishedSettings.Stats;
+        var categoryLevelsCount = _levelsManager.GetCategoryByKey(levelFinishedSettings.CategoryKey).LevelsSequence.Levels.Count;
+        var levelsProgress = _levelsManager
+                                                .GetLevelsProgressByCategory(levelFinishedSettings.CategoryKey)
+                                                .Levels;
+        
+        if (stats.Percents > levelsProgress[levelIndex].PassedPercents)
+        {
+            _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, stats.Percents);
+        }
+
+        if (levelsProgress.Count - 1 == levelIndex
+            && levelIndex + 1 < categoryLevelsCount)
+        {
+            _levelsManager.SetNewLevelProgress(levelFinishedSettings.CategoryKey);
+        }
+
         view.SetProgress(stats.Percents, $"{stats.RightPaintablesCount} {Of} {stats.PaintablesCount}");
+        view.SetActivePlayButton(!(stats.Percents == 0 
+                                   || levelFinishedSettings.LevelIndex == categoryLevelsCount - 1));
     }
 
     protected override void OnSubscribe()
@@ -48,8 +71,7 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
 
     private void ViewOnOnPlayButtonClicked()
     {
-        _levelsManager.CurrentLevelNumber++;
-        _gameController.LoadLevel();
+        _gameController.LoadLevel(_levelFinishedSettings.CategoryKey, _levelFinishedSettings.LevelIndex + 1);
         OpenGame();
     }
 

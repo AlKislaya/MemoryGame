@@ -67,10 +67,10 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         //await Task.Delay((int)(Time.deltaTime * 100));
         var svgLoader = new SvgLoader(levelObject.SvgTextAsset);
 
-        Debug.Log("LOADING STARTED "+ levelObject.SvgTextAsset.name);
+        //Debug.Log("LOADING STARTED "+ levelObject.SvgTextAsset.name);
         //tesselate and build sprites
         var vectorSprites = await svgLoader.GetSpritesArrange(_levelObjectsSettings);
-        Debug.Log("LOADING ENDED " + levelObject.SvgTextAsset.name);
+        //Debug.Log("LOADING ENDED " + levelObject.SvgTextAsset.name);
 
         if (vectorSprites.Count == 0)
         {

@@ -10,19 +10,14 @@ public class LevelFinishedView : AWindowView
     public event Action OnPlayButtonClicked;
     public event Action OnReplayButtonClicked;
 
-    [SerializeField] private TextMeshProUGUI _percentsText;
-    [SerializeField] private TextMeshProUGUI _rangeText;
-    [SerializeField] private Image _progressFillAmountImage;
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _replayButton;
 
     public void SetProgress(float percents, string range)
     {
-        _percentsText.text = ((int)(percents * 100)).ToString();
-        _rangeText.text = range;
-
-        _progressFillAmountImage.fillAmount = percents;
+        //_percentsText.text = ((int)(percents * 100)).ToString();
+        //_rangeText.text = range;
     }
 
     public void SetActivePlayButton(bool isActive)

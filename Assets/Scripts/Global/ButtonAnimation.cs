@@ -11,26 +11,42 @@ public class ButtonAnimation : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     [SerializeField] private Vector3 _targetScale;
     [SerializeField] private Vector3 _targetShadowPosition;
     [SerializeField] private float _duration;
+    [SerializeField] private bool _isEnabled = true;
 
     private Vector3 _startScale;
-    private Vector3 _startShadowPosition;
+    private Vector2 _startShadowPosition;
     private float _scaleDistance;
     private Sequence _animation;
 
     void Start()
     {
         _startScale = _icon.localScale;
-        _startShadowPosition = _shadow.localPosition;
+        _startShadowPosition = _shadow.anchoredPosition;
         _scaleDistance = Mathf.Abs(_targetScale.x - _startScale.x);
+        SetAnimationEnabled(_isEnabled);
+    }
+
+    public void SetAnimationEnabled(bool isEnabled)
+    {
+        _shadow.gameObject.SetActive(isEnabled);
+        _isEnabled = isEnabled;
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (!_isEnabled)
+        {
+            return;
+        }
         StartAnimation(_targetScale, _targetShadowPosition);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
+        if (!_isEnabled)
+        {
+            return;
+        }
         StartAnimation(_startScale, _startShadowPosition);
     }
 

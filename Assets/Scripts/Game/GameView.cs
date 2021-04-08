@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
@@ -12,8 +13,7 @@ public class GameView : AWindowView
 
     [SerializeField] private PlayableObjectsController _playableControllerPrefab;
     [SerializeField] private SwatchesController _colorsController;
-    [SerializeField] private Button _startButton;
-    [SerializeField] private RectTransform _imageZone;
+    [SerializeField] private List<Button> _tapToStartButtons;
     [SerializeField] private LayoutElement _imageContainerLayoutElement;
     [SerializeField] private CounterElement _counterElement;
     [SerializeField] private GameObject _loader;
@@ -27,22 +27,21 @@ public class GameView : AWindowView
     private string _seconds = "s";
     private string _of = "of";
     private string _done = "Done";
-    private bool _imageZoneActiveSelf
-    {
-        set => _imageZone.gameObject.SetActive(value);
-    }
 
     //init _gameSettings, instantiate playableController, update Image Zone
+    //set playable as child
     void Awake()
     {
         _gameSettings = Settings.Instance.GameSettings;
 
         _playableObjectsController = Instantiate(_playableControllerPrefab, null);
+        _playableObjectsController.transform.SetParent(transform);
+        _playableObjectsController.transform.position = Vector3.zero;
 
         //UpdateImageZone - waiting before layout initialized
         DOTween.Sequence().AppendInterval(.5f).AppendCallback(() =>
         {
-            var height = _imageZone.rect.height;
+            var height = _imageContainerLayoutElement.GetComponent<RectTransform>().sizeDelta.x;
             _imageContainerLayoutElement.minHeight = height;
             _imageContainerLayoutElement.preferredHeight = height;
         });
@@ -54,7 +53,7 @@ public class GameView : AWindowView
         _playableObjectsController.OnFirstPaintedCountChanged += OnOnFirstClickedCountChanged;
         _playableObjectsController.OnPaintableSpriteClicked += OnPaintableClicked;
         _counterElement.OnButtonClicked += OnLevelDoneClicked;
-        _startButton.onClick.AddListener(StartGame);
+        _tapToStartButtons.ForEach(x => x.onClick.AddListener(StartGame));
     }
 
     protected override void OnUnSubscribe()
@@ -63,7 +62,7 @@ public class GameView : AWindowView
         _playableObjectsController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
         _playableObjectsController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
-        _startButton.onClick.RemoveListener(StartGame);
+        _tapToStartButtons.ForEach(x => x.onClick.RemoveListener(StartGame));
     }
 
     //waiting for destroying playable image if it's playing
@@ -104,7 +103,7 @@ public class GameView : AWindowView
     public void PlaceObjects()
     {
         _placeObjectsAnimation = _playableObjectsController.PlaceLevelObjects();
-        _placeObjectsAnimation.AppendCallback(() => _imageZoneActiveSelf = true);
+        _placeObjectsAnimation.AppendCallback(() => _tapToStartButtons.ForEach(x => x.gameObject.SetActive(true)));
 
         _playableObjectsController.SpriteMaskEnabled = true;
 
@@ -115,7 +114,8 @@ public class GameView : AWindowView
     public void SetDefaults()
     {
         _playableObjectsController.SetDefaults();
-
+        //hide tap to start buttons
+        _tapToStartButtons.ForEach(x => x.gameObject.SetActive(false));
         //init timer
         _counterElement.SetDefaults();
         _counterElement.SetText($"{_gameSettings.TimerSeconds}{_seconds}");
@@ -151,10 +151,10 @@ public class GameView : AWindowView
 
     private void StartGame()
     {
+        _tapToStartButtons.ForEach(x => x.gameObject.SetActive(false));
         //show image
         _startGameAnimation = DOTween.Sequence();
         _startGameAnimation.Append(_playableObjectsController.OpenLevelObjects(true));
-        _imageZoneActiveSelf = false;
 
         //init timer
         int time = _gameSettings.TimerSeconds;

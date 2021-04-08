@@ -11,6 +11,7 @@ public class LevelsSequence : ScriptableObject
 [Serializable]
 public class Level
 {
+    public Sprite Preview;
     public List<LevelObject> LevelObjects;
 }
 

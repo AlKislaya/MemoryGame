@@ -1,90 +1,88 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class LevelsManager : Singleton<LevelsManager>
 {
-    public Level CurrentLevelAsset => _levelsAssetSequence.Levels[CurrentLevelNumber];
+    //all categories except base
+    public List<LevelsCategory> LevelsCategories => _levelsCategories;
 
-    public int CurrentLevelNumber {
-        get
+    [SerializeField] private LevelsCategory _baseLevelsCategory;
+    [SerializeField] private List<LevelsCategory> _levelsCategories;
+    private Dictionary<string, LevelsProgress> _levelsProgress = new Dictionary<string, LevelsProgress>();
+
+    public bool IsCategoryProgressExists(string categoryKey)
+    {
+        return PlayerPrefs.HasKey(categoryKey);
+    }
+
+    public LevelsCategory GetCategoryByKey(string categoryKey)
+    {
+        return _baseLevelsCategory.Key.Equals(categoryKey) ?
+            _baseLevelsCategory 
+            : _levelsCategories.FirstOrDefault(x => x.Key.Equals(categoryKey));
+    }
+
+    //get progress from dictionary or get json from Player Prefs and save to dictionary
+    public LevelsProgress GetLevelsProgressByCategory(string categoryKey)
+    {
+        if (!_levelsProgress.ContainsKey(categoryKey))
         {
-            return _currentLevel;
-        }
-        set
-        {
-            if (value >= _levelsAssetSequence.Levels.Count)
+            var levelsJson = PlayerPrefs.GetString(categoryKey);
+
+            if (string.IsNullOrEmpty(levelsJson))
             {
-                Debug.LogError("Current level More than svg assets count! " + value);
-                _currentLevel = _levelsAssetSequence.Levels.Count - 1;
-            }
-            else if (value < 0)
-            {
-                Debug.LogError("Current level less than 0! " + value);
-                _currentLevel = 0;
+                InitLevelsProgress(categoryKey);
             }
             else
             {
-                _currentLevel = value;
+                try
+                {
+                    _levelsProgress.Add(categoryKey, JsonUtility.FromJson<LevelsProgress>(levelsJson));
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e);
+                    InitLevelsProgress(categoryKey);
+                }
             }
         }
+
+        return _levelsProgress[categoryKey];
     }
 
-    public LevelsSequence LevelsAssetSequence => _levelsAssetSequence;
-    public LevelsProgress LevelsProgress => _levelsProgress;
-
-    [SerializeField] private LevelsSequence _levelsAssetSequence;
-    private LevelsProgress _levelsProgress = new LevelsProgress();
-    private int _currentLevel;
-
-    protected override void Awake()
+    private void InitLevelsProgress(string categoryKey)
     {
-        base.Awake();
-        //init levels
-        var levelsJson = PlayerPrefs.GetString(PlayerPrefsKeys.LevelsSequenceKey);
-        if (string.IsNullOrEmpty(levelsJson))
-        {
-            InitLevelSequence();
-        }
-        else
-        {
-            try
-            {
-                _levelsProgress = JsonUtility.FromJson<LevelsProgress>(levelsJson);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-                InitLevelSequence();
-            }
-        }
-    }
-
-    private void InitLevelSequence()
-    {
-        _levelsProgress = new LevelsProgress
+        var levelsProgress = new LevelsProgress
         {
             Levels = new List<LevelProgress>() { new LevelProgress() { IsPassed = false } }
         };
-        SaveLevelsProgress();
+        _levelsProgress.Add(categoryKey, levelsProgress);
+
+        SaveLevelsProgress(categoryKey);
     }
 
-    public void SetPassedLevel(int levelIndex, float passedPercents)
+    public void SetPassedLevel(string categoryKey, int levelIndex, float passedPercents)
     {
-        var passedLevel = _levelsProgress.Levels[levelIndex];
+        var levelsProgress = GetLevelsProgressByCategory(categoryKey);
+
+        var passedLevel = levelsProgress.Levels[levelIndex];
         passedLevel.PassedPercents = passedPercents;
         passedLevel.IsPassed = true;
-        if (levelIndex == _levelsProgress.Levels.Count - 1 && _levelsProgress.Levels.Count < _levelsAssetSequence.Levels.Count)
-        {
-            _levelsProgress.Levels.Add(new LevelProgress(){ IsPassed = false });
-        }
 
-        SaveLevelsProgress();
+        SaveLevelsProgress(categoryKey);
     }
 
-    private void SaveLevelsProgress()
+    public void SetNewLevelProgress(string categoryKey)
     {
-        Debug.Log("SAVED!     " + JsonUtility.ToJson(_levelsProgress));
-        PlayerPrefs.SetString(PlayerPrefsKeys.LevelsSequenceKey, JsonUtility.ToJson(_levelsProgress));
+        _levelsProgress[categoryKey].Levels.Add(new LevelProgress() { IsPassed = false });
+        SaveLevelsProgress(categoryKey);
+    }
+
+    private void SaveLevelsProgress(string categoryKey)
+    {
+        Debug.Log("SAVED! "+ categoryKey+" : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+        PlayerPrefs.SetString(categoryKey, JsonUtility.ToJson(_levelsProgress[categoryKey]));
     }
 }

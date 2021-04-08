@@ -6,15 +6,11 @@ using UnityEngine;
 public class GameController : AWindowController<GameView>
 {
     public override string WindowId { get; }
+    private string _categoryKey;
+    private int _levelIndex;
     private bool _waitingForLevelLoad;
     private bool _waitingForLevelShow;
     private CancellationTokenSource _loadingToken;
-
-    protected override void OnInitialize()
-    {
-        base.OnInitialize();
-        LoadLevel();
-    }
 
     public void ReplayLevel()
     {
@@ -22,8 +18,12 @@ public class GameController : AWindowController<GameView>
         _waitingForLevelShow = true;
     }
 
-    public void LoadLevel()
+    public void LoadLevel(string categoryKey, int levelIndex)
     {
+        _categoryKey = categoryKey;
+        _levelIndex = levelIndex;
+        Debug.Log("Game: "+_categoryKey+" "+levelIndex);
+
         view.DestroyLevel(0);
         view.SetDefaults();
         view.ShowLoader(true);
@@ -33,8 +33,11 @@ public class GameController : AWindowController<GameView>
     protected override void OnSubscribe()
     {
         view.OnLevelDone += ViewOnOnLevelDone;
+        ProcessLevel();
+    }
 
-
+    private void ProcessLevel()
+    {
         if (_waitingForLevelShow)
         {
             _waitingForLevelShow = false;
@@ -44,7 +47,7 @@ public class GameController : AWindowController<GameView>
         if (_waitingForLevelLoad)
         {
             _waitingForLevelLoad = false;
-            var levelAsset = LevelsManager.Instance.CurrentLevelAsset;
+            var levelAsset = LevelsManager.Instance.GetCategoryByKey(_categoryKey).LevelsSequence.Levels[_levelIndex];
             _loadingToken = new CancellationTokenSource();
             view.InitLevel(levelAsset, _loadingToken.Token).ContinueWith(task =>
             {
@@ -62,14 +65,19 @@ public class GameController : AWindowController<GameView>
 
     private void ViewOnOnLevelDone(PassedLevelStats stats)
     {
-        LevelsManager.Instance.SetPassedLevel(LevelsManager.Instance.CurrentLevelNumber, stats.Percents);
-        ApplicationController.Instance.UiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings() { Stats = stats, GameController = this}, true);
+        ApplicationController.Instance.UiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
+        {
+            CategoryKey = _categoryKey,
+            LevelIndex = _levelIndex,
+            Stats = stats,
+            GameController = this
+        }, true);
     }
 
     public override void Dispose()
     {
         base.Dispose();
-        _loadingToken.Cancel();
+        _loadingToken?.Cancel();
         view.StopAnimations();
         view.DestroyLevel(.3f);
     }

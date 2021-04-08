@@ -1,20 +1,55 @@
+using System.Collections.Generic;
 using Dainty.UI.WindowBase;
+using UnityEngine;
 
-public class LevelsSequenceController : AWindowController<LevelsSequenceView>
+public class LevelsSequenceSettings
+{
+    public LevelsCategory Category;
+}
+
+public class LevelsSequenceController : AWindowController<LevelsSequenceView>, IConfigurableWindow<LevelsSequenceSettings>
 {
     public override string WindowId { get; }
 
-    public override void BeforeShow()
-    {
-        var levelsAssetsCount = LevelsManager.Instance.LevelsAssetSequence.Levels.Count;
-        var levelsSequence = LevelsManager.Instance.LevelsProgress.Levels;
+    private string _categoryKey;
+    private LevelsCategory _levelsCategory;
+    private List<LevelProgress> _levelsProgress;
 
-        for (int i = 0; i < levelsSequence.Count; i++)
+    public void Initialize(LevelsSequenceSettings settings)
+    {
+        _categoryKey = settings.Category.Key;
+        _levelsCategory = settings.Category;
+
+        if (_levelsCategory == null)
         {
-            view.AddLevel(i, true, levelsSequence[i].PassedPercents);
+            Debug.LogError("Did not find category "+ _categoryKey);
+            ApplicationController.Instance.UiManager.Back();
+            return;
         }
 
-        for (int i = levelsSequence.Count; i < levelsAssetsCount; i++)
+    }
+
+    public override void BeforeShow()
+    {
+        if (_levelsCategory == null)
+        {
+            Debug.LogError("Didn't init category");
+            ApplicationController.Instance.UiManager.Back();
+            return;
+        }
+
+        _levelsProgress = LevelsManager.Instance.GetLevelsProgressByCategory(_categoryKey).Levels;
+        var levels = _levelsCategory.LevelsSequence.Levels;
+        var levelsCapacity = _levelsCategory.LevelsSequence.Levels.Count;
+
+        view.SetLevelsCapacity(levelsCapacity);
+
+        for (int i = 0; i < _levelsProgress.Count; i++)
+        {
+            view.AddLevel(i, true, _levelsProgress[i], levels[i].Preview);
+        }
+
+        for (int i = _levelsProgress.Count; i < levelsCapacity; i++)
         {
             view.AddLevel(i, false);
         }
@@ -22,9 +57,8 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>
 
     private void OnLevelClicked(int levelNumber)
     {
-        LevelsManager.Instance.CurrentLevelNumber = levelNumber;
-        //ApplicationController.Instance.UiManager.Open<GameController, GameWindowSettings>(new GameWindowSettings());
-        ApplicationController.Instance.UiManager.Open<GameController>();
+        var gameController = ApplicationController.Instance.UiManager.Open<GameController>();
+        gameController.LoadLevel(_categoryKey, levelNumber);
     }
 
     protected override void OnSubscribe()

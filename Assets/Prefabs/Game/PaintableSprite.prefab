@@ -47,6 +47,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fillSpriteRenderer: {fileID: 4824721506353221339}
   _strokeSpriteRenderer: {fileID: 4798693737626764048}
+  _collider: {fileID: 0}
 --- !u!1001 &1345640706384847903
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -113,11 +114,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Stroke
-      objectReference: {fileID: 0}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31b2071e53c60fe47b21ed362038bb50, type: 3}
@@ -204,11 +200,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_SortingOrder
-      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 31b2071e53c60fe47b21ed362038bb50, type: 3}
