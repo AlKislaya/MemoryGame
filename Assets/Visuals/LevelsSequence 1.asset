@@ -15,11 +15,11 @@ MonoBehaviour:
   Levels:
   - Preview: {fileID: 21300000, guid: c8e74dbf7d629b34e92d4bbce9787bac, type: 3}
     LevelObjects:
-    - SvgTextAsset: {fileID: 4900000, guid: d5c115f03197ad949a961e191cb9a80c, type: 3}
+    - SvgTextAsset: {fileID: 4900000, guid: 962a5a016d8cb7147b2d39c3e47deaf5, type: 3}
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.28924882, g: 0.47808123, b: 0.49056602, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.31132078, g: 0.027901383, b: 0.08458629, a: 1}
         Position: {x: 2, y: -2}
         Scale: {x: 1, y: 1}
         Rotation: 45
@@ -50,7 +50,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.04392132, g: 0.1885509, b: 0.1981132, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0
@@ -80,7 +80,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.12348701, g: 0.33506778, b: 0.3490566, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0
@@ -124,7 +124,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.2830189, g: 0.19891421, b: 0.21235155, a: 1}
         Position: {x: 1.5, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 45
@@ -140,7 +140,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.13812746, g: 0.29173118, b: 0.3018868, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0

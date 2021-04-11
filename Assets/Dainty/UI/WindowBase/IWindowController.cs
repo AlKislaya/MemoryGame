@@ -17,7 +17,7 @@ namespace Dainty.UI.WindowBase
         void UnSubscribe();
 
         void BeforeShow();
-        void Show(bool animation = true, Action animationFinished = null);
-        void Close(bool animation = true, Action animationFinished = null);
+        void Show(bool push, bool animation = true, Action animationFinished = null);
+        void Close(bool pop, bool animation = true, Action animationFinished = null);
     }
 }

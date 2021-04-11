@@ -11,6 +11,8 @@ public class LevelItem : MonoBehaviour
     [SerializeField] private Button _button;
     [SerializeField] private ButtonAnimation _buttonAnimation;
     [SerializeField] private Image _previewImage;
+    [SerializeField] private RectTransform _starsLayoutGroup;
+    [SerializeField] private StarController _starPrefab;
     [SerializeField] private Image _fillMainRectImage;
     [SerializeField] private TextMeshProUGUI _levelNumberText;
     [SerializeField] private GameObject _newLevelPanel;
@@ -18,6 +20,7 @@ public class LevelItem : MonoBehaviour
     [SerializeField] private Sprite _lockSprite;
     [SerializeField] private Color _lockModeFillcolor;
     [SerializeField] private List<GameObject> _openedLevelItems;
+    private List<StarController> _stars;
     private int _levelNumber;
     private bool _isOpened;
     private bool _isNew;
@@ -33,6 +36,7 @@ public class LevelItem : MonoBehaviour
     {
         _previewImage.sprite = preview;
         SetEnable(true);
+        CreateOrUpdateStars(passedPercents == 0 ? 0 : passedPercents == 1 ? 3 : passedPercents < .5f ? 1 : 2);
     }
 
     public void SetAsClosedLevel()
@@ -43,6 +47,36 @@ public class LevelItem : MonoBehaviour
     public void SetAsNewLevel()
     {
         SetEnable(true, true);
+    }
+
+    private void CreateOrUpdateStars(int activeCount)
+    {
+        if (_stars == null)
+        {
+            _stars = new List<StarController>();
+            for (int i = 0; i < 3; i++)
+            {
+                _stars.Add(Instantiate(_starPrefab, _starsLayoutGroup));
+            }
+            LayoutRebuilder.MarkLayoutForRebuild(_starsLayoutGroup);
+        }
+
+        if (activeCount > 3)
+        {
+            activeCount = 3;
+        }
+        else if (activeCount < 0)
+        {
+            activeCount = 0;
+        }
+        for (int i = 0; i < activeCount; i++)
+        {
+            _stars[i].SetActiveState(true);
+        }
+        for (int i = activeCount; i < _stars.Count; i++)
+        {
+            _stars[i].SetActiveState(false);
+        }
     }
 
     private void SetEnable(bool isEnabled, bool isNew = false)

@@ -1,6 +1,6 @@
 using Dainty.UI.WindowBase;
 using System;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,11 +13,20 @@ public class LevelFinishedView : AWindowView
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _replayButton;
+    [SerializeField] private List<StarController> _stars;
 
-    public void SetProgress(float percents, string range)
+    public void SetProgress(float passedPercents)
     {
-        //_percentsText.text = ((int)(percents * 100)).ToString();
-        //_rangeText.text = range;
+        var activeCount = passedPercents == 0 ? 0 : passedPercents == 1 ? 3 : passedPercents < .5f ? 1 : 2;
+
+        for (int i = 0; i < activeCount; i++)
+        {
+            _stars[i].SetActiveState(true);
+        }
+        for (int i = activeCount; i < _stars.Count; i++)
+        {
+            _stars[i].SetActiveState(false);
+        }
     }
 
     public void SetActivePlayButton(bool isActive)

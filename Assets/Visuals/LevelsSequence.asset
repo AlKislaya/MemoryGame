@@ -50,7 +50,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.91764706, g: 0.41176465, b: 0.48068607, a: 1}
         Position: {x: 0, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 0
@@ -64,7 +64,7 @@ MonoBehaviour:
       CopiesSettings:
       - PaintableColors:
         - Key: Paintable
-          Color: {r: 0.41176465, g: 0.8850245, b: 0.91764706, a: 1}
+          Color: {r: 0.91764706, g: 0.8806117, b: 0.41176465, a: 1}
         Position: {x: 1.5, y: 0}
         Scale: {x: 1, y: 1}
         Rotation: 45

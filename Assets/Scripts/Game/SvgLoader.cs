@@ -68,7 +68,7 @@ public class SvgLoader
             if (sceneNodeID.Key.Contains(settings.PaintableGroupKey))
             {
                 paintableShapes.Add(sceneNodeID.Key, sceneNodeID.Value);
-                Debug.Log(sceneNodeID.Key);
+                //Debug.Log(sceneNodeID.Key);
             }
         }
 

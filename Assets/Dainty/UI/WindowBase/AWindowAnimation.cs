@@ -26,9 +26,9 @@ namespace Dainty.UI.WindowBase
         }
 
         public abstract void ShowImmediate();
-        public abstract void PlayShowAnimation(Action animationFinished = null);
+        public abstract void PlayShowAnimation(bool push, Action animationFinished = null);
 
         public abstract void CloseImmediate();
-        public abstract void PlayCloseAnimation(Action animationFinished = null);
+        public abstract void PlayCloseAnimation(bool pop, Action animationFinished = null);
     }
 }

@@ -49,14 +49,14 @@ namespace Dainty.UI.WindowBase
         {
         }
 
-        public virtual void Show(bool animation = true, Action animationFinished = null)
+        public virtual void Show(bool push, bool animation = true, Action animationFinished = null)
         {
-            view.Show(animation, animationFinished);
+            view.Show(push, animation, animationFinished);
         }
 
-        public virtual void Close(bool animation = true, Action animationFinished = null)
+        public virtual void Close(bool pop, bool animation = true, Action animationFinished = null)
         {
-            view.Close(animation, animationFinished);
+            view.Close(pop, animation, animationFinished);
         }
 
         protected virtual void OnInitialize()

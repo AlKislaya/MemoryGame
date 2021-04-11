@@ -1,8 +1,10 @@
+using Dainty.UI;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
 public class CategoriesSequenceController : AWindowController<CategoriesSequenceView>
 {
+    private const string  Header = "Categories";
     public override string WindowId { get; }
     protected override void OnInitialize()
     {
@@ -16,6 +18,12 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
         }
     }
 
+    public override void BeforeShow()
+    {
+        base.BeforeShow();
+        ApplicationController.Instance.TopPanelController.Show(Header);
+    }
+
     private void OnCategoryClicked(LevelsCategory category, bool isOpened)
     {
         Debug.Log($"{category.Key} {isOpened}");
@@ -24,7 +32,11 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             view.CreateOrUpdateCategory(category, true);
             return;
         }
-        ApplicationController.Instance.UiManager.Open<LevelsSequenceController, LevelsSequenceSettings>(new LevelsSequenceSettings(){Category = category});
+
+        ApplicationController.Instance.UiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
+            (new LevelsSequenceSettings() {Category = category},
+            false,
+            WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
     }
 
     protected override void OnSubscribe()

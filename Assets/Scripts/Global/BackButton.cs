@@ -1,3 +1,4 @@
+using Dainty.UI;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,6 @@ public class BackButton : MonoBehaviour
 
     private void OnBackButtonClicked()
     {
-        ApplicationController.Instance.UiManager.Back();
+        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }

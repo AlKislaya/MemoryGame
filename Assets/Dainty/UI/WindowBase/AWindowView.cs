@@ -33,7 +33,7 @@ namespace Dainty.UI.WindowBase
             OnUnSubscribe();
         }
 
-        public virtual void Show(bool animation = true, Action animationFinished = null)
+        public virtual void Show(bool push = false, bool animation = true, Action animationFinished = null)
         {
             Canvas.enabled = true;
 
@@ -41,7 +41,7 @@ namespace Dainty.UI.WindowBase
             {
                 if (animation)
                 {
-                    Animation.PlayShowAnimation(animationFinished);
+                    Animation.PlayShowAnimation(push, animationFinished);
                 }
                 else
                 {
@@ -55,13 +55,13 @@ namespace Dainty.UI.WindowBase
             }
         }
 
-        public virtual void Close(bool animation = true, Action animationFinished = null)
+        public virtual void Close(bool pop, bool animation = true, Action animationFinished = null)
         {
             if (Animation != null)
             {
                 if (animation)
                 {
-                    Animation.PlayCloseAnimation(() =>
+                    Animation.PlayCloseAnimation(pop, () =>
                     {
                         Canvas.enabled = false;
                         animationFinished?.Invoke();

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class LevelsManager : Singleton<LevelsManager>
 {
+    public string BaseLevelsKey => _baseLevelsCategory.Key;
     //all categories except base
     public List<LevelsCategory> LevelsCategories => _levelsCategories;
 

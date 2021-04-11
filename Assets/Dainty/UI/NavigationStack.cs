@@ -98,11 +98,11 @@ namespace Dainty.UI
             {
                 if (!openingWindow.IsPopup)
                 {
-                    closingWindow?.Close(false);
+                    closingWindow?.Close(false, false);
                 }
 
                 openingWindowController.BeforeShow();
-                openingWindowController.Show(false, () =>
+                openingWindowController.Show(true, false, () =>
                 {
                     openingWindowController.Subscribe();
                     animationFinished?.Invoke();
@@ -113,7 +113,7 @@ namespace Dainty.UI
                 if (openingWindow.IsPopup)
                 {
                     openingWindowController.BeforeShow();
-                    openingWindowController.Show(false);
+                    openingWindowController.Show(true, false);
                     openingWindowController.Subscribe();
                     animationFinished?.Invoke();
 
@@ -124,11 +124,11 @@ namespace Dainty.UI
                 else
                 {
                     openingWindowController.BeforeShow();
-                    openingWindowController.Show(false);
+                    openingWindowController.Show(true, false);
 
                     if (closingWindow != null)
                     {
-                        closingWindow.Close(true, () =>
+                        closingWindow.Close(false, true, () =>
                         {
                             openingWindowController.Subscribe();
                             animationFinished?.Invoke();
@@ -146,9 +146,9 @@ namespace Dainty.UI
                 openingWindowController.BeforeShow();
                 if (!openingWindow.IsPopup && closingWindow != null)
                 {
-                    openingWindowController.Show(true, () =>
+                    openingWindowController.Show(true, true, () =>
                     {
-                        closingWindow.Close(false);
+                        closingWindow.Close(false, false);
 
                         openingWindowController.Subscribe();
                         animationFinished?.Invoke();
@@ -156,7 +156,7 @@ namespace Dainty.UI
                 }
                 else
                 {
-                    openingWindowController.Show(true, () =>
+                    openingWindowController.Show(true, true, () =>
                     {
                         openingWindowController.Subscribe();
                         animationFinished?.Invoke();
@@ -170,7 +170,7 @@ namespace Dainty.UI
                 openingWindowController.BeforeShow();
                 if (!openingWindow.IsPopup && closingWindow != null)
                 {
-                    closingWindow.Close(true, () =>
+                    closingWindow.Close(false, true, () =>
                     {
                         animsFinished++;
                         if (animsFinished == 2)
@@ -180,7 +180,7 @@ namespace Dainty.UI
                         }
                     });
 
-                    openingWindowController.Show(true, () =>
+                    openingWindowController.Show(true, true, () =>
                     {
                         animsFinished++;
                         if (animsFinished == 2)
@@ -192,7 +192,7 @@ namespace Dainty.UI
                 }
                 else
                 {
-                    openingWindowController.Show(true, () =>
+                    openingWindowController.Show(true, true, () =>
                     {
                         openingWindowController.Subscribe();
                         animationFinished?.Invoke();
@@ -211,13 +211,13 @@ namespace Dainty.UI
             {
                 if (openingWindow != null)
                 {
-                    closingWindowController.Close(false);
+                    closingWindowController.Close(true, false);
                     closingWindowController.Dispose();
 
                     openingWindow.BeforeShow();
                     if (!closingWindow.IsPopup)
                     {
-                        openingWindow.Show(false, () =>
+                        openingWindow.Show(false, false, () =>
                         {
                             openingWindow.Subscribe();
                             animationFinished?.Invoke();
@@ -231,14 +231,14 @@ namespace Dainty.UI
                 }
                 else
                 {
-                    closingWindowController.Close(false);
+                    closingWindowController.Close(true, false);
                     closingWindowController.Dispose();
                     animationFinished?.Invoke();
                 }
             }
             else if (transition == WindowTransition.AnimateClosing)
             {
-                closingWindowController.Close(true, () =>
+                closingWindowController.Close(true, true, () =>
                 {
                     closingWindowController.Dispose();
                     if (openingWindow != null)
@@ -246,7 +246,7 @@ namespace Dainty.UI
                         openingWindow.BeforeShow();
                         if (!closingWindow.IsPopup)
                         {
-                            openingWindow.Show(false, () =>
+                            openingWindow.Show(false, false, () =>
                             {
                                 openingWindow.Subscribe();
                                 animationFinished?.Invoke();
@@ -271,7 +271,7 @@ namespace Dainty.UI
                     openingWindow.BeforeShow();
                     if (closingWindow.IsPopup)
                     {
-                        closingWindowController.Close(false);
+                        closingWindowController.Close(true, false);
                         closingWindowController.Dispose();
 
                         openingWindow.Subscribe();
@@ -279,9 +279,9 @@ namespace Dainty.UI
                     }
                     else
                     {
-                        openingWindow.Show(true, () =>
+                        openingWindow.Show(false, true, () =>
                         {
-                            closingWindowController.Close(false);
+                            closingWindowController.Close(true, false);
                             closingWindowController.Dispose();
 
                             openingWindow.Subscribe();
@@ -294,7 +294,7 @@ namespace Dainty.UI
 #if DEV_LOG
                     UnityEngine.Debug.LogWarning("There is no window that can be opened with animation!");
 #endif
-                    closingWindowController.Close(false);
+                    closingWindowController.Close(true, false);
                     closingWindowController.Dispose();
                     animationFinished?.Invoke();
                 }
@@ -306,7 +306,7 @@ namespace Dainty.UI
                     openingWindow.BeforeShow();
                     if (closingWindow.IsPopup)
                     {
-                        closingWindowController.Close(true, () =>
+                        closingWindowController.Close(true, true, () =>
                         {
                             closingWindowController.Dispose();
                             openingWindow.Subscribe();
@@ -317,7 +317,7 @@ namespace Dainty.UI
                     {
                         var animsFinished = 0;
 
-                        closingWindowController.Close(true, () =>
+                        closingWindowController.Close(true, true, () =>
                         {
                             closingWindowController.Dispose();
                             animsFinished++;
@@ -328,7 +328,7 @@ namespace Dainty.UI
                             }
                         });
 
-                        openingWindow.Show(true, () =>
+                        openingWindow.Show(false, true, () =>
                         {
                             animsFinished++;
                             if (animsFinished == 2)
@@ -344,7 +344,7 @@ namespace Dainty.UI
 #if DEV_LOG
                     UnityEngine.Debug.LogWarning("There is no window that can be opened with animation!");
 #endif
-                    closingWindowController.Close(true, () =>
+                    closingWindowController.Close(true, true, () =>
                     {
                         closingWindowController.Dispose();
                         animationFinished?.Invoke();

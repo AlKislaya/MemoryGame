@@ -603,6 +603,9 @@ MonoBehaviour:
   _button: {fileID: 570005927926932865}
   _buttonAnimation: {fileID: 5961818604569925237}
   _previewImage: {fileID: 6853188726570957834}
+  _starsLayoutGroup: {fileID: 6096341232157358327}
+  _starPrefab: {fileID: 1574347326042404262, guid: cc1e2e6c80a042646a9e1fe7a25dd63d,
+    type: 3}
   _fillMainRectImage: {fileID: 884220029943440202}
   _levelNumberText: {fileID: 6377528450993033651}
   _newLevelPanel: {fileID: 3330830272195441316}
@@ -1242,7 +1245,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6096341232157358327}
-  - component: {fileID: 8991802072910246383}
+  - component: {fileID: 14388909638752551}
   m_Layer: 5
   m_Name: Stars
   m_TagString: Untagged
@@ -1269,7 +1272,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &8991802072910246383
+--- !u!114 &14388909638752551
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1278,7 +1281,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 9070429891791803960}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
@@ -1287,14 +1290,12 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 0
-  m_ChildControlWidth: 0
-  m_ChildControlHeight: 0
-  m_ChildScaleWidth: 1
-  m_ChildScaleHeight: 0
-  m_ReverseArrangement: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 17, y: 17}
+  m_Spacing: {x: 7, y: 0}
+  m_Constraint: 2
+  m_ConstraintCount: 1
 --- !u!1001 &915973962420470143
 PrefabInstance:
   m_ObjectHideFlags: 0

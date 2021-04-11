@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Dainty.UI;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class LevelsSequenceSettings
 
 public class LevelsSequenceController : AWindowController<LevelsSequenceView>, IConfigurableWindow<LevelsSequenceSettings>
 {
+    private const string Header = "Levels";
     public override string WindowId { get; }
 
     private string _categoryKey;
@@ -26,11 +28,12 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
             ApplicationController.Instance.UiManager.Back();
             return;
         }
-
     }
 
     public override void BeforeShow()
     {
+        ApplicationController.Instance.TopPanelController.Show(Header);
+
         if (_levelsCategory == null)
         {
             Debug.LogError("Didn't init category");
@@ -57,7 +60,8 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
 
     private void OnLevelClicked(int levelNumber)
     {
-        var gameController = ApplicationController.Instance.UiManager.Open<GameController>();
+        var gameController = ApplicationController.Instance.UiManager
+            .Open<GameController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         gameController.LoadLevel(_categoryKey, levelNumber);
     }
 
