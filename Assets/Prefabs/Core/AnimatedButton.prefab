@@ -214,7 +214,8 @@ MonoBehaviour:
   _icon: {fileID: 5818212943734426016}
   _targetScale: {x: 0.9, y: 0.9, z: 1}
   _targetShadowPosition: {x: 0, y: 0, z: 0}
-  _duration: 0.5
+  _duration: 0.3
+  _isEnabled: 1
 --- !u!1001 &2077497900253887495
 PrefabInstance:
   m_ObjectHideFlags: 0

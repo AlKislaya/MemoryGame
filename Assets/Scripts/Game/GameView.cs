@@ -22,7 +22,6 @@ public class GameView : AWindowView
     private GameSettings _gameSettings;
     private Sequence _startGameAnimation;
     private Sequence _placeObjectsAnimation;
-    private Sequence _destroyPlayableImage;
 
     private string _seconds = "s";
     private string _of = "of";
@@ -39,7 +38,7 @@ public class GameView : AWindowView
         _playableObjectsController.transform.position = Vector3.zero;
 
         //UpdateImageZone - waiting before layout initialized
-        DOTween.Sequence().AppendInterval(.5f).AppendCallback(() =>
+        DOTween.Sequence().AppendInterval(.3f).AppendCallback(() =>
         {
             var height = _imageContainerLayoutElement.GetComponent<RectTransform>().sizeDelta.x;
             _imageContainerLayoutElement.minHeight = height;
@@ -69,12 +68,6 @@ public class GameView : AWindowView
     //load level: sending objects into playable objects controller
     public async Task InitLevel(Level levelAsset, CancellationToken token)
     {
-        if (_destroyPlayableImage != null && _destroyPlayableImage.IsPlaying())
-        {
-            Debug.Log("Waiting for image destroying");
-            await Task.Delay(30);
-        }
-
         foreach (var levelObject in levelAsset.LevelObjects)
         {
             if (token.IsCancellationRequested)
@@ -125,22 +118,22 @@ public class GameView : AWindowView
         _colorsController.Close();
     }
 
-    public void DestroyLevel(float delay)
+    public void DestroyLevel()
     {
-        if (delay == 0)
-        {
+        //if (delay == 0)
+        //{
             _playableObjectsController.DestroyVectorSprites();
-            return;
-        }
-        _destroyPlayableImage = DOTween.Sequence()
-            .AppendInterval(delay)
-            .AppendCallback(() =>
-            {
-                Debug.Log("Destroy sprites");
-                _playableObjectsController.DestroyVectorSprites();
-            })
-            .OnComplete(() => _destroyPlayableImage = null);
-        _destroyPlayableImage.Play();
+            //return;
+        //}
+        //_destroyPlayableImage = DOTween.Sequence()
+        //    .AppendInterval(delay)
+        //    .AppendCallback(() =>
+        //    {
+        //        Debug.Log("Destroy sprites");
+        //        _playableObjectsController.DestroyVectorSprites();
+        //    })
+        //    .OnComplete(() => _destroyPlayableImage = null);
+        //_destroyPlayableImage.Play();
     }
 
     public void StopAnimations()

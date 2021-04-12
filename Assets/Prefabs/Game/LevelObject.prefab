@@ -27,8 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 7504439877598675629}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -49,104 +48,3 @@ MonoBehaviour:
   _staticSpriteRendererPrefab: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
     type: 3}
   _paintableSpriteGroups: []
---- !u!1001 &6421391212824951054
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1428632046308542873}
-    m_Modifications:
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647238177344510634, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_Name
-      value: BlockingSprite
-      objectReference: {fileID: 0}
-    - target: {fileID: 5647238177344510634, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_Size.x
-      value: 0.34
-      objectReference: {fileID: 0}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_Size.y
-      value: 0.34
-      objectReference: {fileID: 0}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: c8e74dbf7d629b34e92d4bbce9787bac,
-        type: 3}
-    - target: {fileID: 5779472440992032527, guid: 31b2071e53c60fe47b21ed362038bb50,
-        type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 31b2071e53c60fe47b21ed362038bb50, type: 3}
---- !u!4 &7504439877598675629 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3546722178973399971, guid: 31b2071e53c60fe47b21ed362038bb50,
-    type: 3}
-  m_PrefabInstance: {fileID: 6421391212824951054}
-  m_PrefabAsset: {fileID: 0}

@@ -1,5 +1,6 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
+using System;
 
 public class MainController : AWindowController<MainView>
 {
@@ -19,11 +20,18 @@ public class MainController : AWindowController<MainView>
     protected override void OnSubscribe()
     {
         view.OnLevelsTypeClicked += OnLevelTypeClicked;
+        view.OnSettingsClicked += OnSettingsClicked;
     }
 
     protected override void OnUnSubscribe()
     {
         view.OnLevelsTypeClicked -= OnLevelTypeClicked;
+        view.OnSettingsClicked -= OnSettingsClicked;
+    }
+
+    private void OnSettingsClicked()
+    {
+        ApplicationController.Instance.UiManager.Open<SettingsController>(true);
     }
 
     private void OnLevelTypeClicked(string key)

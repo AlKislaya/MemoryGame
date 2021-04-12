@@ -40,6 +40,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     [SerializeField] private SpriteMask _spriteMask;
     [SerializeField] private Zoom _zoom;
 
+    private SvgLoader _svgLoader;
     private Camera _cameraMain;
     private Transform _objectsContainer;
     private ContactFilter2D _contactFilter;
@@ -56,20 +57,30 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     //assign non-changeable variables, fit in screen size
     private void Awake()
     {
+        _levelObjectsSettings = Settings.Instance.VectorSpriteSettings;
+        _svgLoader = new SvgLoader(_levelObjectsSettings);
         _cameraMain = Camera.main;
         _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
-        _levelObjectsSettings = Settings.Instance.VectorSpriteSettings;
         FitInScreenSize();
     }
 
     public async Task LoadLevelObject(LevelObject levelObject)
     {
-        var svgLoader = new SvgLoader(levelObject.SvgTextAsset);
+        _svgLoader.ImportSVG(levelObject.SvgTextAsset);
 
-        Debug.Log("LOADING STARTED "+ Time.time);
+        //Debug.Log("LOADING STARTED "+ Time.time);
         //tesselate and build sprites
-        var vectorSprites = await svgLoader.GetSpritesArrange(_levelObjectsSettings);
-        Debug.Log("LOADING ENDED " + Time.time);
+        List<SvgLoader.VectorSprite> vectorSprites = new List<SvgLoader.VectorSprite>();
+        if (levelObject.IsStatic)
+        {
+            var staticSprite = await _svgLoader.GetStaticSprite();
+            vectorSprites.Add(staticSprite);
+        }
+        else
+        {
+            vectorSprites = await _svgLoader.GetSpritesArrange();
+        }
+        //Debug.Log("LOADING ENDED " + Time.time);
 
         if (vectorSprites.Count == 0)
         {
@@ -80,17 +91,22 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
         for (int i = 0; i < levelObject.CopiesSettings.Count; i++)
         {
-            //means that level loading canceled ad objects container has been destroyed
+            //means that level loading canceled and objects container has been destroyed
             if (_objectsContainer == null)
             {
+                Debug.LogError("_objectsContainer == null");
                 return;
             }
             var objectInstance = Instantiate(_levelObjectPrefab, _objectsContainer);
 
             objectInstance.Init(vectorSprites);
             objectInstance.InitSettings(levelObject.CopiesSettings[i]);
-            _paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
-            _levelObjects.Add(objectInstance);
+
+            if (!levelObject.IsStatic)
+            {
+                _paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
+                _levelObjects.Add(objectInstance);
+            }
         }
 
         //var objectInstance = Instantiate(_levelObjectPrefab, _spritesContainer);

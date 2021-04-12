@@ -24,7 +24,7 @@ public class GameController : AWindowController<GameView>
         _levelIndex = levelIndex;
         Debug.Log("Game: "+_categoryKey+" "+levelIndex);
 
-        view.DestroyLevel(0);
+        view.DestroyLevel();
         view.SetDefaults();
         view.ShowLoader(true);
         _waitingForLevelLoad = true;
@@ -79,6 +79,6 @@ public class GameController : AWindowController<GameView>
         base.Dispose();
         _loadingToken?.Cancel();
         view.StopAnimations();
-        view.DestroyLevel(.3f);
+        view.DestroyLevel();
     }
 }

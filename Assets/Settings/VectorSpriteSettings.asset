@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80b1d1f38421e7b48badfeda7ac6fbc9, type: 3}
   m_Name: VectorSpriteSettings
   m_EditorClassIdentifier: 
-  PaintableGroupKey: Paintable
+  PaintableGroupKey: paintable
   SceneRect:
     serializedVersion: 2
     x: 0

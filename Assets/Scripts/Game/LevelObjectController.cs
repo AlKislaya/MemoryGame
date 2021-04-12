@@ -6,6 +6,7 @@ using UnityEngine;
 //stores individual level object(card, paintables, static sprites)
 public class LevelObjectController : MonoBehaviour
 {
+    private const float Pivot = 2.5f;
     public List<PaintableSpriteGroup> PaintableSpriteGroups => _paintableSpriteGroups;
 
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
@@ -43,7 +44,7 @@ public class LevelObjectController : MonoBehaviour
     //set object transform, original paintable groups colors, set original color
     public void InitSettings(LevelObjectSettings settings)
     {
-        transform.localPosition = settings.Position;
+        transform.localPosition = new Vector2(settings.Position.x - Pivot, Pivot - settings.Position.y);
         transform.localScale = new Vector3(settings.Scale.x, settings.Scale.y, 1);
         _localRotationZ = settings.Rotation;
         if (_localRotationZ != 0)
@@ -53,12 +54,19 @@ public class LevelObjectController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(rotation);
         }
 
+        //if static level object
+        if (settings.PaintableColors == null || settings.PaintableColors.Count == 0)
+        {
+            OpenObject();
+            return;
+        }
+
         foreach (var paintableColor in settings.PaintableColors)
         {
             var paintable = _paintableSpriteGroups.FirstOrDefault(x => x.Key.Equals(paintableColor.Key));
             if (paintable == null)
             {
-                Debug.LogError("Key "+ paintableColor.Key+" is not represented.");
+                Debug.LogError("Key " + paintableColor.Key + " is not represented.");
             }
             else
             {

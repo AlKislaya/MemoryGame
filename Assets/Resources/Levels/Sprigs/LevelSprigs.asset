@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca35d217352c8a44590562038c5b1de3, type: 3}
+  m_Name: LevelSprigs
+  m_EditorClassIdentifier: Assembly-CSharp::Level
+  Preview: {fileID: 0}
+  LevelObjects:
+  - SvgTextAsset: {fileID: 4900000, guid: 2403b11001ca7494c8af088135e2cb44, type: 3}
+    IsStatic: 1
+    CopiesSettings:
+    - PaintableColors: []
+      Position: {x: 2.5, y: 2.5}
+      Scale: {x: 1, y: 1}
+      Rotation: 0
+  - SvgTextAsset: {fileID: 4900000, guid: 55a7f517a27167a41ad64c8088c7aa54, type: 3}
+    IsStatic: 0
+    CopiesSettings:
+    - PaintableColors:
+      - Key: paintable
+        Color: {r: 0.94509804, g: 0.7372549, b: 0.40392157, a: 1}
+      Position: {x: 2.454764, y: 1.89267}
+      Scale: {x: 1, y: 1}
+      Rotation: 0
+  - SvgTextAsset: {fileID: 4900000, guid: 515cc116c227d624aa7eaae8d8b765a8, type: 3}
+    IsStatic: 0
+    CopiesSettings:
+    - PaintableColors:
+      - Key: paintable
+        Color: {r: 0.37254903, g: 0.58431375, b: 0.58431375, a: 1}
+      Position: {x: 3.877149, y: 3.226891}
+      Scale: {x: 1, y: 1}
+      Rotation: 0
+  - SvgTextAsset: {fileID: 4900000, guid: 83ef964b0e000eb4cabe22071f81ad81, type: 3}
+    IsStatic: 0
+    CopiesSettings:
+    - PaintableColors:
+      - Key: paintable
+        Color: {r: 0.6862745, g: 0.33333334, b: 0.38431373, a: 1}
+      Position: {x: 1.008361, y: 3.165473}
+      Scale: {x: 1, y: 1}
+      Rotation: 0
