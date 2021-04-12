@@ -13,7 +13,6 @@ public class MainController : AWindowController<MainView>
 
     public override void BeforeShow()
     {
-        base.BeforeShow();
         ApplicationController.Instance.TopPanelController.Close();
     }
 

@@ -1,6 +1,4 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -20,12 +18,12 @@ public class TopPanelController : MonoBehaviour
     {
         _header.text = header;
         _animation?.Kill();
-        _animation = _rectTransform.DOAnchorPosY(0, .5f).SetEase(Ease.InSine);
+        _animation = _rectTransform.DOAnchorPosY(-_height, .5f).SetEase(Ease.InSine);
     }
 
     public void Close()
     {
         _animation?.Kill();
-        _animation = _rectTransform.DOAnchorPosY(_height, .2f).SetEase(Ease.OutSine);
+        _animation = _rectTransform.DOAnchorPosY(0, .2f).SetEase(Ease.OutSine);
     }
 }

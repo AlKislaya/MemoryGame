@@ -64,13 +64,12 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
     public async Task LoadLevelObject(LevelObject levelObject)
     {
-        //await Task.Delay((int)(Time.deltaTime * 100));
         var svgLoader = new SvgLoader(levelObject.SvgTextAsset);
 
-        //Debug.Log("LOADING STARTED "+ levelObject.SvgTextAsset.name);
+        Debug.Log("LOADING STARTED "+ Time.time);
         //tesselate and build sprites
         var vectorSprites = await svgLoader.GetSpritesArrange(_levelObjectsSettings);
-        //Debug.Log("LOADING ENDED " + levelObject.SvgTextAsset.name);
+        Debug.Log("LOADING ENDED " + Time.time);
 
         if (vectorSprites.Count == 0)
         {
@@ -81,6 +80,11 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
         for (int i = 0; i < levelObject.CopiesSettings.Count; i++)
         {
+            //means that level loading canceled ad objects container has been destroyed
+            if (_objectsContainer == null)
+            {
+                return;
+            }
             var objectInstance = Instantiate(_levelObjectPrefab, _objectsContainer);
 
             objectInstance.Init(vectorSprites);
