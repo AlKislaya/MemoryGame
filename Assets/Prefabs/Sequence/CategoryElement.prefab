@@ -641,6 +641,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _button: {fileID: 342979673942870719}
   _categoryNameText: {fileID: 2239326498408258807}
+  _levelsCountText: {fileID: 8324098978752094315}
   _pricePanel: {fileID: 5227723347140078225}
   _priceText: {fileID: 8261816508325954640}
   _previewImage: {fileID: 3208588184035393851}

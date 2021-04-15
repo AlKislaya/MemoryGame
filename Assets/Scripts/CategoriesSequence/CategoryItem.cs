@@ -9,8 +9,10 @@ public class CategoryItem : MonoBehaviour
     public bool IsOpened => _isOpened;
     public string Key => _category.Key;
 
+    private const char Delimiter = '/';
     [SerializeField] private Button _button;
     [SerializeField] private TextMeshProUGUI _categoryNameText;
+    [SerializeField] private TextMeshProUGUI _levelsCountText;
     [SerializeField] private GameObject _pricePanel;
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private Image _previewImage;
@@ -34,5 +36,10 @@ public class CategoryItem : MonoBehaviour
         _isOpened = isOpened;
         _pricePanel.SetActive(!isOpened);
         _lockElements.ForEach(x => x.SetActive(!isOpened));
+    }
+
+    public void SetPassedLevels(int passedLevelsCount)
+    {
+        _levelsCountText.text = $"{passedLevelsCount}{Delimiter}{_category.LevelsSequence.Levels.Count}";
     }
 }

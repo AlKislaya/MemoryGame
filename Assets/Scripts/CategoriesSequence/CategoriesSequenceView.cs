@@ -11,7 +11,7 @@ public class CategoriesSequenceView : AWindowView
     private List<CategoryItem> _categoriesInstances = new List<CategoryItem>();
     public event Action<LevelsCategory, bool> OnCategoryClicked;
 
-    public void CreateOrUpdateCategory(LevelsCategory categoryData, bool isOpened)
+    public void CreateOrUpdateCategory(LevelsCategory categoryData, bool isOpened, int passedLevels)
     {
         var category = _categoriesInstances.FirstOrDefault(x => x.Key.Equals(categoryData.Key));
         if (category != null)
@@ -20,7 +20,7 @@ public class CategoriesSequenceView : AWindowView
             {
                 category.SetAvailableState(isOpened);
             }
-
+            category.SetPassedLevels(passedLevels);
             return;
         }
 
@@ -28,6 +28,7 @@ public class CategoriesSequenceView : AWindowView
         newCategoryInstance.Initialize(categoryData, onCategoryClicked);
 
         newCategoryInstance.SetAvailableState(isOpened);
+        newCategoryInstance.SetPassedLevels(passedLevels);
 
         _categoriesInstances.Add(newCategoryInstance);
     }

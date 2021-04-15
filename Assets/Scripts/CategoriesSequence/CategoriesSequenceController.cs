@@ -1,27 +1,28 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
+using System.Linq;
 using UnityEngine;
 
 public class CategoriesSequenceController : AWindowController<CategoriesSequenceView>
 {
     private const string  Header = "Categories";
     public override string WindowId { get; }
-    protected override void OnInitialize()
-    {
-        base.OnInitialize();
-        var levelsManager = LevelsManager.Instance;
-        var categories = levelsManager.LevelsCategories;
-
-        for (int i = 0; i < categories.Count; i++)
-        {
-            view.CreateOrUpdateCategory(categories[i], categories[i].Price == 0 || levelsManager.IsCategoryProgressExists(categories[i].Key));
-        }
-    }
 
     public override void BeforeShow()
     {
         base.BeforeShow();
         ApplicationController.Instance.TopPanelController.Show(Header);
+        var levelsManager = LevelsManager.Instance;
+        var categories = levelsManager.LevelsCategories;
+
+        for (int i = 0; i < categories.Count; i++)
+        {
+            var progressExists = levelsManager.IsCategoryProgressExists(categories[i].Key);
+            var passedLevelsCount = progressExists ?
+                levelsManager.GetLevelsProgressByCategory(categories[i].Key).Levels.Count(x => x.IsPassed) : 0;
+
+            view.CreateOrUpdateCategory(categories[i], categories[i].Price == 0 || progressExists, passedLevelsCount);
+        }
     }
 
     private void OnCategoryClicked(LevelsCategory category, bool isOpened)
@@ -29,7 +30,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
         Debug.Log($"{category.Key} {isOpened}");
         if (!isOpened)
         {
-            view.CreateOrUpdateCategory(category, true);
+            view.CreateOrUpdateCategory(category, true, 0);
             return;
         }
 
