@@ -1,19 +1,24 @@
 using Dainty.UI.WindowBase;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SettingsView : AWindowView
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Button _backgroundShadeButton;
+
+    protected override void OnSubscribe()
     {
-        
+        base.OnSubscribe();
+        _backgroundShadeButton.onClick.AddListener(OnBackgroundShadeClicked);
+    }
+    protected override void OnUnSubscribe()
+    {
+        base.OnSubscribe();
+        _backgroundShadeButton.onClick.RemoveListener(OnBackgroundShadeClicked);
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnBackgroundShadeClicked()
     {
-        
+        ApplicationController.Instance.UiManager.Back();
     }
 }

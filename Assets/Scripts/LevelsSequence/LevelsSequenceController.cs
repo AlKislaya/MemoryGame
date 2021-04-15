@@ -41,11 +41,21 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
             return;
         }
 
-        _levelsProgress = LevelsManager.Instance.GetLevelsProgressByCategory(_categoryKey).Levels;
+        var levelsManager = LevelsManager.Instance;
+        _levelsProgress = levelsManager.GetLevelsProgressByCategory(_categoryKey).Levels;
         var levels = _levelsCategory.LevelsSequence.Levels;
         var levelsCapacity = _levelsCategory.LevelsSequence.Levels.Count;
 
         view.SetLevelsCapacity(levelsCapacity);
+
+        //checking that new level exists
+        if (_levelsProgress[_levelsProgress.Count - 1].IsPassed 
+            && _levelsProgress[_levelsProgress.Count - 1].PassedPercents != 0 
+            && _levelsProgress.Count != levelsCapacity)
+        {
+            levelsManager.SetNewLevelProgress(_categoryKey);
+            _levelsProgress = levelsManager.GetLevelsProgressByCategory(_categoryKey).Levels;
+        }
 
         for (int i = 0; i < _levelsProgress.Count; i++)
         {

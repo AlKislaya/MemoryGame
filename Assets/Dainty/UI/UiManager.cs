@@ -8,6 +8,7 @@ namespace Dainty.UI
     public class UiManager : IUiManager
     {
         protected readonly UiManagerSettings _settings;
+        protected readonly EscapeListener _escapeListener;
         protected readonly INavigationStack _navStack;
         protected readonly UiRoot _root;
 
@@ -22,8 +23,8 @@ namespace Dainty.UI
             _navStack = navigationStack;
 
             root.Destroying += RootOnDestroying;
-            EscapeListener.Initialize();
-            EscapeListener.Escape += EscapeListenerOnEscape;
+            _escapeListener = EscapeListener.Instance;
+            _escapeListener.Escape += EscapeListenerOnEscape;
         }
 
         public UiRoot UiRoot => _root;
@@ -54,7 +55,7 @@ namespace Dainty.UI
             return _navStack.IsOpened<T>();
         }
 
-    #region Open
+        #region Open
 
         public virtual T Open<T>(bool isPopup = false, WindowTransition transition = WindowTransition.AnimateOpening)
             where T : IWindowController, new()
@@ -92,9 +93,9 @@ namespace Dainty.UI
             return Open<T, TS>(data, false, transition);
         }
 
-    #endregion
+        #endregion
 
-    #region Close
+        #region Close
 
         public virtual bool Close<T>(WindowTransition transition = WindowTransition.AnimateClosing,
             Action onClosed = null)
@@ -122,9 +123,9 @@ namespace Dainty.UI
             return Close<T>(out window, WindowTransition.AnimateClosing, onClosed);
         }
 
-    #endregion
+        #endregion
 
-    #region Back
+        #region Back
 
         public virtual bool Back(WindowTransition transition = WindowTransition.AnimateClosing, Action onClosed = null)
         {
@@ -164,7 +165,7 @@ namespace Dainty.UI
             return Back(out window, WindowTransition.AnimateClosing, onClosed);
         }
 
-    #endregion
+        #endregion
 
         private T OpenBase<T>() where T : IWindowController, new()
         {
@@ -189,7 +190,7 @@ namespace Dainty.UI
 
         protected void RootOnDestroying()
         {
-            EscapeListener.Escape -= EscapeListenerOnEscape;
+            _escapeListener.Escape -= EscapeListenerOnEscape;
 
             while (_navStack.Count > 0)
             {

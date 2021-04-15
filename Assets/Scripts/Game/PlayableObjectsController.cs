@@ -52,6 +52,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private PaintableSpriteGroup _lastClickedGroup;
     private float _pointerDownTime;
     private int _firstPaintedGroupsCount;
+    private float _levelObjPosZ;
     //
 
     //assign non-changeable variables, fit in screen size
@@ -97,10 +98,11 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
                 Debug.LogError("_objectsContainer == null");
                 return;
             }
+            _levelObjPosZ += -.1f;
             var objectInstance = Instantiate(_levelObjectPrefab, _objectsContainer);
 
             objectInstance.Init(vectorSprites);
-            objectInstance.InitSettings(levelObject.CopiesSettings[i]);
+            objectInstance.InitSettings(levelObject.CopiesSettings[i], _levelObjPosZ);
 
             if (!levelObject.IsStatic)
             {
@@ -162,6 +164,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     //reset variables, instantiate sprites container if null, assign in zoom, set base view settings
     public void SetDefaults()
     {
+        _levelObjPosZ = 0;
         _lastClickedGroup = null;
         _pointerDownTime = 0;
         _firstPaintedGroupsCount = 0;

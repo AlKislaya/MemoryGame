@@ -5,26 +5,24 @@ namespace Dainty.UI
 {
     public class EscapeListener : MonoBehaviour
     {
-        public static EscapeListener Instance { get; private set; }
+        private static EscapeListener _instance;
 
-        public static event Action Escape;
-
-        /// <summary>
-        /// Returns false if already initialized, otherwise true
-        /// </summary>
-        /// <returns></returns>
-        public static bool Initialize()
+        public static EscapeListener Instance
         {
-            if (Instance != null)
+            get
             {
-                return false;
-            }
+                if (_instance == null)
+                {
+                    var listener = new GameObject("EscapeListener");
+                    DontDestroyOnLoad(listener);
+                    _instance = listener.AddComponent<EscapeListener>();
+                }
 
-            var listener = new GameObject("EscapeListener");
-            DontDestroyOnLoad(listener);
-            Instance = listener.AddComponent<EscapeListener>();
-            return true;
+                return _instance;
+            }
         }
+
+        public event Action Escape;
 
 #if UNITY_EDITOR || UNITY_ANDROID
         private void Update()
