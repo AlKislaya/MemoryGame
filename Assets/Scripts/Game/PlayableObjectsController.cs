@@ -137,7 +137,9 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         {
             for (int i = 0; i < _levelObjects.Count; i++)
             {
-                sequence.Insert(tweenShift * i, _levelObjects[i].OpenObjectAnimation(tweenDuration, isOpen));
+                int storedI = i;
+                sequence.AppendCallback(() => _levelObjects[storedI].OpenObject(isOpen));
+                //sequence.Insert(tweenShift * i, _levelObjects[i].OpenObjectAnimation(tweenDuration, isOpen));
             }
         }
         return sequence;

@@ -7,15 +7,15 @@ namespace Dainty.UI
     [RequireComponent(typeof(Canvas))]
     public class UiRoot : MonoBehaviour
     {
-        private Canvas _canvas;
+        private RectTransform _canvasRect;
 
-        public Vector2 CanvasSize => _canvas.pixelRect.size;
+        public Vector2 CanvasSize => _canvasRect.rect.size;
 
         public event Action Destroying;
 
         private void Awake()
         {
-            _canvas = GetComponent<Canvas>();
+            _canvasRect = GetComponent<RectTransform>();
         }
 
         private void OnDestroy()
@@ -41,7 +41,7 @@ namespace Dainty.UI
 
             var width = Screen.width;
             var height = Screen.height;
-            var canvasSize = _canvas.pixelRect.size;
+            var canvasSize = _canvasRect.rect.size;
 
             safeArea.x = safeArea.x * canvasSize.x / width;
             safeArea.y = safeArea.y * canvasSize.y / height;

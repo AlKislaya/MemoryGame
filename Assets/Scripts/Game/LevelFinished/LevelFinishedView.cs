@@ -13,7 +13,14 @@ public class LevelFinishedView : AWindowView
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _replayButton;
+    [SerializeField] private ParticleSystem _confettiParticle;
     [SerializeField] private List<StarController> _stars;
+
+    private void Awake()
+    {
+        var windowSize = ApplicationController.Instance.UiRoot.CanvasSize;
+        _confettiParticle.transform.localPosition = new Vector3(windowSize.x / 2, windowSize.y, 1);
+    }
 
     public void SetProgress(float passedPercents)
     {
@@ -32,6 +39,15 @@ public class LevelFinishedView : AWindowView
     public void SetActivePlayButton(bool isActive)
     {
         _playButton.gameObject.SetActive(isActive);
+    }
+
+    public void PlayConfettiAnimation()
+    {
+        _confettiParticle.Play();
+    }
+    public void StopConfettiAnimation()
+    {
+        _confettiParticle.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     protected override void OnSubscribe()

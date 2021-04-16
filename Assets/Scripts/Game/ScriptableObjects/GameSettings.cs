@@ -14,4 +14,7 @@ public class GameSettings : ScriptableObject
 
     [Header("Progress Counter")]
     public Color ProgressColor;
+
+    [Header("Done Counter")]
+    public Color DoneColor;
 }

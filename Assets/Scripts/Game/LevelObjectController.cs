@@ -8,29 +8,28 @@ public class LevelObjectController : MonoBehaviour
 {
     private const float Pivot = 2.5f;
     private const float ScaleStep = .1f;
+    private const float SortingStepZ = -.01f;
     public List<PaintableSpriteGroup> PaintableSpriteGroups => _paintableSpriteGroups;
 
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
     [SerializeField] private SpriteRenderer _staticSpriteRendererPrefab;
-    [HideInInspector] [SerializeField] private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
+    [SerializeField] private Transform _questionSignPrefab;
+    private List<PaintableSpriteGroup> _paintableSpriteGroups = new List<PaintableSpriteGroup>();
     private float _localRotationZ;
     private Vector3 _scale;
 
     //instantiate and init sprites groups
     public void Init(List<SvgLoader.VectorSprite> vectorSprites)
     {
-        var z = 0f;
         //int order = 1;
 
         foreach (var vectorSprite in vectorSprites)
         {
-            z -= .01f;
             if (vectorSprite is SvgLoader.StaticVectorSprite staticVectorSprite)
             {
                 var staticSpriteInstance = Instantiate(_staticSpriteRendererPrefab, transform);
                 staticSpriteInstance.sprite = staticVectorSprite.Sprite;
                 //staticSpriteInstance.sortingOrder = order;
-                staticSpriteInstance.transform.localPosition = new Vector3(0, 0, z);
                 //order++;
             }
             else if (vectorSprite is SvgLoader.PaintableVectorSpriteGroup paintableVectorGroup)
@@ -38,7 +37,6 @@ public class LevelObjectController : MonoBehaviour
                 var paintableVectorInstance = Instantiate(_paintableSpriteGroupPrefab, transform);
                 paintableVectorInstance.InitGroup(paintableVectorGroup/*, ref order*/);
                 _paintableSpriteGroups.Add(paintableVectorInstance);
-                paintableVectorInstance.transform.localPosition = new Vector3(0, 0, z);
             }
         }
     }
@@ -90,17 +88,36 @@ public class LevelObjectController : MonoBehaviour
                 paintable.SetFillColor(colorSettings.Color);
             }
         }
+
+        Instantiate(_questionSignPrefab, transform).SetAsFirstSibling();
+        OpenObject(false);
     }
 
     public void OpenObject(bool isOpen = true)
     {
-        transform.localRotation = Quaternion.Euler(new Vector3(0, isOpen ? 0 : 180, _localRotationZ));
+        //transform.localRotation = Quaternion.Euler(new Vector3(0, isOpen ? 0 : 180, _localRotationZ));
+        var childCount = transform.childCount;
+
+        for (int i = childCount - 1; i >= 0; i--)
+        {
+            var childPosition = transform.GetChild(i).transform.localPosition;
+            childPosition.z = isOpen ? i * SortingStepZ : (childCount - i) * SortingStepZ;
+            transform.GetChild(i).transform.localPosition = childPosition;
+        }
     }
 
-    public Tween OpenObjectAnimation(float duration, bool isOpen = true)
+    public Sequence OpenObjectAnimation(float duration, bool isOpen = true)
     {
+        var sequence = DOTween.Sequence();
+        var childCount = transform.childCount;
+
+        for (int i = childCount - 1; i >= 0; i--)
+        {
+            sequence.Append(transform.GetChild(i).transform.DOLocalMoveZ(isOpen ? i * SortingStepZ : (childCount - i) * SortingStepZ, .01f));
+        }
+        return sequence;
         //return DOTween.Sequence().AppendCallback(()=> transform.rotation = Quaternion.Euler(new Vector3(0, isOpen ? 360 : -180, _localRotationZ)));
-        return DOTween.Sequence().Append(transform.DOLocalRotate(new Vector3(0, isOpen ? 360 : -180, _localRotationZ), duration));
+        //return DOTween.Sequence().Append(transform.DOLocalRotate(new Vector3(0, isOpen ? 360 : -180, _localRotationZ), duration));
     }
 
     public Tween PlaceObjectAnimation(float duration)

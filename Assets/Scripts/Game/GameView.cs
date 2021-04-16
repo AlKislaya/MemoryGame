@@ -112,7 +112,7 @@ public class GameView : AWindowView
         //init timer
         _counterElement.SetDefaults();
         _counterElement.SetText($"{_gameSettings.TimerSeconds}{_seconds}");
-        _counterElement.SetOutlineColor(_gameSettings.TimerColor);
+        _counterElement.SetColor(_gameSettings.TimerColor);
         _counterElement.SetAmount(1);
 
         _colorsController.Close();
@@ -164,7 +164,7 @@ public class GameView : AWindowView
 
                 _counterElement.SetText($"0 {_of} {_playableObjectsController.PaintablesCount}");
                 _counterElement.SetAmount(0);
-                _counterElement.SetOutlineColor(_gameSettings.ProgressColor);
+                _counterElement.SetColor(_gameSettings.ProgressColor);
 
                 _playableObjectsController.ZoomEnabled = true;
             });
@@ -190,7 +190,7 @@ public class GameView : AWindowView
         _counterElement.SetAmount(percents, .5f, Ease.InSine);
         if (updatedCount == count)
         {
-            _counterElement.TransformToButton(_done);
+            _counterElement.TransformToButton(_done, _gameSettings.DoneColor);
         }
     }
 

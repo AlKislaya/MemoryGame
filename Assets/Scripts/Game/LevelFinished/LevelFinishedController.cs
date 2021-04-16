@@ -50,6 +50,12 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
                                    || levelFinishedSettings.LevelIndex == categoryLevelsCount - 1));
     }
 
+    public override void BeforeShow()
+    {
+        base.BeforeShow();
+        view.PlayConfettiAnimation();
+    }
+
     protected override void OnSubscribe()
     {
         view.OnMenuButtonClicked += ViewOnOnMenuButtonClicked;
@@ -61,6 +67,7 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         view.OnMenuButtonClicked -= ViewOnOnMenuButtonClicked;
         view.OnPlayButtonClicked -= ViewOnOnPlayButtonClicked;
         view.OnReplayButtonClicked -= ViewOnOnReplayButtonClicked;
+        view.StopConfettiAnimation();
     }
 
     private void ViewOnOnReplayButtonClicked()

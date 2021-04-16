@@ -43,5 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d08a0913ec37e459dfaf5d49168c7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Key: 
+  OriginalFillColor: {r: 0, g: 0, b: 0, a: 0}
+  IsFirstPainted: 0
   _paintableSpritePrefab: {fileID: -3170290839660003637, guid: 99e2cf3d0adaf8941bc5bda1ee962fb2,
     type: 3}
+  _paintableSprites: []

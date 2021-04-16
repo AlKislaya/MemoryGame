@@ -9,23 +9,11 @@ public class CounterElement : MonoBehaviour
     public event Action OnButtonClicked; 
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Image _filledOutline;
-    [SerializeField] private GameObject _shadow;
     [SerializeField] private Button _button;
-    [SerializeField] private Sprite _circleSprite;
-    [SerializeField] private Sprite _buttonSprite;
-    [SerializeField] private Vector2 _targetButtonSizeDelta = new Vector2(175, 50);
+    [SerializeField] private Image _tickImage;
 
-    private Vector2 _initialSizeDelta;
-    private RectTransform _outlineRect;
     private Tween _animation;
     private Sequence _transformToButtonAnimation;
-
-    //init _outlineRect and sizes
-    private void Awake()
-    {
-        _outlineRect = _filledOutline.GetComponent<RectTransform>();
-        _initialSizeDelta = _outlineRect.sizeDelta;
-    }
 
     //add button click listener, init transform to btn animation
     private void Start()
@@ -34,14 +22,15 @@ public class CounterElement : MonoBehaviour
         _transformToButtonAnimation = DOTween.Sequence()
             .AppendCallback(() =>
             {
-                _shadow.SetActive(false);
-                _filledOutline.type = Image.Type.Sliced;
-                //_text.text = text;
+                _tickImage.enabled = true;
+                _text.enabled = false;
             })
-            .Append(_outlineRect.DOSizeDelta(new Vector2(_targetButtonSizeDelta.y, _targetButtonSizeDelta.y), .2f).SetEase(Ease.InSine))
-            .AppendCallback(() => _filledOutline.sprite = _buttonSprite)
-            .Append(_outlineRect.DOSizeDelta(_targetButtonSizeDelta, .3f).SetEase(Ease.InSine))
-            .AppendCallback(() => _button.enabled = true).Pause().SetAutoKill(false);
+            .Append(transform.DOScale(1.2f, .3f))
+            .Append(transform.DOScale(1f, .3f))
+            .AppendCallback(() =>
+            {
+                _button.enabled = true;
+            }).Pause().SetAutoKill(false);
     }
 
     private void onButtonClicked()
@@ -51,11 +40,10 @@ public class CounterElement : MonoBehaviour
 
     public void SetDefaults()
     {
-        _filledOutline.type = Image.Type.Filled;
-        _filledOutline.sprite = _circleSprite;
-        _outlineRect.sizeDelta = _initialSizeDelta;
-        _shadow.SetActive(true);
+        transform.localScale = Vector3.one;
         _button.enabled = false;
+        _tickImage.enabled = false;
+        _text.enabled = true;
     }
 
     public void SetText(string text)
@@ -90,19 +78,24 @@ public class CounterElement : MonoBehaviour
         }
     }
 
-    public void SetOutlineColor(Color color)
+    public void SetColor(Color color)
     {
         _filledOutline.color = color;
     }
 
-    public void TransformToButton(string text)
+    public void TransformToButton(string text, Color color)
     {
         if (_animation != null && _animation.IsPlaying())
         {
-            _animation.OnComplete(() => _transformToButtonAnimation.Restart());
+            _animation.OnComplete(() =>
+            {
+                SetColor(color);
+                _transformToButtonAnimation.Restart();
+            });
         }
         else
         {
+            SetColor(color);
             _transformToButtonAnimation.Restart();
         }
     }

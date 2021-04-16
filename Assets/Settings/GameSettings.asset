@@ -15,5 +15,6 @@ MonoBehaviour:
   MinZoomValue: 1
   MaxZoomValue: 3
   TimerSeconds: 2
-  TimerColor: {r: 0.9647059, g: 0.654902, b: 0.019607844, a: 1}
-  ProgressColor: {r: 0.043137256, g: 0.49019608, b: 0.5764706, a: 1}
+  TimerColor: {r: 0.94509804, g: 0.7372549, b: 0.40392157, a: 1}
+  ProgressColor: {r: 0.5529412, g: 0.81960785, b: 0.8666667, a: 1}
+  DoneColor: {r: 0.5921569, g: 0.8392157, b: 0.5019608, a: 1}

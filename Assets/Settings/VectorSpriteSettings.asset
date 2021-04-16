@@ -22,7 +22,7 @@ MonoBehaviour:
   PixelsPerUnit: 100
   TargetResolution: 500
   GradientResolution: 128
-  StrokeHalfThickness: 3
+  StrokeHalfThickness: 5
   ClearFillColor: {r: 1, g: 1, b: 1, a: 1}
   HighlightedStrokeColor: {r: 1, g: 1, b: 0, a: 0.19607843}
   RightStrokeColor: {r: 0.31562608, g: 0.7830189, b: 0.18098079, a: 0.39215687}
