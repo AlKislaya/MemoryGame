@@ -45,6 +45,12 @@ public class Swatch : MonoBehaviour
             .Join(_swatch.DOAnchorPosY(state ? _swatchStartYPos + _targetShadowSize.y : _swatchStartYPos, AnimationDuration)).Play();
     }
 
+    public void SetToggleState(bool isOn)
+    {
+        _toggle.isOn = IsOn;
+        OnToggleValueChanged(isOn);
+    }
+
     public void SetActive(bool isActive)
     {
         gameObject.SetActive(isActive);

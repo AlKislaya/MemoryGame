@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -15,6 +16,10 @@ public class PassedLevelStats
 
 public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
+    private const float SortingStepZ = -.1f;
+    private const float RayDistance = 5f;
+    private const float ClickDelay = .3f;
+
     public int PaintablesCount => _paintableGroups.Count;
     public bool SpriteMaskEnabled
     {
@@ -31,133 +36,99 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     public event Action<int, int> OnFirstPaintedCountChanged;
     public event Action OnPaintableSpriteClicked;
 
-    private const float RayDistance = 5f;
-    private const float ClickDelay = .3f;
-
-    [SerializeField] private LevelObjectController _levelObjectPrefab;
+    [SerializeField] private LevelObjectsController _levelObjectsPrefab;
     [SerializeField] private Transform _levelObjectsContainerPrefab;
     [SerializeField] private LayerMask _raycastMask;
     [SerializeField] private SpriteMask _spriteMask;
     [SerializeField] private Zoom _zoom;
 
-    private SvgLoader _svgLoader;
     private Camera _cameraMain;
     private Transform _objectsContainer;
     private ContactFilter2D _contactFilter;
     private VectorSpriteSettings _levelObjectsSettings;
-    private List<LevelObjectController> _levelObjects = new List<LevelObjectController>();
+    private List<LevelObjectsController> _levelObjectsControllers = new List<LevelObjectsController>();
     private List<PaintableSpriteGroup> _paintableGroups = new List<PaintableSpriteGroup>();
 
     //
     private PaintableSpriteGroup _lastClickedGroup;
     private float _pointerDownTime;
     private int _firstPaintedGroupsCount;
-    private float _levelObjPosZ;
     //
 
     //assign non-changeable variables, fit in screen size
     private void Awake()
     {
         _levelObjectsSettings = Settings.Instance.VectorSpriteSettings;
-        _svgLoader = new SvgLoader(_levelObjectsSettings);
         _cameraMain = Camera.main;
         _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
         FitInScreenSize();
     }
 
-    public async Task LoadLevelObject(LevelObject levelObject)
+    public async Task LoadLevel(Level levelAsset, CancellationToken token)
     {
-        _svgLoader.ImportSVG(levelObject.SvgTextAsset);
-
-        //Debug.Log("LOADING STARTED "+ Time.time);
-        //tesselate and build sprites
-        List<SvgLoader.VectorSprite> vectorSprites = new List<SvgLoader.VectorSprite>();
-        if (levelObject.IsStatic)
+        var zPos = SortingStepZ;
+        foreach (var levelObject in levelAsset.LevelObjects)
         {
-            var staticSprite = await _svgLoader.GetStaticSprite();
-            vectorSprites.Add(staticSprite);
-        }
-        else
-        {
-            vectorSprites = await _svgLoader.GetSpritesArrange();
-        }
-        //Debug.Log("LOADING ENDED " + Time.time);
-
-        if (vectorSprites.Count == 0)
-        {
-            Debug.LogError("0 sprites");
-            return;
-        }
-
-
-        for (int i = 0; i < levelObject.CopiesSettings.Count; i++)
-        {
-            //means that level loading canceled and objects container has been destroyed
-            if (_objectsContainer == null)
+            if (token.IsCancellationRequested)
             {
-                Debug.LogError("_objectsContainer == null");
+                Debug.Log("Canceled Loading level");
                 return;
             }
-            _levelObjPosZ += -.1f;
-            var objectInstance = Instantiate(_levelObjectPrefab, _objectsContainer);
 
-            objectInstance.Init(vectorSprites);
-            objectInstance.InitSettings(levelObject.CopiesSettings[i], _levelObjPosZ);
+            //check copies count in object
+            if (levelObject.CopiesSettings == null || levelObject.CopiesSettings.Count == 0)
+            {
+                Debug.LogError("No copies in " + levelObject.SvgTextAsset.name);
+                continue;
+            }
 
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            var levelObjsController = Instantiate(_levelObjectsPrefab, _objectsContainer);
+            levelObjsController.transform.localPosition = new Vector3(0, 0, zPos);
             if (!levelObject.IsStatic)
             {
-                _paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
-                _levelObjects.Add(objectInstance);
+                _levelObjectsControllers.Add(levelObjsController);
             }
+
+            var paintableGroups = await levelObjsController.Init(levelObject, token);
+            if (paintableGroups != null && paintableGroups.Count > 0)
+            {
+                _paintableGroups.AddRange(paintableGroups);
+            }
+
+            zPos += SortingStepZ;
         }
 
-        //var objectInstance = Instantiate(_levelObjectPrefab, _spritesContainer);
-        //objectInstance.Init(vectorSprites);
-        //objectInstance.InitSettings(levelObject.CopiesSettings[0]);
-        //_paintableGroups.AddRange(objectInstance.PaintableSpriteGroups);
-        //_levelObjects.Add(objectInstance);
-
-        //for (int i = 1; i < levelObject.CopiesSettings.Count; i++)
-        //{
-        //    var copySettings = levelObject.CopiesSettings[i];
-        //    var objectCopyInstance = Instantiate(objectInstance, _spritesContainer);
-        //    objectCopyInstance.InitSettings(copySettings);
-        //    _paintableGroups.AddRange(objectCopyInstance.PaintableSpriteGroups);
-        //    _levelObjects.Add(objectCopyInstance);
-        //}
+        _levelObjectsControllers.ForEach(x => x.SetColors());
     }
 
-    public Sequence OpenLevelObjects(bool isOpen)
+    public void OpenLevelObjects(bool isOpen)
     {
-        var tweenDuration = .5f;
-        var tweenShift = .1f;
-
-        var sequence = DOTween.Sequence();
-        if (_levelObjects != null)
-        {
-            for (int i = 0; i < _levelObjects.Count; i++)
-            {
-                int storedI = i;
-                sequence.AppendCallback(() => _levelObjects[storedI].OpenObject(isOpen));
-                //sequence.Insert(tweenShift * i, _levelObjects[i].OpenObjectAnimation(tweenDuration, isOpen));
-            }
-        }
-        return sequence;
+        _levelObjectsControllers.ForEach(x => x.OpenObjects(isOpen));
     }
 
     public Sequence PlaceLevelObjects()
     {
-        _levelObjects = _levelObjects.OrderBy(x=>x.transform.localPosition.x).ToList();
+        var levelObjectControllers = new List<LevelObjectController>();
+        foreach (var loController in _levelObjectsControllers)
+        {
+            levelObjectControllers.AddRange(loController.LevelObjectControllers);
+        }
+        levelObjectControllers = levelObjectControllers.OrderBy(x => x.transform.localPosition.x).ToList();
 
-        var tweenDuration = .5f;
-        var tweenShift = .3f;
+        var tweenDuration = .4f;
+        var tweenShift = .1f;
 
         var sequence = DOTween.Sequence();
-        if (_levelObjects != null)
+        if (levelObjectControllers != null)
         {
-            for (int i = 0; i < _levelObjects.Count; i++)
+            for (int i = 0; i < levelObjectControllers.Count; i++)
             {
-                sequence.Insert(tweenShift * i, _levelObjects[i].PlaceObjectAnimation(tweenDuration));
+                sequence.Insert(tweenShift * i, levelObjectControllers[i].PlaceObjectAnimation(tweenDuration));
             }
         }
         return sequence;
@@ -166,7 +137,6 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     //reset variables, instantiate sprites container if null, assign in zoom, set base view settings
     public void SetDefaults()
     {
-        _levelObjPosZ = 0;
         _lastClickedGroup = null;
         _pointerDownTime = 0;
         _firstPaintedGroupsCount = 0;
@@ -175,9 +145,12 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         {
             _objectsContainer = Instantiate(_levelObjectsContainerPrefab, transform);
         }
-        else if (_levelObjects != null && _levelObjects.Count > 0)
+        else if (_levelObjectsControllers != null && _levelObjectsControllers.Count > 0)
         {
-            _levelObjects.ForEach(x => x.OpenObject(false));
+            _levelObjectsControllers.ForEach(x => {
+                x.OpenObjects(false);
+                x.SetColors();
+            });
             _paintableGroups.ForEach(x =>
             {
                 x.IsFirstPainted = false;
@@ -192,15 +165,6 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         ZoomEnabled = false;
     }
 
-    //public void SetOriginalColors()
-    //{
-    //    _paintableGroups.ForEach(x =>
-    //    {
-    //        x.SetActiveOriginalStroke(true);
-    //        x.SetFillColor(x.OriginalFillColor);
-    //    });
-    //}
-
     //destroy sprites container
     public void DestroyVectorSprites()
     {
@@ -210,7 +174,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         }
         Destroy(_objectsContainer.gameObject);
         _objectsContainer = null;
-        _levelObjects = new List<LevelObjectController>();
+        _levelObjectsControllers = new List<LevelObjectsController>();
         _paintableGroups = new List<PaintableSpriteGroup>();
     }
 

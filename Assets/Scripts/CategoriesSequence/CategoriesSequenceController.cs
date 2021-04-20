@@ -1,5 +1,6 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -27,10 +28,22 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
 
     private void OnCategoryClicked(LevelsCategory category, bool isOpened)
     {
-        Debug.Log($"{category.Key} {isOpened}");
         if (!isOpened)
         {
-            view.CreateOrUpdateCategory(category, true, 0);
+            ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
+                new AlertSettings()
+                {
+                    HeaderText = "Hey",
+                    DialogText = "duuuuude",
+                    Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+                    {
+                        Callback = () => ApplicationController.Instance.UiManager.Back(),
+                        Text = "give 5 dollars",
+                        Color = Color.green
+                    }
+                    }
+                }, true);
+            //view.CreateOrUpdateCategory(category, true, 0);
             return;
         }
 

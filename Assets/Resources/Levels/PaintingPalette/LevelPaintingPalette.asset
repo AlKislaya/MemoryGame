@@ -16,58 +16,67 @@ MonoBehaviour:
   LevelObjects:
   - SvgTextAsset: {fileID: 4900000, guid: f51e34662a0be6343ac6f4afd3dd9858, type: 3}
     IsStatic: 1
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 1, y: 1}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors: []
-      Position: {x: 2.49, y: 2.45}
+    - Position: {x: 2.49, y: 2.45}
       Scale: {x: 1, y: 1}
       Rotation: 0
   - SvgTextAsset: {fileID: 4900000, guid: 7780b866e216b9746b84e91b6a5be7b7, type: 3}
     IsStatic: 0
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 0.65, y: 0.65}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors:
-      - SearchByKey: 1
-        Key: paintable
-        Color: {r: 0.50980395, g: 0.8, b: 0.83137256, a: 1}
-      Position: {x: 3.39, y: 3.1}
+    - Position: {x: 3.39, y: 3.1}
       Scale: {x: 1.1, y: 1.1}
       Rotation: 0
   - SvgTextAsset: {fileID: 4900000, guid: a71db6a74993bbe43876e6237977436b, type: 3}
     IsStatic: 0
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 0.65, y: 0.65}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors:
-      - SearchByKey: 1
-        Key: paintable
-        Color: {r: 0.46666667, g: 0.5176471, b: 0.75686276, a: 1}
-      Position: {x: 2.432, y: 2.54}
+    - Position: {x: 2.432, y: 2.54}
       Scale: {x: 1.1, y: 1.1}
       Rotation: 0
   - SvgTextAsset: {fileID: 4900000, guid: 01cd5ea871428fb4e8ca2dd52022c891, type: 3}
     IsStatic: 0
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 0.65, y: 0.65}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors:
-      - SearchByKey: 0
-        Key: paintable
-        Color: {r: 0.42352942, g: 0.69411767, b: 0.23137255, a: 1}
-      Position: {x: 3.778, y: 2.08}
+    - Position: {x: 3.778, y: 2.08}
       Scale: {x: 1.1, y: 1.1}
       Rotation: 0
   - SvgTextAsset: {fileID: 4900000, guid: e0687c51e7413874f852cb9e8be34d5c, type: 3}
     IsStatic: 0
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 0.65, y: 0.65}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors:
-      - SearchByKey: 0
-        Key: paintable
-        Color: {r: 0.96862745, g: 0.86666673, b: 0.2901961, a: 1}
-      Position: {x: 2.87, y: 1.373}
+    - Position: {x: 2.87, y: 1.373}
       Scale: {x: 1.1, y: 1.1}
       Rotation: 0
   - SvgTextAsset: {fileID: 4900000, guid: 27e1adade8fd493489b6a6f2462479c9, type: 3}
     IsStatic: 0
+    QuestionSignSettings:
+      Position: {x: 0, y: 0}
+      Scale: {x: 0.65, y: 0.65}
+      Rotation: 0
+    ColorsSettings: []
     CopiesSettings:
-    - PaintableColors:
-      - SearchByKey: 0
-        Key: paintable
-        Color: {r: 0.9607843, g: 0.6117647, b: 0.21568628, a: 1}
-      Position: {x: 1.7, y: 1.76}
+    - Position: {x: 1.7, y: 1.76}
       Scale: {x: 1.1, y: 1.1}
       Rotation: 0

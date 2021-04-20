@@ -54,11 +54,6 @@ public class SwatchesController : MonoBehaviour
 
     public bool TryGetSelectedColor(ref Color color)
     {
-        if (!_toggleGroup.AnyTogglesOn())
-        {
-            return false;
-        }
-
         var swatch = _colorInstances.FirstOrDefault(x => x.IsOn);
         if (swatch == null)
         {
@@ -72,16 +67,16 @@ public class SwatchesController : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+        if (_colorInstances.Count > 0)
+        {
+            _colorInstances[0].SetToggleState(true);
+        }
     }
 
     //reset toggles selection, close
     public void Close()
     {
-        if (_toggleGroup.AnyTogglesOn())
-        {
-            _toggleGroup.SetAllTogglesOff();
-        }
-
+        _toggleGroup.SetAllTogglesOff();
         gameObject.SetActive(false);
     }
 

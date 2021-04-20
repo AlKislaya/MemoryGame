@@ -64,27 +64,9 @@ public class GameView : AWindowView
         _tapToStartButtons.ForEach(x => x.onClick.RemoveListener(StartGame));
     }
 
-    //waiting for destroying playable image if it's playing
-    //load level: sending objects into playable objects controller
     public async Task InitLevel(Level levelAsset, CancellationToken token)
     {
-        foreach (var levelObject in levelAsset.LevelObjects)
-        {
-            if (token.IsCancellationRequested)
-            {
-                Debug.Log("Canceled Loading level");
-                return;
-            }
-
-            //check copies count in object
-            if (levelObject.CopiesSettings == null || levelObject.CopiesSettings.Count == 0)
-            {
-                Debug.LogError("No copies in "+ levelObject.SvgTextAsset.name);
-                continue;
-            }
-
-            await _playableObjectsController.LoadLevelObject(levelObject);
-        }
+        await _playableObjectsController.LoadLevel(levelAsset, token);
     }
 
     public void ShowLoader(bool show)
@@ -146,20 +128,20 @@ public class GameView : AWindowView
     {
         _tapToStartButtons.ForEach(x => x.gameObject.SetActive(false));
         //show image
+        _playableObjectsController.OpenLevelObjects(true);
         _startGameAnimation = DOTween.Sequence();
-        _startGameAnimation.Append(_playableObjectsController.OpenLevelObjects(true));
 
         //init timer
         int time = _gameSettings.TimerSeconds;
 
         _startGameAnimation
             .Append(_counterElement.TimerTween(time, _seconds))
-            .Append(_playableObjectsController.OpenLevelObjects(false))
+            .AppendCallback(()=>_playableObjectsController.OpenLevelObjects(false))
             .AppendInterval(1f)
             .AppendCallback(() =>
             {
                 _colorsController.AddColors(_playableObjectsController.ClearColors());
-                _playableObjectsController.OpenLevelObjects(true).Play();
+                _playableObjectsController.OpenLevelObjects(true);
                 _colorsController.Show();
 
                 _counterElement.SetText($"0 {_of} {_playableObjectsController.PaintablesCount}");

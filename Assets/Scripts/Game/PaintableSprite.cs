@@ -12,7 +12,7 @@ public class PaintableSprite : MonoBehaviour
     [HideInInspector] [SerializeField] private SvgLoader.PaintableVectorSprite _paintableVectorSprite;
     [HideInInspector] [SerializeField] private Collider2D _collider;
 
-    public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite/*, ref int order*/)
+    public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite)
     {
         _fillSpriteRenderer.sprite = paintableVectorSprite.Fill;
         //_strokeSpriteRenderer.sprite = paintableVectorSprite.Stroke;

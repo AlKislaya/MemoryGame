@@ -3,12 +3,12 @@ using System.Linq;
 using DG.Tweening;
 using UnityEngine;
 
-//stores individual level object(card, paintables, static sprites)
+//stores individual level object
 public class LevelObjectController : MonoBehaviour
 {
     private const float Pivot = 2.5f;
     private const float ScaleStep = .1f;
-    private const float SortingStepZ = -.01f;
+    private const float SortingStepZ = -.001f;
     public List<PaintableSpriteGroup> PaintableSpriteGroups => _paintableSpriteGroups;
 
     [SerializeField] private PaintableSpriteGroup _paintableSpriteGroupPrefab;
@@ -42,7 +42,7 @@ public class LevelObjectController : MonoBehaviour
     }
 
     //set object transform, original paintable groups colors, set original color
-    public void InitSettings(LevelObjectSettings settings, float zPos)
+    public void InitSettings(LevelObjectSettings settings, LevelObjectSettings questionSignSettings, float zPos)
     {
         transform.localPosition = new Vector3(settings.Position.x - Pivot, Pivot - settings.Position.y, zPos);
         _scale = new Vector3(settings.Scale.x, settings.Scale.y, 1);
@@ -56,41 +56,50 @@ public class LevelObjectController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(rotation);
         }
 
-        //if static level object
-        if (settings.PaintableColors == null || settings.PaintableColors.Count == 0)
+        InitQuestionSign(questionSignSettings);
+        OpenObject(false);
+    }
+
+    public void SetGroupColorByKey(string key, Color color)
+    {
+        var groupByKey = _paintableSpriteGroups.FirstOrDefault(x => x.Key == key);
+        if (groupByKey == null)
         {
-            OpenObject();
+            Debug.LogError("Key " + key + " is not represented in LO.");
             return;
         }
 
-        var paintablesCount = _paintableSpriteGroups.Count;
-        for (int i = 0; i < settings.PaintableColors.Count; i++)
+        groupByKey.OriginalFillColor = color;
+        groupByKey.SetFillColor(color);
+    }
+
+    public void SetGroupsColor(Color color)
+    {
+        _paintableSpriteGroups.ForEach(x =>
         {
-            PaintableSpriteGroup paintable;
-            var colorSettings = settings.PaintableColors[i];
+            x.OriginalFillColor = color;
+            x.SetFillColor(color);
+        });
+    }
 
-            if (!colorSettings.SearchByKey && i < paintablesCount)
-            {
-                paintable = _paintableSpriteGroups[i];
-            }
-            else
-            {
-                paintable = _paintableSpriteGroups.FirstOrDefault(x => x.Key.Equals(colorSettings.Key));
-            }
+    private void InitQuestionSign(LevelObjectSettings questionSignSettings)
+    {
+        var questionInstance = Instantiate(_questionSignPrefab, transform);
+        questionInstance.SetAsFirstSibling();
 
-            if (paintable == null)
-            {
-                Debug.LogError("Key " + colorSettings.Key + " is not represented in LO.");
-            }
-            else
-            {
-                paintable.OriginalFillColor = colorSettings.Color;
-                paintable.SetFillColor(colorSettings.Color);
-            }
+        questionInstance.localPosition = questionSignSettings.Position;
+
+        if (questionSignSettings.Scale != Vector2.one)
+        {
+            questionInstance.localScale = new Vector3(questionSignSettings.Scale.x, questionSignSettings.Scale.y, 1);
         }
 
-        Instantiate(_questionSignPrefab, transform).SetAsFirstSibling();
-        OpenObject(false);
+        if (questionSignSettings.Rotation != 0)
+        {
+            var rotation = questionInstance.localRotation.eulerAngles;
+            rotation.z = questionSignSettings.Rotation;
+            questionInstance.localRotation = Quaternion.Euler(rotation);
+        }
     }
 
     public void OpenObject(bool isOpen = true)
@@ -104,20 +113,6 @@ public class LevelObjectController : MonoBehaviour
             childPosition.z = isOpen ? i * SortingStepZ : (childCount - i) * SortingStepZ;
             transform.GetChild(i).transform.localPosition = childPosition;
         }
-    }
-
-    public Sequence OpenObjectAnimation(float duration, bool isOpen = true)
-    {
-        var sequence = DOTween.Sequence();
-        var childCount = transform.childCount;
-
-        for (int i = childCount - 1; i >= 0; i--)
-        {
-            sequence.Append(transform.GetChild(i).transform.DOLocalMoveZ(isOpen ? i * SortingStepZ : (childCount - i) * SortingStepZ, .01f));
-        }
-        return sequence;
-        //return DOTween.Sequence().AppendCallback(()=> transform.rotation = Quaternion.Euler(new Vector3(0, isOpen ? 360 : -180, _localRotationZ)));
-        //return DOTween.Sequence().Append(transform.DOLocalRotate(new Vector3(0, isOpen ? 360 : -180, _localRotationZ), duration));
     }
 
     public Tween PlaceObjectAnimation(float duration)

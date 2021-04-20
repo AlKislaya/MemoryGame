@@ -4,26 +4,27 @@ using UnityEngine;
 
 public class PaintableSpriteGroup : MonoBehaviour
 {
-    [HideInInspector] [SerializeField] public string Key;
-    [HideInInspector] [SerializeField] public Color OriginalFillColor;
+    private const float SortingStepZ = -.0001f;
+    public string Key;
+    public Color OriginalFillColor;
     public Color CurrentColor => _paintableSprites[0].Color;
     public bool IsFirstPainted = false;
+
     [SerializeField] private PaintableSprite _paintableSpritePrefab;
 
-    [HideInInspector] [SerializeField] private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
+    private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
 
-    public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup/*, ref int order*/)
+    public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup)
     {
         Key = paintableGroup.Key;
-        var z = -.001f;
+        var z = SortingStepZ;
         foreach (var paintableChild in paintableGroup.Children)
         {
-            z -= .001f;
             var childInstance = Instantiate(_paintableSpritePrefab, transform);
             childInstance.transform.localPosition = childInstance.transform.localPosition + new Vector3(0, 0, z);
-            childInstance.Init(paintableChild/*, ref order*/);
+            childInstance.Init(paintableChild);
             _paintableSprites.Add(childInstance);
-            //order++;
+            z += SortingStepZ;
         }
     }
 
