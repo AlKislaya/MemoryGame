@@ -13,17 +13,12 @@ public class LevelObjectsController : MonoBehaviour
 
     private List<LevelObjectController> _levelObjectControllers = new List<LevelObjectController>();
     private LevelObject _levelObject;
-    private static SvgLoader _svgLoader;
+    private static SvgLoader _svgLoader = new SvgLoader();
 
     //instantiate and init sprites groups
     public async Task<List<PaintableSpriteGroup>> Init(LevelObject levelObject, CancellationToken token)
     {
         _levelObject = levelObject;
-
-        if (_svgLoader == null)
-        {
-            _svgLoader = new SvgLoader(Settings.Instance.VectorSpriteSettings);
-        }
 
         _svgLoader.ImportSVG(levelObject.SvgTextAsset);
 

@@ -9,7 +9,9 @@ using UnityEngine.UI;
 
 public class GameView : AWindowView
 {
-    public event Action<PassedLevelStats> OnLevelDone; 
+    public event Action<PassedLevelStats> OnLevelDone;
+    public event Action<bool> OnBlockExitStateChanged;
+    public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
 
     [SerializeField] private PlayableObjectsController _playableControllerPrefab;
     [SerializeField] private SwatchesController _colorsController;
@@ -22,6 +24,7 @@ public class GameView : AWindowView
     private GameSettings _gameSettings;
     private Sequence _startGameAnimation;
     private Sequence _placeObjectsAnimation;
+    private Sequence _checkLevelAnimation;
 
     private string _seconds = "s";
     private string _of = "of";
@@ -178,6 +181,14 @@ public class GameView : AWindowView
 
     private void OnLevelDoneClicked()
     {
-        OnLevelDone?.Invoke(_playableObjectsController.CheckSprite());
+        OnBlockExitStateChanged?.Invoke(true);
+        _checkLevelAnimation =_playableObjectsController
+            .CheckSpriteAnimation()
+            .AppendInterval(.5f)
+            .OnComplete(()=> 
+            {
+                OnLevelDone?.Invoke(_playableObjectsController.GetStats());
+                OnBlockExitStateChanged?.Invoke(false);
+            });
     }
 }

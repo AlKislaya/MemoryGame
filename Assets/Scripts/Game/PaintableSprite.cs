@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -15,7 +16,6 @@ public class PaintableSprite : MonoBehaviour
     public void Init(SvgLoader.PaintableVectorSprite paintableVectorSprite)
     {
         _fillSpriteRenderer.sprite = paintableVectorSprite.Fill;
-        //_strokeSpriteRenderer.sprite = paintableVectorSprite.Stroke;
         if (paintableVectorSprite.OriginalStroke != null)
         {
             _strokeSpriteRenderer.sprite = paintableVectorSprite.OriginalStroke;
@@ -25,11 +25,6 @@ public class PaintableSprite : MonoBehaviour
         boxCollider.offset = paintableVectorSprite.Position;
         _collider = boxCollider;
         _paintableVectorSprite = paintableVectorSprite;
-
-        //sorting orders
-        //_strokeSpriteRenderer.sortingOrder = order;
-        //order++;
-        //_fillSpriteRenderer.sortingOrder = order;
     }
 
     public void SetFillColor(Color color)
@@ -55,6 +50,11 @@ public class PaintableSprite : MonoBehaviour
     public void SetActiveOriginalStroke(bool isActive)
     {
         _strokeSpriteRenderer.sprite = isActive ? _paintableVectorSprite.OriginalStroke : _paintableVectorSprite.Stroke;
+    }
+
+    public Tween DoStrokeAlpha(float targetAplpha, float duration)
+    {
+        return _strokeSpriteRenderer.DOFade(targetAplpha, duration);
     }
 
     //public static bool ContainsPoint(Vector3[] polyPoints, Vector2 p)

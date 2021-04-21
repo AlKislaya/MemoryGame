@@ -45,8 +45,8 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private Camera _cameraMain;
     private Transform _objectsContainer;
     private ContactFilter2D _contactFilter;
-    private VectorSpriteSettings _levelObjectsSettings;
     private List<LevelObjectsController> _levelObjectsControllers = new List<LevelObjectsController>();
+    private List<LevelObjectController> _levelObjectControllers = new List<LevelObjectController>();
     private List<PaintableSpriteGroup> _paintableGroups = new List<PaintableSpriteGroup>();
 
     //
@@ -58,7 +58,6 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     //assign non-changeable variables, fit in screen size
     private void Awake()
     {
-        _levelObjectsSettings = Settings.Instance.VectorSpriteSettings;
         _cameraMain = Camera.main;
         _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
         FitInScreenSize();
@@ -104,6 +103,14 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         }
 
         _levelObjectsControllers.ForEach(x => x.SetColors());
+
+        //store all LO and sort by position
+        _levelObjectControllers = new List<LevelObjectController>();
+        foreach (var loController in _levelObjectsControllers)
+        {
+            _levelObjectControllers.AddRange(loController.LevelObjectControllers);
+        }
+        _levelObjectControllers = _levelObjectControllers.OrderBy(x => x.transform.localPosition.x).ToList();
     }
 
     public void OpenLevelObjects(bool isOpen)
@@ -113,22 +120,15 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
 
     public Sequence PlaceLevelObjects()
     {
-        var levelObjectControllers = new List<LevelObjectController>();
-        foreach (var loController in _levelObjectsControllers)
-        {
-            levelObjectControllers.AddRange(loController.LevelObjectControllers);
-        }
-        levelObjectControllers = levelObjectControllers.OrderBy(x => x.transform.localPosition.x).ToList();
-
         var tweenDuration = .4f;
         var tweenShift = .1f;
 
         var sequence = DOTween.Sequence();
-        if (levelObjectControllers != null)
+        if (_levelObjectControllers != null)
         {
-            for (int i = 0; i < levelObjectControllers.Count; i++)
+            for (int i = 0; i < _levelObjectControllers.Count; i++)
             {
-                sequence.Insert(tweenShift * i, levelObjectControllers[i].PlaceObjectAnimation(tweenDuration));
+                sequence.Insert(tweenShift * i, _levelObjectControllers[i].PlaceObjectAnimation(tweenDuration));
             }
         }
         return sequence;
@@ -174,6 +174,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         }
         Destroy(_objectsContainer.gameObject);
         _objectsContainer = null;
+        _levelObjectControllers = new List<LevelObjectController>();
         _levelObjectsControllers = new List<LevelObjectsController>();
         _paintableGroups = new List<PaintableSpriteGroup>();
     }
@@ -203,30 +204,16 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
        _paintableGroups.ForEach(x=>
         {
             x.SetActiveOriginalStroke(false);
-            x.SetFillColor(_levelObjectsSettings.ClearFillColor);
-            x.SetStrokeColor(_levelObjectsSettings.HighlightedStrokeColor);
+            x.SetFillColor(Color.white);
+            x.HighlightStroke();
             originalColors.Add(x.OriginalFillColor);
         });
         return originalColors;
     }
 
-    //check paintables colors, set stroke colors, returns PassedLevelStats
-    public PassedLevelStats CheckSprite()
+    public PassedLevelStats GetStats()
     {
-        int rightCount = 0;
-
-        foreach (var paintableSpriteGroup in _paintableGroups)
-        {
-            if (paintableSpriteGroup.CurrentColor == paintableSpriteGroup.OriginalFillColor)
-            {
-                paintableSpriteGroup.SetStrokeColor(_levelObjectsSettings.RightStrokeColor);
-                rightCount++;
-            }
-            else
-            {
-                paintableSpriteGroup.SetStrokeColor(_levelObjectsSettings.WrongStrokeColor);
-            }
-        }
+        int rightCount = _paintableGroups.Count(x => x.IsRight);
 
         return new PassedLevelStats()
         {
@@ -234,6 +221,19 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
             RightPaintablesCount = rightCount,
             Percents = (float)rightCount / _paintableGroups.Count
         };
+    }
+
+    //check paintables colors, set stroke colors
+    public Sequence CheckSpriteAnimation()
+    {
+        var sequence = DOTween.Sequence();
+
+        for (int i = 0; i < _levelObjectControllers.Count; i++)
+        {
+            sequence.Insert(.5f * i, _levelObjectControllers[i].CheckPaintablesAnimation(.3f, .15f));
+        }
+
+        return sequence;
     }
 
     //check click delay, generate a ray to fin objects under, invoke OnPaintableSpriteClicked if true
@@ -271,7 +271,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private void FitInScreenSize()
     {
         var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
-        var vectorSpriteWidth = _levelObjectsSettings.SceneRect.width / _levelObjectsSettings.PixelsPerUnit;
+        var vectorSpriteWidth = 5f;
         var scaleFactor = width / vectorSpriteWidth;
         transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
     }

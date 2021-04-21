@@ -1,6 +1,14 @@
+using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
+public enum StrokeColor
+{
+    Highlighted,
+    Right,
+    Wrong
+}
 
 public class PaintableSpriteGroup : MonoBehaviour
 {
@@ -9,8 +17,12 @@ public class PaintableSpriteGroup : MonoBehaviour
     public Color OriginalFillColor;
     public Color CurrentColor => _paintableSprites[0].Color;
     public bool IsFirstPainted = false;
+    public bool IsRight => CurrentColor == OriginalFillColor;
 
     [SerializeField] private PaintableSprite _paintableSpritePrefab;
+    [SerializeField] private Color _highlightedColor;
+    [SerializeField] private Color _rightColor;
+    [SerializeField] private Color _wrongColor;
 
     private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
 
@@ -33,9 +45,9 @@ public class PaintableSpriteGroup : MonoBehaviour
         _paintableSprites.ForEach(x => x.SetFillColor(color));
     }
 
-    public void SetStrokeColor(Color color)
+    public void HighlightStroke()
     {
-        _paintableSprites.ForEach(x => x.SetStrokeColor(color));
+        _paintableSprites.ForEach(x => x.SetStrokeColor(_highlightedColor));
     }
 
     //bug: if stroke will have alpha != 255 
@@ -46,6 +58,22 @@ public class PaintableSpriteGroup : MonoBehaviour
             x.SetActiveOriginalStroke(isActive);
             x.SetStrokeColor(Color.white);
         });
+    }
+
+    public Sequence DoStrokeCheckAnimation(float duration)
+    {
+        var color = IsRight ? _rightColor : _wrongColor;
+        var targetA = color.a;
+        color.a = 0;
+
+        var sequence = DOTween.Sequence();
+        foreach (var paintable in _paintableSprites)
+        {
+            paintable.SetStrokeColor(color);
+            sequence.Join(paintable.DoStrokeAlpha(targetA, duration));
+        }
+
+        return sequence;
     }
 
     public bool ContainsCollider(Collider2D collider)

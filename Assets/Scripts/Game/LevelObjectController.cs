@@ -122,4 +122,14 @@ public class LevelObjectController : MonoBehaviour
 
         return DOTween.Sequence().AppendCallback(() => gameObject.SetActive(true)).Append(transform.DOScale(_scale, duration));
     }
+
+    public Tween CheckPaintablesAnimation(float duration, float shift)
+    {
+        var sequense = DOTween.Sequence();
+        for (int i = 0; i < _paintableSpriteGroups.Count; i++)
+        {
+            sequense.Insert(shift *i, _paintableSpriteGroups[i].DoStrokeCheckAnimation(duration));
+        }
+        return sequense;
+    }
 }

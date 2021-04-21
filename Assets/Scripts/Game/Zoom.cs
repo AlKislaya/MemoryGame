@@ -3,14 +3,13 @@ using UnityEngine.EventSystems;
 
 public class Zoom : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerEnterHandler
 {
+    private const float _halfWidth = 2.5f;
+    private const float _halfHeight = 2.5f;
     private const float TouchZoomSpeed = 0.005f;
     private Transform _zoomContainer;
     private Camera _cameraMain;
     private float _zoomMinValue = 1f;
     private float _zoomMaxValue = 3f;
-
-    private float _halfWidth;
-    private float _halfHeight;
     private float _boundX;
     private float _boundY;
 
@@ -22,10 +21,6 @@ public class Zoom : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHand
 
         _zoomMinValue = Settings.Instance.GameSettings.MinZoomValue;
         _zoomMaxValue = Settings.Instance.GameSettings.MaxZoomValue;
-
-        var vectorSpriteSettings = Settings.Instance.VectorSpriteSettings;
-        _halfWidth = vectorSpriteSettings.SceneRect.width / vectorSpriteSettings.PixelsPerUnit / 2;
-        _halfHeight = vectorSpriteSettings.SceneRect.height / vectorSpriteSettings.PixelsPerUnit / 2;
     }
 
     public void AssignZoomContainer(Transform container)
