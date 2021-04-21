@@ -87,7 +87,7 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
     {
         var manager = ApplicationController.Instance.UiManager;
         manager.Back();
-        manager.Back();
+        manager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     private void OpenGame()

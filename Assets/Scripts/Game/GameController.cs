@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dainty.UI;
@@ -15,10 +16,12 @@ public class GameController : AWindowController<GameView>
     private CancellationTokenSource _loadingToken;
     private Task _loadingTask;
     private TopPanelController _topPanelController;
+    private UiManager _uiManager;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
+        _uiManager = ApplicationController.Instance.UiManager;
         _topPanelController = ApplicationController.Instance.TopPanelController;
     }
 
@@ -47,8 +50,10 @@ public class GameController : AWindowController<GameView>
     {
         view.OnLevelDone += ViewOnOnLevelDone;
         view.OnBlockExitStateChanged += OnBlockExitStateChanged;
+        view.OnHintClicked += OnHintClicked;
         ProcessLevel();
     }
+
     private void ProcessLevel()
     {
         if (_waitingForLevelShow)
@@ -82,17 +87,41 @@ public class GameController : AWindowController<GameView>
     {
         view.OnLevelDone -= ViewOnOnLevelDone;
         view.OnBlockExitStateChanged -= OnBlockExitStateChanged;
+        view.OnHintClicked -= OnHintClicked;
     }
 
     private void ViewOnOnLevelDone(PassedLevelStats stats)
     {
-        ApplicationController.Instance.UiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
+        _uiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
         {
             CategoryKey = _categoryKey,
             LevelIndex = _levelIndex,
             Stats = stats,
             GameController = this
         }, true);
+    }
+
+    private void OnHintClicked()
+    {
+        _uiManager.Open<AlertController, AlertSettings>(
+            new AlertSettings()
+            {
+                DialogText = "Show hint?",
+                Buttons = new List<AlertButtonSettings>() {
+                                        new AlertButtonSettings() { Text = "i'm poor", Color = Color.grey, Callback = OnHintDeclined },
+                                        new AlertButtonSettings() { Text = "give 10 bucks", Color = Color.green, Callback = OnHintApproved }}
+            }, true);
+    }
+
+    private void OnHintDeclined()
+    {
+        _uiManager.Back();
+    }
+
+    private void OnHintApproved()
+    {
+        _uiManager.Back();
+        view.ShowHint();
     }
 
     private void OnBlockExitStateChanged(bool isBlocked)
@@ -106,14 +135,14 @@ public class GameController : AWindowController<GameView>
         {
             return;
         }
-        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        _uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     public override void Dispose()
     {
-        base.Dispose();
         _loadingToken?.Cancel();
         view.StopAnimations();
         view.DestroyLevel();
+        base.Dispose();
     }
 }

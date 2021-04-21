@@ -15,6 +15,7 @@ public class PaintableSpriteGroup : MonoBehaviour
     private const float SortingStepZ = -.0001f;
     public string Key;
     public Color OriginalFillColor;
+
     public Color CurrentColor => _paintableSprites[0].Color;
     public bool IsFirstPainted = false;
     public bool IsRight => CurrentColor == OriginalFillColor;
@@ -24,6 +25,7 @@ public class PaintableSpriteGroup : MonoBehaviour
     [SerializeField] private Color _rightColor;
     [SerializeField] private Color _wrongColor;
 
+    private Color _storedColor = Color.white;
     private List<PaintableSprite> _paintableSprites = new List<PaintableSprite>();
 
     public void InitGroup(SvgLoader.PaintableVectorSpriteGroup paintableGroup)
@@ -38,6 +40,23 @@ public class PaintableSpriteGroup : MonoBehaviour
             _paintableSprites.Add(childInstance);
             z += SortingStepZ;
         }
+    }
+
+    public void ResetStoredColor()
+    {
+        _storedColor = Color.white;
+    }
+
+    //for hint
+    public void StoreColor()
+    {
+        _storedColor = CurrentColor;
+    }
+
+    //for hint and clear color
+    public void RestoreColorOrSetDefault()
+    {
+        SetFillColor(_storedColor);
     }
 
     public void SetFillColor(Color color)

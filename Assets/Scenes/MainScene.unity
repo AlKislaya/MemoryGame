@@ -523,7 +523,7 @@ GameObject:
   - component: {fileID: 989821261}
   - component: {fileID: 989821263}
   m_Layer: 5
-  m_Name: TopPanel
+  m_Name: TopPanelCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -602,6 +602,7 @@ MonoBehaviour:
   _rectTransform: {fileID: 989821260}
   _header: {fileID: 124713743}
   _backButton: {fileID: 728238954}
+  _hintButton: {fileID: 0}
 --- !u!224 &1128304965 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2587392728093905625, guid: 1bd03d31093bc6244b49d0de2b319226,
@@ -1084,8 +1085,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3dfaa4306f18244e85edbdb214f8bee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _vectorSpriteSettings: {fileID: 11400000, guid: ba3dd37bd3008914db6c103d019671a1,
-    type: 2}
   _gameSettings: {fileID: 11400000, guid: 6811fc6f1d2232d47961093cd9009de2, type: 2}
 --- !u!4 &1897542117
 Transform:

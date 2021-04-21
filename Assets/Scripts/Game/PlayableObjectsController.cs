@@ -20,6 +20,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     private const float RayDistance = 5f;
     private const float ClickDelay = .3f;
 
+    public int FirstPaintedCount => _paintableGroups.Count(x => x.IsFirstPainted);
     public int PaintablesCount => _paintableGroups.Count;
     public bool SpriteMaskEnabled
     {
@@ -33,7 +34,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
     }
 
     //<new count, all>
-    public event Action<int, int> OnFirstPaintedCountChanged;
+    public event Action<int> OnFirstPaintedCountChanged;
     public event Action OnPaintableSpriteClicked;
 
     [SerializeField] private LevelObjectsController _levelObjectsPrefab;
@@ -156,6 +157,7 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
                 x.IsFirstPainted = false;
                 x.SetActiveOriginalStroke(true);
                 x.SetFillColor(x.OriginalFillColor);
+                x.ResetStoredColor();
             });
         }
 
@@ -193,22 +195,40 @@ public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IP
         if (_paintableGroups.Count(x=>x.IsFirstPainted) != _firstPaintedGroupsCount)
         {
             _firstPaintedGroupsCount++;
-            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount, _paintableGroups.Count);
+            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount);
         }
     }
 
-    //remove and return colors
-    public List<Color> ClearColors()
+    public void StoreColors()
     {
-        var originalColors = new List<Color>();
-       _paintableGroups.ForEach(x=>
+        _paintableGroups.ForEach(x => x.StoreColor());
+    }
+
+    //uses for hint
+    public void SetOriginalColors()
+    {
+        _paintableGroups.ForEach(x =>
+        {
+            x.SetActiveOriginalStroke(true);
+            x.SetFillColor(x.OriginalFillColor);
+        });
+    }
+
+    //returns original colors
+    public List<Color> GetColors()
+    {
+        return _paintableGroups.Select(x => x.OriginalFillColor).ToList();
+    }
+
+    //remove colors
+    public void ClearColors()
+    {
+        _paintableGroups.ForEach(x =>
         {
             x.SetActiveOriginalStroke(false);
-            x.SetFillColor(Color.white);
+            x.RestoreColorOrSetDefault();
             x.HighlightStroke();
-            originalColors.Add(x.OriginalFillColor);
         });
-        return originalColors;
     }
 
     public PassedLevelStats GetStats()

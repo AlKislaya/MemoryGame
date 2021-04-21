@@ -31,7 +31,10 @@ MonoBehaviour:
       Position: {x: 0, y: 0}
       Scale: {x: 0.65, y: 0.65}
       Rotation: 0
-    ColorsSettings: []
+    ColorsSettings:
+    - SearchByKey: 0
+      Key: 
+      Swatches: {fileID: 11400000, guid: 0f2692519e96c874da5f492dc0266b0a, type: 2}
     CopiesSettings:
     - Position: {x: 3.39, y: 3.1}
       Scale: {x: 1.1, y: 1.1}
@@ -42,7 +45,10 @@ MonoBehaviour:
       Position: {x: 0, y: 0}
       Scale: {x: 0.65, y: 0.65}
       Rotation: 0
-    ColorsSettings: []
+    ColorsSettings:
+    - SearchByKey: 0
+      Key: 
+      Swatches: {fileID: 11400000, guid: 0f2692519e96c874da5f492dc0266b0a, type: 2}
     CopiesSettings:
     - Position: {x: 2.432, y: 2.54}
       Scale: {x: 1.1, y: 1.1}
@@ -53,7 +59,10 @@ MonoBehaviour:
       Position: {x: 0, y: 0}
       Scale: {x: 0.65, y: 0.65}
       Rotation: 0
-    ColorsSettings: []
+    ColorsSettings:
+    - SearchByKey: 0
+      Key: 
+      Swatches: {fileID: 11400000, guid: 0f2692519e96c874da5f492dc0266b0a, type: 2}
     CopiesSettings:
     - Position: {x: 3.778, y: 2.08}
       Scale: {x: 1.1, y: 1.1}
@@ -64,7 +73,10 @@ MonoBehaviour:
       Position: {x: 0, y: 0}
       Scale: {x: 0.65, y: 0.65}
       Rotation: 0
-    ColorsSettings: []
+    ColorsSettings:
+    - SearchByKey: 0
+      Key: 
+      Swatches: {fileID: 11400000, guid: 0f2692519e96c874da5f492dc0266b0a, type: 2}
     CopiesSettings:
     - Position: {x: 2.87, y: 1.373}
       Scale: {x: 1.1, y: 1.1}
@@ -75,7 +87,10 @@ MonoBehaviour:
       Position: {x: 0, y: 0}
       Scale: {x: 0.65, y: 0.65}
       Rotation: 0
-    ColorsSettings: []
+    ColorsSettings:
+    - SearchByKey: 0
+      Key: 
+      Swatches: {fileID: 11400000, guid: 0f2692519e96c874da5f492dc0266b0a, type: 2}
     CopiesSettings:
     - Position: {x: 1.7, y: 1.76}
       Scale: {x: 1.1, y: 1.1}

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class ButtonAnimation : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
+    public Button Button => _button;
     [SerializeField] private RectTransform _shadow;
     [SerializeField] private Transform _icon;
     [SerializeField] private Vector3 _targetScale;
@@ -13,10 +14,16 @@ public class ButtonAnimation : MonoBehaviour, IPointerDownHandler, IPointerUpHan
     [SerializeField] private float _duration;
     [SerializeField] private bool _isEnabled = true;
 
+    private Button _button;
     private Vector3 _startScale;
     private Vector2 _startShadowPosition;
     private float _scaleDistance;
     private Sequence _animation;
+
+    void Awake()
+    {
+        _button = GetComponent<Button>();
+    }
 
     void Start()
     {

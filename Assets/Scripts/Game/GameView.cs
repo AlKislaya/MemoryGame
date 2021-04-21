@@ -11,8 +11,10 @@ public class GameView : AWindowView
 {
     public event Action<PassedLevelStats> OnLevelDone;
     public event Action<bool> OnBlockExitStateChanged;
+    public event Action OnHintClicked;
     public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
 
+    [SerializeField] private ButtonAnimation _hintButton;
     [SerializeField] private PlayableObjectsController _playableControllerPrefab;
     [SerializeField] private SwatchesController _colorsController;
     [SerializeField] private List<Button> _tapToStartButtons;
@@ -52,6 +54,9 @@ public class GameView : AWindowView
     protected override void OnSubscribe()
     {
         base.OnSubscribe();
+
+        _hintButton.Button.onClick.AddListener(OnHintButtonClicked);
+
         _playableObjectsController.OnFirstPaintedCountChanged += OnOnFirstClickedCountChanged;
         _playableObjectsController.OnPaintableSpriteClicked += OnPaintableClicked;
         _counterElement.OnButtonClicked += OnLevelDoneClicked;
@@ -61,6 +66,7 @@ public class GameView : AWindowView
     protected override void OnUnSubscribe()
     {
         base.OnUnSubscribe();
+        _hintButton.Button.onClick.RemoveAllListeners();
         _playableObjectsController.OnFirstPaintedCountChanged -= OnOnFirstClickedCountChanged;
         _playableObjectsController.OnPaintableSpriteClicked -= OnPaintableClicked;
         _counterElement.OnButtonClicked -= OnLevelDoneClicked;
@@ -70,6 +76,7 @@ public class GameView : AWindowView
     public async Task InitLevel(Level levelAsset, CancellationToken token)
     {
         await _playableObjectsController.LoadLevel(levelAsset, token);
+        _colorsController.AddColors(_playableObjectsController.GetColors());
     }
 
     public void ShowLoader(bool show)
@@ -95,12 +102,45 @@ public class GameView : AWindowView
         //hide tap to start buttons
         _tapToStartButtons.ForEach(x => x.gameObject.SetActive(false));
         //init timer
+        SetTimer();
+
+        _colorsController.Close();
+
+        if (_hintButton.Button != null)
+        {
+            _hintButton.Button.interactable = false;
+            _hintButton.SetAnimationEnabled(false);
+        }
+    }
+
+    private void SetTimer()
+    {
         _counterElement.SetDefaults();
         _counterElement.SetText($"{_gameSettings.TimerSeconds}{_seconds}");
         _counterElement.SetColor(_gameSettings.TimerColor);
         _counterElement.SetAmount(1);
+    }
+
+    public void ShowHint()
+    {
+        _tapToStartButtons.ForEach(x => x.gameObject.SetActive(true));
+        _playableObjectsController.ZoomEnabled = false;
+
+        //
+        SetTimer();
 
         _colorsController.Close();
+
+        if (_hintButton.Button != null)
+        {
+            _hintButton.Button.interactable = false;
+            _hintButton.SetAnimationEnabled(false);
+        }
+        //
+
+        _playableObjectsController.StoreColors();
+        _playableObjectsController.OpenLevelObjects(false);
+        _playableObjectsController.SetOriginalColors();
     }
 
     public void DestroyLevel()
@@ -143,15 +183,16 @@ public class GameView : AWindowView
             .AppendInterval(1f)
             .AppendCallback(() =>
             {
-                _colorsController.AddColors(_playableObjectsController.ClearColors());
+                _playableObjectsController.ClearColors();
                 _playableObjectsController.OpenLevelObjects(true);
                 _colorsController.Show();
 
-                _counterElement.SetText($"0 {_of} {_playableObjectsController.PaintablesCount}");
-                _counterElement.SetAmount(0);
+                OnOnFirstClickedCountChanged(_playableObjectsController.FirstPaintedCount);
                 _counterElement.SetColor(_gameSettings.ProgressColor);
 
                 _playableObjectsController.ZoomEnabled = true;
+                _hintButton.Button.interactable = true;
+                _hintButton.SetAnimationEnabled(true);
             });
 
         _startGameAnimation.Play();
@@ -168,8 +209,10 @@ public class GameView : AWindowView
         _playableObjectsController.SetLastClickedGroupColor(color);
     }
 
-    private void OnOnFirstClickedCountChanged(int updatedCount, int count)
+    private void OnOnFirstClickedCountChanged(int updatedCount)
     {
+        var count = _playableObjectsController.PaintablesCount;
+
         var percents = (float)updatedCount / count;
         _counterElement.SetText($"{updatedCount} {_of} {count}");
         _counterElement.SetAmount(percents, .5f, Ease.InSine);
@@ -179,16 +222,22 @@ public class GameView : AWindowView
         }
     }
 
+    private void OnHintButtonClicked()
+    {
+        OnHintClicked?.Invoke();
+    }
+
     private void OnLevelDoneClicked()
     {
+        OnUnSubscribe();
         OnBlockExitStateChanged?.Invoke(true);
         _checkLevelAnimation =_playableObjectsController
             .CheckSpriteAnimation()
             .AppendInterval(.5f)
             .OnComplete(()=> 
             {
-                OnLevelDone?.Invoke(_playableObjectsController.GetStats());
                 OnBlockExitStateChanged?.Invoke(false);
+                OnLevelDone?.Invoke(_playableObjectsController.GetStats());
             });
     }
 }
