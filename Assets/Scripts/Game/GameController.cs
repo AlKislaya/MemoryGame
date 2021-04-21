@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Dainty.UI;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
@@ -105,7 +106,7 @@ public class GameController : AWindowController<GameView>
         {
             return;
         }
-        base.OnEscape();
+        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     public override void Dispose()

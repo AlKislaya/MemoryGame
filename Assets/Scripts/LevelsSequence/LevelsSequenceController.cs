@@ -84,4 +84,9 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
     {
         view.OnLevelClicked -= OnLevelClicked;
     }
+
+    protected override void OnEscape()
+    {
+        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+    }
 }

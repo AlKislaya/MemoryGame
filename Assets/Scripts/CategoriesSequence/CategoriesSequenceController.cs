@@ -62,4 +62,9 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
     {
         view.OnCategoryClicked -= OnCategoryClicked;
     }
+
+    protected override void OnEscape()
+    {
+        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+    }
 }

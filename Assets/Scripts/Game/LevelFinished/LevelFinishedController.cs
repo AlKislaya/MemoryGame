@@ -1,3 +1,4 @@
+using Dainty.UI;
 using Dainty.UI.WindowBase;
 
 public class LevelFinishedSettings
@@ -97,6 +98,6 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
     protected override void OnEscape()
     {
         base.OnEscape();
-        ApplicationController.Instance.UiManager.Back();
+        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }
