@@ -18,10 +18,10 @@ namespace Dainty.UI
         public void Push(IWindowController window, WindowTransition transition, bool isPopup = false)
         {
             var closingWindow = _stack.Count > 0 ? _stack.Peek().WindowController : null;
-            var openingWindow = new NavigationElement(window, isPopup);
-            _stack.Push(openingWindow);
+            var openingWindowElement = new NavigationElement(window, isPopup);
+            _stack.Push(openingWindowElement);
             window.ViewTransform.SetAsLastSibling();
-            DoPushTransition(transition, closingWindow, openingWindow, null);
+            DoPushTransition(transition, closingWindow, openingWindowElement, null);
         }
 
         public bool Pop(WindowTransition transition, out IWindowController window, Action onClosed)
@@ -32,12 +32,12 @@ namespace Dainty.UI
                 return false;
             }
 
-            var closingWindow = _stack.Pop();
-            var openingWindow = _stack.Count > 0 ? _stack.Peek().WindowController : null;
+            var closingWindowElement = _stack.Pop();
+            var openingWindowElement = _stack.Count > 0 ? _stack.Peek() : null;
 
-            DoPopTransition(transition, closingWindow, openingWindow, onClosed);
+            DoPopTransition(transition, closingWindowElement, openingWindowElement, onClosed);
 
-            window = openingWindow;
+            window = openingWindowElement?.WindowController;
             return true;
         }
 
@@ -46,75 +46,69 @@ namespace Dainty.UI
             return _stack.Peek();
         }
 
-        public bool Close<T>(WindowTransition transition, out IWindowController window, Action onClosed)
+        public bool Close<T>(WindowTransition transition, Action onClosed)
         {
             if (_stack.Peek().WindowController.GetType() == typeof(T))
             {
-                return Pop(transition, out window, onClosed);
+                return Pop(transition, out _, onClosed);
             }
 
-            for (var i = _stack.Count - 1; i >= 0; i--)
+            for (var i = _stack.Count - 2; i >= 0; i--)
             {
                 if (_stack[i].WindowController.GetType() == typeof(T))
                 {
-                    var closingWindow = _stack.RemoveAt(i);
-                    var openingWindow = i > 0 ? _stack[i - 1].WindowController : null;
+                    var closingWindow = _stack.RemoveAt(i).WindowController;
+                    closingWindow.UnSubscribe();
+                    closingWindow.Close(true, false);
+                    closingWindow.Dispose();
 
-                    DoPopTransition(WindowTransition.None, closingWindow, openingWindow, onClosed);
-                    window = openingWindow;
+                    onClosed?.Invoke();
                     return true;
                 }
             }
 
-            window = null;
             return false;
         }
 
         public bool IsOpened<T>()
         {
-            for (var i = _stack.Count; i >= 0; i--)
+            for (var i = _stack.Count - 1; i >= 0; i--)
             {
                 if (_stack[i].WindowController.GetType() == typeof(T))
                 {
                     return true;
-                }
-
-                if (!_stack[i].IsPopup)
-                {
-                    return false;
                 }
             }
 
             return false;
         }
 
-        private static void DoPushTransition(WindowTransition transition, IWindowController closingWindow,
-            NavigationElement openingWindow, Action animationFinished)
+        private void DoPushTransition(WindowTransition transition, IWindowController closingWindow,
+            NavigationElement openingWindowElement, Action animationFinished)
         {
-            var openingWindowController = openingWindow.WindowController;
+            var openingWindow = openingWindowElement.WindowController;
             closingWindow?.UnSubscribe();
 
             if (transition == WindowTransition.None)
             {
-                if (!openingWindow.IsPopup)
+                if (!openingWindowElement.IsPopup)
                 {
                     closingWindow?.Close(false, false);
                 }
 
-                openingWindowController.BeforeShow();
-                openingWindowController.Show(true, false, () =>
-                {
-                    openingWindowController.Subscribe();
-                    animationFinished?.Invoke();
-                });
+                openingWindow.BeforeShow();
+                openingWindow.Show(true, false);
+                openingWindow.Subscribe();
+                animationFinished?.Invoke();
             }
             else if (transition == WindowTransition.AnimateClosing)
             {
-                if (openingWindow.IsPopup)
+                openingWindow.BeforeShow();
+                openingWindow.Show(true, false);
+
+                if (openingWindowElement.IsPopup)
                 {
-                    openingWindowController.BeforeShow();
-                    openingWindowController.Show(true, false);
-                    openingWindowController.Subscribe();
+                    openingWindow.Subscribe();
                     animationFinished?.Invoke();
 
 #if DEV_LOG
@@ -123,42 +117,42 @@ namespace Dainty.UI
                 }
                 else
                 {
-                    openingWindowController.BeforeShow();
-                    openingWindowController.Show(true, false);
-
                     if (closingWindow != null)
                     {
                         closingWindow.Close(false, true, () =>
                         {
-                            openingWindowController.Subscribe();
+                            if (Peek() == openingWindowElement)
+                                openingWindow.Subscribe();
                             animationFinished?.Invoke();
                         });
                     }
                     else
                     {
-                        openingWindowController.Subscribe();
+                        openingWindow.Subscribe();
                         animationFinished?.Invoke();
                     }
                 }
             }
             else if (transition == WindowTransition.AnimateOpening)
             {
-                openingWindowController.BeforeShow();
-                if (!openingWindow.IsPopup && closingWindow != null)
+                openingWindow.BeforeShow();
+                if (!openingWindowElement.IsPopup && closingWindow != null)
                 {
-                    openingWindowController.Show(true, true, () =>
+                    openingWindow.Show(true, true, () =>
                     {
                         closingWindow.Close(false, false);
 
-                        openingWindowController.Subscribe();
+                        if (Peek() == openingWindowElement)
+                            openingWindow.Subscribe();
                         animationFinished?.Invoke();
                     });
                 }
                 else
                 {
-                    openingWindowController.Show(true, true, () =>
+                    openingWindow.Show(true, true, () =>
                     {
-                        openingWindowController.Subscribe();
+                        if (Peek() == openingWindowElement)
+                            openingWindow.Subscribe();
                         animationFinished?.Invoke();
                     });
                 }
@@ -167,101 +161,80 @@ namespace Dainty.UI
             {
                 var animsFinished = 0;
 
-                openingWindowController.BeforeShow();
-                if (!openingWindow.IsPopup && closingWindow != null)
+                openingWindow.BeforeShow();
+                if (!openingWindowElement.IsPopup && closingWindow != null)
                 {
-                    closingWindow.Close(false, true, () =>
+                    void OnAnimationFinished()
                     {
                         animsFinished++;
                         if (animsFinished == 2)
                         {
-                            openingWindowController.Subscribe();
+                            if (Peek() == openingWindowElement)
+                                openingWindow.Subscribe();
                             animationFinished?.Invoke();
                         }
-                    });
+                    }
 
-                    openingWindowController.Show(true, true, () =>
-                    {
-                        animsFinished++;
-                        if (animsFinished == 2)
-                        {
-                            openingWindowController.Subscribe();
-                            animationFinished?.Invoke();
-                        }
-                    });
+                    closingWindow.Close(false, true, OnAnimationFinished);
+                    openingWindow.Show(true, true, OnAnimationFinished);
                 }
                 else
                 {
-                    openingWindowController.Show(true, true, () =>
+                    openingWindow.Show(true, true, () =>
                     {
-                        openingWindowController.Subscribe();
+                        if (Peek() == openingWindowElement)
+                            openingWindow.Subscribe();
                         animationFinished?.Invoke();
                     });
                 }
             }
         }
 
-        private static void DoPopTransition(WindowTransition transition, NavigationElement closingWindow,
-            IWindowController openingWindow, Action animationFinished)
+        private void DoPopTransition(WindowTransition transition, NavigationElement closingWindowElement,
+            NavigationElement openingWindowElement, Action animationFinished)
         {
-            var closingWindowController = closingWindow.WindowController;
-            closingWindowController.UnSubscribe();
+            var closingWindow = closingWindowElement.WindowController;
+            closingWindow.UnSubscribe();
+
+            var openingWindow = openingWindowElement?.WindowController;
 
             if (transition == WindowTransition.None)
             {
                 if (openingWindow != null)
                 {
-                    closingWindowController.Close(true, false);
-                    closingWindowController.Dispose();
+                    closingWindow.Close(true, false);
+                    closingWindow.Dispose();
 
                     openingWindow.BeforeShow();
-                    if (!closingWindow.IsPopup)
+                    if (!closingWindowElement.IsPopup)
                     {
-                        openingWindow.Show(false, false, () =>
-                        {
-                            openingWindow.Subscribe();
-                            animationFinished?.Invoke();
-                        });
+                        openingWindow.Show(false, false);
                     }
-                    else
-                    {
-                        openingWindow.Subscribe();
-                        animationFinished?.Invoke();
-                    }
+
+                    openingWindow.Subscribe();
+                    animationFinished?.Invoke();
                 }
                 else
                 {
-                    closingWindowController.Close(true, false);
-                    closingWindowController.Dispose();
+                    closingWindow.Close(true, false);
+                    closingWindow.Dispose();
                     animationFinished?.Invoke();
                 }
             }
             else if (transition == WindowTransition.AnimateClosing)
             {
-                closingWindowController.Close(true, true, () =>
+                if (openingWindow != null)
                 {
-                    closingWindowController.Dispose();
-                    if (openingWindow != null)
-                    {
-                        openingWindow.BeforeShow();
-                        if (!closingWindow.IsPopup)
-                        {
-                            openingWindow.Show(false, false, () =>
-                            {
-                                openingWindow.Subscribe();
-                                animationFinished?.Invoke();
-                            });
-                        }
-                        else
-                        {
-                            openingWindow.Subscribe();
-                            animationFinished?.Invoke();
-                        }
-                    }
-                    else
-                    {
-                        animationFinished?.Invoke();
-                    }
+                    openingWindow.BeforeShow();
+                    openingWindow.Show(false, false);
+                }
+
+                closingWindow.Close(true, true, () =>
+                {
+                    closingWindow.Dispose();
+                    if (openingWindowElement != null && Peek() == openingWindowElement)
+                        openingWindow?.Subscribe();
+                    animationFinished?.Invoke();
                 });
             }
             else if (transition == WindowTransition.AnimateOpening)
@@ -269,10 +242,10 @@ namespace Dainty.UI
                 if (openingWindow != null)
                 {
                     openingWindow.BeforeShow();
-                    if (closingWindow.IsPopup)
+                    if (closingWindowElement.IsPopup)
                     {
-                        closingWindowController.Close(true, false);
-                        closingWindowController.Dispose();
+                        closingWindow.Close(true, false);
+                        closingWindow.Dispose();
 
                         openingWindow.Subscribe();
                         animationFinished?.Invoke();
@@ -281,10 +254,11 @@ namespace Dainty.UI
                     {
                         openingWindow.Show(false, true, () =>
                         {
-                            closingWindowController.Close(true, false);
-                            closingWindowController.Dispose();
+                            closingWindow.Close(true, false);
+                            closingWindow.Dispose();
 
-                            openingWindow.Subscribe();
+                            if (Peek() == openingWindowElement)
+                                openingWindow.Subscribe();
                             animationFinished?.Invoke();
                         });
                     }
@@ -294,8 +268,8 @@ namespace Dainty.UI
 #if DEV_LOG
                     UnityEngine.Debug.LogWarning("There is no window that can be opened with animation!");
 #endif
-                    closingWindowController.Close(true, false);
-                    closingWindowController.Dispose();
+                    closingWindow.Close(true, false);
+                    closingWindow.Dispose();
                     animationFinished?.Invoke();
                 }
             }
@@ -304,12 +278,13 @@ namespace Dainty.UI
                 if (openingWindow != null)
                 {
                     openingWindow.BeforeShow();
-                    if (closingWindow.IsPopup)
+                    if (closingWindowElement.IsPopup)
                     {
-                        closingWindowController.Close(true, true, () =>
+                        closingWindow.Close(true, true, () =>
                         {
-                            closingWindowController.Dispose();
-                            openingWindow.Subscribe();
+                            closingWindow.Dispose();
+                            if (Peek() == openingWindowElement)
+                                openingWindow.Subscribe();
                             animationFinished?.Invoke();
                         });
                     }
@@ -317,26 +292,23 @@ namespace Dainty.UI
                     {
                         var animsFinished = 0;
 
-                        closingWindowController.Close(true, true, () =>
+                        void OnAnimationFinished()
                         {
-                            closingWindowController.Dispose();
                             animsFinished++;
                             if (animsFinished == 2)
                             {
-                                openingWindow.Subscribe();
+                                if (Peek() == openingWindowElement)
+                                    openingWindow.Subscribe();
                                 animationFinished?.Invoke();
                             }
-                        });
+                        }
 
-                        openingWindow.Show(false, true, () =>
+                        closingWindow.Close(true, true, () =>
                         {
-                            animsFinished++;
-                            if (animsFinished == 2)
-                            {
-                                openingWindow.Subscribe();
-                                animationFinished?.Invoke();
-                            }
+                            closingWindow.Dispose();
+                            OnAnimationFinished();
                         });
+                        openingWindow.Show(false, true, OnAnimationFinished);
                     }
                 }
                 else
@@ -344,9 +316,9 @@ namespace Dainty.UI
 #if DEV_LOG
                     UnityEngine.Debug.LogWarning("There is no window that can be opened with animation!");
 #endif
-                    closingWindowController.Close(true, true, () =>
+                    closingWindow.Close(true, true, () =>
                     {
-                        closingWindowController.Dispose();
+                        closingWindow.Dispose();
                         animationFinished?.Invoke();
                     });
                 }

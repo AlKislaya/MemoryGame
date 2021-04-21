@@ -33,7 +33,7 @@ namespace Dainty.UI.WindowBase
             OnUnSubscribe();
         }
 
-        public virtual void Show(bool push = false, bool animation = true, Action animationFinished = null)
+        public virtual void Show(bool push, bool animation = true, Action animationFinished = null)
         {
             Canvas.enabled = true;
 

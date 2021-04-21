@@ -35,11 +35,6 @@ namespace Dainty.UI.Interfaces
         bool Close<T>(WindowTransition transition = WindowTransition.AnimateClosing, Action onClosed = null);
         bool Close<T>(Action onClosed);
 
-        bool Close<T>(out IWindowController window, WindowTransition transition = WindowTransition.AnimateClosing,
-            Action onClosed = null);
-
-        bool Close<T>(out IWindowController window, Action onClosed);
-
     #endregion
 
     #region Back

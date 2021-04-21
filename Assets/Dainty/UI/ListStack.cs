@@ -8,19 +8,11 @@ namespace Dainty.UI
         private T[] _array;
         private int _size;
         private int _version;
-        private static readonly T[] _EmptyArray = new T[0];
 
-        public ListStack()
+        public ListStack(int capacity = 1)
         {
-            _array = _EmptyArray;
-            _size = 0;
-            _version = 0;
-        }
-
-        public ListStack(int capacity)
-        {
-            if (capacity < 0)
-                throw new ArgumentOutOfRangeException($"{nameof(capacity)} cannot be lower than 0");
+            if (capacity < 1)
+                throw new ArgumentOutOfRangeException(nameof(capacity) + " cannot be lower than 1");
 
             _array = new T[capacity];
             _size = 0;
@@ -30,7 +22,7 @@ namespace Dainty.UI
         public ListStack(IEnumerable<T> collection)
         {
             if (collection == null)
-                throw new ArgumentNullException($"{nameof(collection)} cannot be null");
+                throw new ArgumentNullException(nameof(collection) + " cannot be null");
 
             if (collection is ICollection<T> objs)
             {
@@ -69,6 +61,7 @@ namespace Dainty.UI
         {
             if (_size == 0)
                 throw new InvalidOperationException("Stack is empty");
+
             ++_version;
             var obj = _array[--_size];
             _array[_size] = default;
@@ -102,6 +95,11 @@ namespace Dainty.UI
             --_size;
             ++_version;
             return result;
+        }
+
+        public bool Contains(T t)
+        {
+            return Array.IndexOf(_array, t) >= 0;
         }
 
         public T this[int index]

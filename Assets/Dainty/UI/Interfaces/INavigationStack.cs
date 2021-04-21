@@ -11,7 +11,7 @@ namespace Dainty.UI.Interfaces
         bool Pop(WindowTransition transition, out IWindowController window, Action onClosed);
         NavigationElement Peek();
 
-        bool Close<T>(WindowTransition transition, out IWindowController window, Action onClosed);
+        bool Close<T>(WindowTransition transition, Action onClosed);
 
         bool IsOpened<T>();
     }

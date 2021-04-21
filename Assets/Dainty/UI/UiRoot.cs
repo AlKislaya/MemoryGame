@@ -25,7 +25,7 @@ namespace Dainty.UI
 
         public AWindowView GetViewOrSpawn(Type viewType, Func<AWindowView> prefab)
         {
-            var view = (AWindowView)GetComponentInChildren(viewType);
+            var view = (AWindowView) GetComponentInChildren(viewType);
             if (view == null)
             {
                 view = Instantiate(prefab(), transform);

@@ -55,7 +55,7 @@ namespace Dainty.UI
             return _navStack.IsOpened<T>();
         }
 
-        #region Open
+    #region Open
 
         public virtual T Open<T>(bool isPopup = false, WindowTransition transition = WindowTransition.AnimateOpening)
             where T : IWindowController, new()
@@ -93,16 +93,16 @@ namespace Dainty.UI
             return Open<T, TS>(data, false, transition);
         }
 
-        #endregion
+    #endregion
 
-        #region Close
+    #region Close
 
         public virtual bool Close<T>(WindowTransition transition = WindowTransition.AnimateClosing,
             Action onClosed = null)
         {
             WindowClosing?.Invoke(_navStack.Peek().WindowController);
 
-            return _navStack.Close<T>(transition, out _, onClosed);
+            return _navStack.Close<T>(transition, onClosed);
         }
 
         public bool Close<T>(Action onClosed)
@@ -110,22 +110,9 @@ namespace Dainty.UI
             return Close<T>(WindowTransition.AnimateClosing, onClosed);
         }
 
-        public virtual bool Close<T>(out IWindowController window,
-            WindowTransition transition = WindowTransition.AnimateClosing, Action onClosed = null)
-        {
-            WindowClosing?.Invoke(_navStack.Peek().WindowController);
+    #endregion
 
-            return _navStack.Close<T>(transition, out window, onClosed);
-        }
-
-        public bool Close<T>(out IWindowController window, Action onClosed)
-        {
-            return Close<T>(out window, WindowTransition.AnimateClosing, onClosed);
-        }
-
-        #endregion
-
-        #region Back
+    #region Back
 
         public virtual bool Back(WindowTransition transition = WindowTransition.AnimateClosing, Action onClosed = null)
         {
@@ -165,7 +152,7 @@ namespace Dainty.UI
             return Back(out window, WindowTransition.AnimateClosing, onClosed);
         }
 
-        #endregion
+    #endregion
 
         private T OpenBase<T>() where T : IWindowController, new()
         {
