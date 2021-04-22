@@ -21,12 +21,19 @@ public class MainController : AWindowController<MainView>
     {
         view.OnLevelsTypeClicked += OnLevelTypeClicked;
         view.OnSettingsClicked += OnSettingsClicked;
+        view.OnShopClicked += OnShopClicked;
     }
 
     protected override void OnUnSubscribe()
     {
         view.OnLevelsTypeClicked -= OnLevelTypeClicked;
         view.OnSettingsClicked -= OnSettingsClicked;
+        view.OnShopClicked -= OnShopClicked;
+    }
+
+    private void OnShopClicked()
+    {
+        ApplicationController.Instance.UiManager.Open<ShopController>(true);
     }
 
     private void OnSettingsClicked()

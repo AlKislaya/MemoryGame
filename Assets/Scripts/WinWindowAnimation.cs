@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class WinWindowAnimation : AWindowAnimation
 {
+    private const float _animationDuration = .4f;
     [SerializeField] private Canvas _canvas;
     [SerializeField] private Image _backgroundShade;
     [SerializeField] private RectTransform _panelContainer;
@@ -32,8 +33,8 @@ public class WinWindowAnimation : AWindowAnimation
         _tween?.Kill();
         _panelContainer.anchoredPosition = new Vector2(0, _canvasHalfHeight);
 
-        _backgroundShade.DOFade(.7f, .5f).SetEase(Ease.OutQuad);
-        _tween = DOTween.Sequence().Append(_panelContainer.DOAnchorPos(Vector2.zero, .5f).SetEase(Ease.OutQuad))
+        _backgroundShade.DOFade(.7f, _animationDuration).SetEase(Ease.OutQuad);
+        _tween = DOTween.Sequence().Append(_panelContainer.DOAnchorPos(Vector2.zero, _animationDuration).SetEase(Ease.OutQuad))
             .AppendCallback(() => animationFinished?.Invoke());
     }
 

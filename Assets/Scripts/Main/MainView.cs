@@ -15,8 +15,10 @@ public class MainView : AWindowView
         public RectTransform RectTransform;
     }
 
+    public Action OnShopClicked;
     public Action OnSettingsClicked;
     public Action<string> OnLevelsTypeClicked;
+    [SerializeField] private Button _shopButton;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _typesLeftButton;
     [SerializeField] private Button _typesRightButton;
@@ -46,9 +48,23 @@ public class MainView : AWindowView
         }
         _typesLeftButton.onClick.AddListener(() => OnLevelsTypesSwitched(1));
         _typesRightButton.onClick.AddListener(() => OnLevelsTypesSwitched(-1));
+    }
+    protected override void OnSubscribe()
+    {
+        base.OnSubscribe();
 
         _levelTypes.ForEach(x => x.Button.onClick.AddListener(() => OnLevelsTypeClicked?.Invoke(x.Key)));
         _settingsButton.onClick.AddListener(onSettingsClicked);
+        _shopButton.onClick.AddListener(OnShopButtonClicked);
+    }
+
+    protected override void OnUnSubscribe()
+    {
+        base.OnUnSubscribe();
+
+        _levelTypes.ForEach(x => x.Button.onClick.RemoveListener(() => OnLevelsTypeClicked?.Invoke(x.Key)));
+        _settingsButton.onClick.RemoveListener(onSettingsClicked);
+        _shopButton.onClick.RemoveListener(OnShopButtonClicked);
     }
 
     private void OnLevelsTypesSwitched(int direction)
@@ -87,5 +103,10 @@ public class MainView : AWindowView
     private void onSettingsClicked()
     {
         OnSettingsClicked?.Invoke();
+    }
+
+    private void OnShopButtonClicked()
+    {
+        OnShopClicked?.Invoke();
     }
 }

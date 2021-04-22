@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _views:
   - {fileID: 959476838104498340, guid: c2c5fba33f1b3ba45b543a32e03412b1, type: 3}
+  - {fileID: 8533906723199631019, guid: cb20de40d0acddf4a900584272358490, type: 3}
   - {fileID: 1319807107088031176, guid: c53a64fdc6f4d8842af9953aafa986f3, type: 3}
   - {fileID: 6005901405617823367, guid: f6053152f049ee54f832a22b526c759e, type: 3}
   - {fileID: 4925562870690273178, guid: ef8848ebaa7f7674d96e154328bb5ef0, type: 3}
