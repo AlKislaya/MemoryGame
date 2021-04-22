@@ -356,7 +356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 177638, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 11496292, guid: 0abab5bb77339e4428787a870eb31bd3, type: 3}
       propertyPath: m_audioModuleState
@@ -602,7 +602,6 @@ MonoBehaviour:
   _rectTransform: {fileID: 989821260}
   _header: {fileID: 124713743}
   _backButton: {fileID: 728238954}
-  _hintButton: {fileID: 0}
 --- !u!224 &1128304965 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2587392728093905625, guid: 1bd03d31093bc6244b49d0de2b319226,
