@@ -1,0 +1,51 @@
+﻿{
+    "languages" : 
+    [
+        {
+            "languageKey": "EN",
+            "localizationValues" : 
+            [
+                {
+                    "key" : "lt_base",
+                    "value": "Base Levels"
+                },
+                {
+                    "key" : "lt_categories",
+                    "value": "Categories"
+                },
+                {
+                    "key" : "settings",
+                    "value": "Settings"
+                },
+                {
+                    "key" : "sounds",
+                    "value": "Sounds"
+                },
+                {
+                    "key" : "language",
+                    "value": "Language"
+                },
+                {
+                    "key" : "shop",
+                    "value": "Shop"
+                },
+                {
+                    "key" : "free",
+                    "value": "Free"
+                },
+                {
+                    "key" : "lc_base",
+                    "value": "Base Levels"
+                },
+                {
+                    "key" : "lc_autumn",
+                    "value": "Autumn"
+                },
+                {
+                    "key" : "lc_winter",
+                    "value": "Winter"
+                }
+            ]
+        }
+    ]
+}

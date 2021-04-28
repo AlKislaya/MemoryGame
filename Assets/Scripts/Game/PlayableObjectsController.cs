@@ -1,298 +1,186 @@
+using DG.Tweening;
+using SvgLoaderModule;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DG.Tweening;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 public class PassedLevelStats
 {
-    public int PaintablesCount;
-    public int RightPaintablesCount;
-    public float Percents;
+    public int SelectableCount;
+    public int RightSelectablesCount;
 }
 
-public class PlayableObjectsController : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
+public class PlayableObjectsController : MonoBehaviour
 {
-    private const float SortingStepZ = -.1f;
-    private const float RayDistance = 5f;
-    private const float ClickDelay = .3f;
+    public event Action<PassedLevelStats> OnLevelEnded; 
+    [SerializeField] private PlayableCard _staticCard;
+    [SerializeField] private PlayableCard _playableCard;
+    [SerializeField] private GameObject _selectableParent;
+    [SerializeField] private SelectableCard _selectableCardPrefab;
 
-    public int FirstPaintedCount => _paintableGroups.Count(x => x.IsFirstPainted);
-    public int PaintablesCount => _paintableGroups.Count;
-    public bool SpriteMaskEnabled
+    private Vector3 _placeAnimationScale = new Vector3(1.1f, 1.1f, 1f);
+
+    private SvgLoader _svgLoader = new SvgLoader();
+    private List<SelectableCard> _selectableCardsInstances = new List<SelectableCard>();
+    private List<VectorImage> _vectorImages = new List<VectorImage>();
+    private Dictionary<int, RoundStats> _roundStats;
+    private int _roundIndex;
+
+    private class RoundStats
     {
-        set => _spriteMask.enabled = value;
+        public int RightIndex;
+        public int SelectedIndex;
     }
 
-    public bool ZoomEnabled
+    //loading svg
+    public async Task LoadLevel(TextAsset levelAsset, CancellationToken token)
     {
-        get => _zoom.enabled;
-        set => _zoom.enabled = value;
-    }
+        _svgLoader.ImportSVG(levelAsset);
 
-    //<new count, all>
-    public event Action<int> OnFirstPaintedCountChanged;
-    public event Action OnPaintableSpriteClicked;
+        _vectorImages = await _svgLoader.GetSpritesArrange(token);
 
-    [SerializeField] private LevelObjectsController _levelObjectsPrefab;
-    [SerializeField] private Transform _levelObjectsContainerPrefab;
-    [SerializeField] private LayerMask _raycastMask;
-    [SerializeField] private SpriteMask _spriteMask;
-    [SerializeField] private Zoom _zoom;
-
-    private Camera _cameraMain;
-    private Transform _objectsContainer;
-    private ContactFilter2D _contactFilter;
-    private List<LevelObjectsController> _levelObjectsControllers = new List<LevelObjectsController>();
-    private List<LevelObjectController> _levelObjectControllers = new List<LevelObjectController>();
-    private List<PaintableSpriteGroup> _paintableGroups = new List<PaintableSpriteGroup>();
-
-    //
-    private PaintableSpriteGroup _lastClickedGroup;
-    private float _pointerDownTime;
-    private int _firstPaintedGroupsCount;
-    //
-
-    //assign non-changeable variables, fit in screen size
-    private void Awake()
-    {
-        _cameraMain = Camera.main;
-        _contactFilter = new ContactFilter2D() { layerMask = _raycastMask, useLayerMask = true };
-        FitInScreenSize();
-    }
-
-    public async Task LoadLevel(Level levelAsset, CancellationToken token)
-    {
-        var zPos = SortingStepZ;
-        foreach (var levelObject in levelAsset.LevelObjects)
+        if (_vectorImages == null || _vectorImages.Count == 0)
         {
-            if (token.IsCancellationRequested)
-            {
-                Debug.Log("Canceled Loading level");
-                return;
-            }
-
-            //check copies count in object
-            if (levelObject.CopiesSettings == null || levelObject.CopiesSettings.Count == 0)
-            {
-                Debug.LogError("No copies in " + levelObject.SvgTextAsset.name);
-                continue;
-            }
-
-            if (token.IsCancellationRequested)
-            {
-                return;
-            }
-
-            var levelObjsController = Instantiate(_levelObjectsPrefab, _objectsContainer);
-            levelObjsController.transform.localPosition = new Vector3(0, 0, zPos);
-            if (!levelObject.IsStatic)
-            {
-                _levelObjectsControllers.Add(levelObjsController);
-            }
-
-            var paintableGroups = await levelObjsController.Init(levelObject, token);
-            if (paintableGroups != null && paintableGroups.Count > 0)
-            {
-                _paintableGroups.AddRange(paintableGroups);
-            }
-
-            zPos += SortingStepZ;
+            Debug.LogError("0 sprites");
+            return;
         }
-
-        _levelObjectsControllers.ForEach(x => x.SetColors());
-
-        //store all LO and sort by position
-        _levelObjectControllers = new List<LevelObjectController>();
-        foreach (var loController in _levelObjectsControllers)
-        {
-            _levelObjectControllers.AddRange(loController.LevelObjectControllers);
-        }
-        _levelObjectControllers = _levelObjectControllers.OrderBy(x => x.transform.localPosition.x).ToList();
     }
 
-    public void OpenLevelObjects(bool isOpen)
+    //set images, randomize selectables
+    private void SetLevel()
     {
-        _levelObjectsControllers.ForEach(x => x.OpenObjects(isOpen));
-    }
+        _roundStats = new Dictionary<int, RoundStats>();
 
-    public Sequence PlaceLevelObjects()
-    {
-        var tweenDuration = .4f;
-        var tweenShift = .1f;
-
-        var sequence = DOTween.Sequence();
-        if (_levelObjectControllers != null)
+        for (int i = 0; i < _vectorImages.Count; i++)
         {
-            for (int i = 0; i < _levelObjectControllers.Count; i++)
+            if (_vectorImages[i] is SelectableImages selectableSprites)
             {
-                sequence.Insert(tweenShift * i, _levelObjectControllers[i].PlaceObjectAnimation(tweenDuration));
+                int rightIndex = UnityEngine.Random.Range(0, selectableSprites.Children.Count);
+                _roundStats.Add(i, new RoundStats()
+                {
+                    RightIndex = rightIndex
+                });
+
+                _staticCard.AddImage(selectableSprites.Children[rightIndex], i);
+            }
+            else
+            {
+                var staticSprite = (_vectorImages[i] as StaticVectorImage).Sprite;
+                _playableCard.AddImage(staticSprite, i);
+                _staticCard.AddImage(staticSprite, i);
             }
         }
-        return sequence;
     }
 
-    //reset variables, instantiate sprites container if null, assign in zoom, set base view settings
     public void SetDefaults()
     {
-        _lastClickedGroup = null;
-        _pointerDownTime = 0;
-        _firstPaintedGroupsCount = 0;
+        _playableCard.ResetCard();
+        OpenCard(false);
 
-        if (_objectsContainer == null)
+        _selectableParent.SetActive(false);
+        _playableCard.SetActive(false);
+        _staticCard.SetActive(false);
+    }
+
+    public void DestroyLevel()
+    {
+        _vectorImages = new List<VectorImage>();
+        _staticCard.ResetCard();
+    }
+
+    public Tween PlaceCard(float duration)
+    {
+        SetLevel();
+
+        _staticCard.SetActive(true);
+        _staticCard.transform.localScale = _placeAnimationScale;
+        return _staticCard.GetComponent<RectTransform>().DOScale(Vector3.one, duration);
+    }
+
+    public void OpenCard(bool isOpen)
+    {
+        _staticCard.OpenCard(isOpen);
+    }
+
+    public void StartGame()
+    {
+        _playableCard.SetActive(true);
+        _staticCard.SetActive(false);
+
+        _roundIndex = -1;
+        _selectableParent.SetActive(true);
+        ShowNextCards();
+    }
+
+    private void OnSelectableClicked(int selectableIndex)
+    {
+        if (_roundIndex >= _vectorImages.Count)
         {
-            _objectsContainer = Instantiate(_levelObjectsContainerPrefab, transform);
+            //GAME ENDED
+            return;
         }
-        else if (_levelObjectsControllers != null && _levelObjectsControllers.Count > 0)
+
+        _roundStats[_roundIndex].SelectedIndex = selectableIndex;
+
+        _playableCard.AddImage((_vectorImages[_roundIndex] as SelectableImages).Children[selectableIndex], _roundIndex);
+        ShowNextCards();
+    }
+
+    private void ShowNextCards()
+    {
+        _roundIndex++;
+        if (_roundIndex >= _vectorImages.Count)
         {
-            _levelObjectsControllers.ForEach(x => {
-                x.OpenObjects(false);
-                x.SetColors();
-            });
-            _paintableGroups.ForEach(x =>
+            OnLevelEnded?.Invoke(new PassedLevelStats()
             {
-                x.IsFirstPainted = false;
-                x.SetActiveOriginalStroke(true);
-                x.SetFillColor(x.OriginalFillColor);
-                x.ResetStoredColor();
-            });
-        }
-
-        _zoom.AssignZoomContainer(_objectsContainer);
-
-        SpriteMaskEnabled = false;
-        ZoomEnabled = false;
-    }
-
-    //destroy sprites container
-    public void DestroyVectorSprites()
-    {
-        if (_objectsContainer == null)
-        {
-            return;
-        }
-        Destroy(_objectsContainer.gameObject);
-        _objectsContainer = null;
-        _levelObjectControllers = new List<LevelObjectController>();
-        _levelObjectsControllers = new List<LevelObjectsController>();
-        _paintableGroups = new List<PaintableSpriteGroup>();
-    }
-
-    //set color to the last clicked, check first painted
-    public void SetLastClickedGroupColor(Color color)
-    {
-        if (_lastClickedGroup == null)
-        {
-            return;
-        }
-
-        _lastClickedGroup.SetFillColor(color);
-
-        _lastClickedGroup.IsFirstPainted = true;
-        if (_paintableGroups.Count(x=>x.IsFirstPainted) != _firstPaintedGroupsCount)
-        {
-            _firstPaintedGroupsCount++;
-            OnFirstPaintedCountChanged?.Invoke(_firstPaintedGroupsCount);
-        }
-    }
-
-    public void StoreColors()
-    {
-        _paintableGroups.ForEach(x => x.StoreColor());
-    }
-
-    //uses for hint
-    public void SetOriginalColors()
-    {
-        _paintableGroups.ForEach(x =>
-        {
-            x.SetActiveOriginalStroke(true);
-            x.SetFillColor(x.OriginalFillColor);
-        });
-    }
-
-    //returns original colors
-    public List<Color> GetColors()
-    {
-        return _paintableGroups.Select(x => x.OriginalFillColor).ToList();
-    }
-
-    //remove colors
-    public void ClearColors()
-    {
-        _paintableGroups.ForEach(x =>
-        {
-            x.SetActiveOriginalStroke(false);
-            x.RestoreColorOrSetDefault();
-            x.HighlightStroke();
-        });
-    }
-
-    public PassedLevelStats GetStats()
-    {
-        int rightCount = _paintableGroups.Count(x => x.IsRight);
-
-        return new PassedLevelStats()
-        {
-            PaintablesCount = _paintableGroups.Count,
-            RightPaintablesCount = rightCount,
-            Percents = (float)rightCount / _paintableGroups.Count
-        };
-    }
-
-    //check paintables colors, set stroke colors
-    public Sequence CheckSpriteAnimation()
-    {
-        var sequence = DOTween.Sequence();
-
-        for (int i = 0; i < _levelObjectControllers.Count; i++)
-        {
-            sequence.Insert(.5f * i, _levelObjectControllers[i].CheckPaintablesAnimation(.3f, .15f));
-        }
-
-        return sequence;
-    }
-
-    //check click delay, generate a ray to fin objects under, invoke OnPaintableSpriteClicked if true
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (Time.time - _pointerDownTime > ClickDelay)
-        {
-            return;
-        }
-        var hittedObjects = new List<RaycastHit2D>();
-
-        if (Physics2D.Raycast(eventData.pointerCurrentRaycast.worldPosition, Vector2.zero, _contactFilter, hittedObjects, RayDistance) > 0)
-        {
-            var collider = hittedObjects[0].collider;
-            foreach (var paintableSpriteGroup in _paintableGroups)
-            {
-                if (paintableSpriteGroup.ContainsCollider(collider))
-                {
-                    _lastClickedGroup = paintableSpriteGroup;
-                    OnPaintableSpriteClicked?.Invoke();
-                    return;
-                }
+                SelectableCount = _roundStats.Count,
+                RightSelectablesCount = _roundStats.Count(x => x.Value.RightIndex == x.Value.SelectedIndex)
             }
-            Debug.Log("Did not Found a collider");
+            );
+            return;
+        }
+        
+        if (_vectorImages[_roundIndex] is StaticVectorImage)
+        {
+            ShowNextCards();
+            return;
+        }
+
+        ShowSelectableCards();
+    }
+
+    private void ShowSelectableCards()
+    {
+        var sprites = (_vectorImages[_roundIndex] as SelectableImages).Children;
+        for (int i = 0; i < sprites.Count; i++)
+        {
+            if (_selectableCardsInstances.Count <= i)
+            {
+                var newSelectable = Instantiate(_selectableCardPrefab, _selectableParent.transform);
+                _selectableCardsInstances.Add(newSelectable);
+                newSelectable.Index = i;
+                newSelectable.OnButtonClicked += OnSelectableClicked;
+            }
+            _selectableCardsInstances[i].SetActive(true);
+            _selectableCardsInstances[i].AddImage(sprites[i], 0);
+        }
+
+        for (int i = sprites.Count; i < _selectableCardsInstances.Count; i++)
+        {
+            _selectableCardsInstances[i].SetActive(false);
         }
     }
 
-    //store press time
-    public void OnPointerDown(PointerEventData eventData)
+    public Sequence CheckCardAnimation()
     {
-        _pointerDownTime = Time.time;
-    }
-
-    //scale transform to fit in screen
-    private void FitInScreenSize()
-    {
-        var width = _cameraMain.orthographicSize * _cameraMain.aspect * 2;
-        var vectorSpriteWidth = 5f;
-        var scaleFactor = width / vectorSpriteWidth;
-        transform.localScale = new Vector3(scaleFactor, scaleFactor, 1);
+        return DOTween.Sequence().AppendCallback(() => 
+        {
+            _staticCard.SetActive(true);
+            _selectableParent.SetActive(false);
+        }
+        ).AppendInterval(1f);
     }
 }

@@ -13,6 +13,13 @@ MonoBehaviour:
   m_Name: LevelsSequence 1
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 11400000, guid: 247963eabc872b140abcb1b5a262c9cc, type: 2}
-  - {fileID: 11400000, guid: 567e39c86db06a647a43c7013f0260bd, type: 2}
-  - {fileID: 11400000, guid: 567e39c86db06a647a43c7013f0260bd, type: 2}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: a60744315c1999d4c899ce5294fe913e, type: 3}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: 711e8bad649793f4d859f4c6a23383f9, type: 3}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: 9867f46dbbff0b648871282dd414d488, type: 3}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: b12458d9c5c53a6468f9566bc87fae7b, type: 3}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: ca100911eb1703342a44aba6ca752df7, type: 3}

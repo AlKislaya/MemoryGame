@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Level", menuName = "ScriptableObjects/Level")]
-public class Level : ScriptableObject
+[Serializable]
+public class Level 
 {
     public Sprite Preview;
-    public List<LevelObject> LevelObjects;
+    public TextAsset SvgAsset;
 }

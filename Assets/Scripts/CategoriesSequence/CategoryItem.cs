@@ -1,3 +1,4 @@
+using LocalizationModule;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -11,7 +12,7 @@ public class CategoryItem : MonoBehaviour
 
     private const char Delimiter = '/';
     [SerializeField] private Button _button;
-    [SerializeField] private TextMeshProUGUI _categoryNameText;
+    [SerializeField] private LocalizableText _categoryName;
     [SerializeField] private TextMeshProUGUI _levelsCountText;
     [SerializeField] private GameObject _pricePanel;
     [SerializeField] private TextMeshProUGUI _priceText;
@@ -24,7 +25,7 @@ public class CategoryItem : MonoBehaviour
     {
         _category = category;
 
-        _categoryNameText.text = category.Key;
+        _categoryName.Key = category.Key;
         _previewImage.sprite = category.Preview;
         _priceText.text = category.Price.ToString();
 

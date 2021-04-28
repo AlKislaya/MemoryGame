@@ -11,10 +11,13 @@ public class LevelFinishedSettings
 
 public class LevelFinishedController : AWindowController<LevelFinishedView>, IConfigurableWindow<LevelFinishedSettings>
 {
+    public override string WindowId { get; }
+
     private LevelsManager _levelsManager;
     private GameController _gameController;
     private LevelFinishedSettings _levelFinishedSettings;
-    public override string WindowId { get; }
+    private float _currentPercents;
+
     protected override void OnInitialize()
     {
         base.OnInitialize();
@@ -27,34 +30,37 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         _gameController = levelFinishedSettings.GameController;
         _levelFinishedSettings = levelFinishedSettings;
         var levelIndex = levelFinishedSettings.LevelIndex;
-        var stats = levelFinishedSettings.Stats;
+        _currentPercents = (float)levelFinishedSettings.Stats.RightSelectablesCount / (float)levelFinishedSettings.Stats.SelectableCount;
         var categoryLevelsCount = _levelsManager.GetCategoryByKey(levelFinishedSettings.CategoryKey).LevelsSequence.Levels.Count;
         var levelsProgress = _levelsManager.GetLevelsProgressByCategory(levelFinishedSettings.CategoryKey).Levels;
         
-        if (stats.Percents > levelsProgress[levelIndex].PassedPercents)
+        if (_currentPercents > levelsProgress[levelIndex].PassedPercents)
         {
-            _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, stats.Percents);
+            _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, _currentPercents);
             if (levelsProgress.Count - 1 == levelIndex
                 && levelIndex + 1 < categoryLevelsCount)
             {
                 _levelsManager.SetNewLevelProgress(levelFinishedSettings.CategoryKey);
             }
         }
-        else if (!levelsProgress[levelIndex].IsPassed && stats.Percents == 0)
+        else if (!levelsProgress[levelIndex].IsPassed && _currentPercents == 0)
         {
             _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, 0);
         }
 
 
-        view.SetProgress(stats.Percents);
-        view.SetActivePlayButton(!((stats.Percents == 0 && levelsProgress.Count - 1 == levelIndex)
+        view.SetProgress(_currentPercents);
+        view.SetActivePlayButton(!((_currentPercents == 0 && levelsProgress.Count - 1 == levelIndex)
                                    || levelFinishedSettings.LevelIndex == categoryLevelsCount - 1));
     }
 
     public override void BeforeShow()
     {
         base.BeforeShow();
-        view.PlayConfettiAnimation();
+        if (_currentPercents >= .5f)
+        {
+            view.PlayConfettiAnimation();
+        }
     }
 
     protected override void OnSubscribe()

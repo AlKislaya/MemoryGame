@@ -8,6 +8,8 @@ using UnityEngine;
 
 public class GameController : AWindowController<GameView>
 {
+    private const string LevelHeader = "Level";
+
     public override string WindowId { get; }
     private string _categoryKey;
     private int _levelIndex;
@@ -44,6 +46,8 @@ public class GameController : AWindowController<GameView>
         var levelAsset = LevelsManager.Instance.GetCategoryByKey(_categoryKey).LevelsSequence.Levels[_levelIndex];
         _loadingToken = new CancellationTokenSource();
         _loadingTask = view.InitLevel(levelAsset, _loadingToken.Token);
+
+        ApplicationController.Instance.TopPanelController.Show($"{LevelHeader} {levelIndex + 1}");
     }
 
     protected override void OnSubscribe()
@@ -51,6 +55,8 @@ public class GameController : AWindowController<GameView>
         view.OnLevelDone += ViewOnOnLevelDone;
         view.OnBlockExitStateChanged += OnBlockExitStateChanged;
         view.OnHintClicked += OnHintClicked;
+
+        ApplicationController.Instance.Camera.allowMSAA = true;
         ProcessLevel();
     }
 
@@ -143,6 +149,7 @@ public class GameController : AWindowController<GameView>
         _loadingToken?.Cancel();
         view.StopAnimations();
         view.DestroyLevel();
+        ApplicationController.Instance.Camera.allowMSAA = false;
         base.Dispose();
     }
 }

@@ -1,224 +1,153 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
-
-public class SvgLoader
+namespace SvgLoaderModule
 {
-    private const int PixelsPerUnit = 100;
-    private const int TargetResolution = 500;
-    private const ushort GradientResolution = 128;
-    private const float StrokeHalfThickness = 5;
-    private const string PaintableKey = "paintable";
-    private const bool FlipYAxis = true;
-    private const VectorUtils.Alignment SpriteAlignment = VectorUtils.Alignment.Center;
-    private readonly Vector2 SpritePivot = Vector2.zero;
-
-    public class VectorSprite
+    public class VectorImage
     { }
-    public class StaticVectorSprite : VectorSprite
+    public class StaticVectorImage : VectorImage
     {
         public Sprite Sprite;
     }
-    public class PaintableVectorSpriteGroup : VectorSprite
+    public class SelectableImages : VectorImage
     {
-        public string Key;
-        public List<PaintableVectorSprite> Children;
-    }
-    public class PaintableVectorSprite
-    {
-        public Sprite Fill;
-        public Sprite Stroke;
-        public Sprite OriginalStroke;
-        public Vector2 Size;
-        public Vector2 Position;
+        public List<Sprite> Children;
     }
 
-    private SVGParser.SceneInfo _sceneInfo;
-    private VectorUtils.TessellationOptions _tesselationSettings;
-
-    public void ImportSVG(TextAsset textAsset)
+    public class SvgLoader
     {
-        _sceneInfo = SVGParser.ImportSVG(new StringReader(textAsset.text), ViewportOptions.OnlyApplyRootViewBox);
-        _tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, PixelsPerUnit, TargetResolution);
-    }
+        private const int PixelsPerUnit = 100;
+        private const int TargetResolution = 500;
+        private const ushort GradientResolution = 128;
+        private const string SelectableKey = "selectable";
+        private const bool FlipYAxis = true;
+        private const VectorUtils.Alignment SpriteAlignment = VectorUtils.Alignment.Center;
+        private readonly Vector2 SpritePivot = Vector2.zero;
 
-    public async Task<List<VectorSprite>> GetSpritesArrange()
-    {
-        var sceneRect = _sceneInfo.SceneViewport;
-        Stroke _basicStroke = new Stroke()
+        private SVGParser.SceneInfo _sceneInfo;
+        private VectorUtils.TessellationOptions _tesselationSettings;
+
+        public void ImportSVG(TextAsset textAsset)
         {
-            Color = Color.white,
-            Fill = new SolidFill() { Color = Color.white, Mode = FillMode.NonZero, Opacity = 1 },
-            FillTransform = new Matrix2D() { m00 = 1, m01 = 0, m02 = 0, m10 = 0, m11 = 1, m12 = 0 },
-            HalfThickness = StrokeHalfThickness,
-            Pattern = null,
-            PatternOffset = 0,
-            TippedCornerLimit = 10
-        };
-
-        var sceneMatrix = _sceneInfo.Scene.Root.Transform;
-        var paintableShapes = new Dictionary<string, SceneNode>();
-
-        foreach (var sceneNodeID in _sceneInfo.NodeIDs)
-        {
-            if (sceneNodeID.Key.Contains(PaintableKey))
-            {
-                paintableShapes.Add(sceneNodeID.Key, sceneNodeID.Value);
-                //Debug.Log(sceneNodeID.Key);
-            }
+            _sceneInfo = SVGParser.ImportSVG(new StringReader(textAsset.text), ViewportOptions.OnlyApplyRootViewBox);
+            _tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, PixelsPerUnit, TargetResolution);
         }
 
-        var vectorSprites = new List<VectorSprite>();
-
-        //CHECK NODE OPACITY!!!!
-        foreach (var rootChild in _sceneInfo.Scene.Root.Children)
+        public async Task<List<VectorImage>> GetSpritesArrange(CancellationToken token)
         {
-            var paintable = paintableShapes.FirstOrDefault(x => x.Value == rootChild);
+            var sceneRect = _sceneInfo.SceneViewport;
+            var sceneMatrix = _sceneInfo.Scene.Root.Transform;
+            var selectableShapes = new List<SceneNode>();
 
-            if (paintable.Value != null)
+            foreach (var sceneNodeID in _sceneInfo.NodeIDs)
             {
-                PaintableVectorSpriteGroup paintableGroup = new PaintableVectorSpriteGroup();
-                paintableGroup.Key = paintable.Key;
-                paintableGroup.Children = new List<PaintableVectorSprite>();
-                var childrenShapes = GetShapes(rootChild);
-                if (childrenShapes.Count == 0)
+                if (sceneNodeID.Key.Contains(SelectableKey))
                 {
-                    Debug.Log("No shapes detected");
-                    continue;
+                    selectableShapes.Add(sceneNodeID.Value);
+                }
+            }
+
+            var vectorImages = new List<VectorImage>();
+
+            foreach (var rootChild in _sceneInfo.Scene.Root.Children)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    return null;
                 }
 
-                foreach (var childShape in childrenShapes)
+                var selectable = selectableShapes.FirstOrDefault(x => x == rootChild);
+
+                if (selectable != null)
                 {
-                    var childPaintableObject = new PaintableVectorSprite();
-                    var root = new SceneNode()
-                    {
-                        Children = null,
-                        Clipper = null,
-                        Transform = sceneMatrix,
-                        Shapes = new List<Shape>() { childShape }
-                    };
+                    SelectableImages selectableImages = new SelectableImages();
 
-                    //save original stroke
-                    if (childShape.PathProps.Stroke != null)
-                    {
-                        var geometryListStroke = await Task.Run(() => VectorUtils.TessellateScene(new Scene()
-                        {
-                            Root = root
-                        }, _tesselationSettings, _sceneInfo.NodeOpacity));
+                    selectableImages.Children = new List<Sprite>();
 
-                        if (geometryListStroke.Count > 1)
-                        {
-                            childPaintableObject.OriginalStroke = VectorUtils.BuildSprite(
-                                new List<VectorUtils.Geometry>() { geometryListStroke[1] }, sceneRect, PixelsPerUnit,
-                                SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
-                        }
+                    if (rootChild.Children.Count == 0)
+                    {
+                        Debug.Log("No children detected");
+                        continue;
                     }
 
-                    childShape.PathProps = new PathProperties() { Corners = PathCorner.Round, Head = PathEnding.Chop, Tail = PathEnding.Chop, Stroke = _basicStroke };
-                    var geometryList = await Task.Run(() => VectorUtils.TessellateScene(new Scene()
+                    for (int i = 0; i < rootChild.Children.Count; i++)
                     {
-                        Root = root
-                    }, _tesselationSettings, _sceneInfo.NodeOpacity));
-
-                    geometryList[0].Color = Color.white;
-
-                    //set fill
-                    childPaintableObject.Fill = VectorUtils.BuildSprite(
-                        new List<VectorUtils.Geometry>() { geometryList[0] }, sceneRect, PixelsPerUnit,
-                        SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
-
-                    //calculate size and position for future collider
-                    var fillBounds = geometryList[0].UnclippedBounds;
-                    childPaintableObject.Size = new Vector2(fillBounds.size.x / PixelsPerUnit, fillBounds.size.y / PixelsPerUnit);
-                    var posX = (childPaintableObject.Size.x / 2) - (sceneRect.width / PixelsPerUnit / 2) + (fillBounds.position.x / PixelsPerUnit);
-                    var posY = (sceneRect.height / PixelsPerUnit / 2) - (childPaintableObject.Size.y / 2) - (fillBounds.position.y / PixelsPerUnit);
-                    childPaintableObject.Position = new Vector2(posX, posY);
-
-                    //set stroke
-                    if (geometryList.Count > 1)
-                    {
-                        geometryList[1].Color = Color.white;
-                        childPaintableObject.Stroke = VectorUtils.BuildSprite(
-                            new List<VectorUtils.Geometry>() { geometryList[1] }, sceneRect, PixelsPerUnit,
-                            SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
+                        selectableImages.Children.Add(await GetSpriteFromSceneNode(rootChild.Children[i], sceneRect));
                     }
-                    else
-                    {
-                        Debug.Log("NO STROKE");
-                    }
-                    paintableGroup.Children.Add(childPaintableObject);
+
+                    vectorImages.Add(selectableImages);
                 }
+                else
+                {
+                    StaticVectorImage staticImage = new StaticVectorImage();
 
-                vectorSprites.Add(paintableGroup);
+                    staticImage.Sprite = await GetSpriteFromSceneNode(rootChild, sceneRect);
+
+                    vectorImages.Add(staticImage);
+                }
+            }
+
+            return vectorImages;
+        }
+
+        private async Task<Sprite> GetSpriteFromSceneNode(SceneNode node, Rect sceneRect)
+        {
+            var geometry = await Task.Run(() => VectorUtils.TessellateScene(
+                new Scene()
+                {
+                    Root = node
+                },
+                _tesselationSettings,
+                _sceneInfo.NodeOpacity));
+
+            return VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
+                    SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
+        }
+
+        private List<Shape> GetShapes(SceneNode rootNode)
+        {
+            var shapes = new List<Shape>();
+            if (rootNode.Children == null)
+            {
+                if (rootNode.Shapes != null)
+                {
+                    shapes.AddRange(rootNode.Shapes);
+                }
             }
             else
             {
-                StaticVectorSprite staticVectorSprite = new StaticVectorSprite();
-
-                var geometry = await Task.Run(() => VectorUtils.TessellateScene(new Scene() { Root = rootChild },
-                    _tesselationSettings, _sceneInfo.NodeOpacity));
-                staticVectorSprite.Sprite = VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
-                        SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
-
-                vectorSprites.Add(staticVectorSprite);
+                foreach (var node in rootNode.Children)
+                {
+                    shapes.AddRange(GetShapes(node));
+                }
             }
+
+            return shapes;
         }
 
-        return vectorSprites;
-    }
-
-    public async Task<StaticVectorSprite> GetStaticSprite()
-    {
-        StaticVectorSprite staticVectorSprite = new StaticVectorSprite();
-        
-        var geometry = await Task.Run(() => VectorUtils.TessellateScene(_sceneInfo.Scene, _tesselationSettings, _sceneInfo.NodeOpacity));
-        staticVectorSprite.Sprite = VectorUtils.BuildSprite(geometry, _sceneInfo.SceneViewport, PixelsPerUnit, SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
-
-        return staticVectorSprite;
-    }
-
-    private List<Shape> GetShapes(SceneNode rootNode)
-    {
-        var shapes = new List<Shape>();
-        if (rootNode.Children == null)
+        private VectorUtils.TessellationOptions CalculateTesselationSettings(SceneNode root, float pixelsPerUnit, int targetResolution)
         {
-            if (rootNode.Shapes != null)
+            var bounds = VectorUtils.ApproximateSceneNodeBounds(root);
+            float maxDim = Mathf.Max(bounds.width, bounds.height) / pixelsPerUnit;
+
+            // The scene ratio gives a rough estimate of coverage % of the vector scene on the screen.
+            // Higher values should result in a more dense tessellation.
+            float sceneRatio = maxDim / targetResolution;
+
+            var maxCord = Mathf.Max(0.01f, 75.0f * sceneRatio);
+            var maxTangent = Mathf.Max(0.1f, 100.0f * sceneRatio);
+
+            return new VectorUtils.TessellationOptions
             {
-                shapes.AddRange(rootNode.Shapes);
-            }
+                StepDistance = float.MaxValue, /*Distance at which the importer generates vertices along the paths. Lower values result in a more dense tessellation.*/
+                SamplingStepSize = .01f, /*The number of samples used internally to evaluate the curves. More samples = higher quality. Should be between 0 and 1 (inclusive).*/
+                MaxCordDeviation = maxCord, /*The maximum distance on the cord to a straight line between to points after which more tessellation will be generated. To disable, specify float.MaxValue.*/
+                MaxTanAngleDeviation = maxTangent /*The maximum angle (in degrees) between the curve tangent and the next point after which more tessellation will be generated. To disable, specify Mathf.PI/2.0f.*/
+            };
         }
-        else
-        {
-            foreach (var node in rootNode.Children)
-            {
-                shapes.AddRange(GetShapes(node));
-            }
-        }
-
-        return shapes;
-    }
-
-    private VectorUtils.TessellationOptions CalculateTesselationSettings(SceneNode root, float pixelsPerUnit, int targetResolution) 
-    {
-        var bounds = VectorUtils.ApproximateSceneNodeBounds(root);
-        float maxDim = Mathf.Max(bounds.width, bounds.height) / pixelsPerUnit;
-
-        // The scene ratio gives a rough estimate of coverage % of the vector scene on the screen.
-        // Higher values should result in a more dense tessellation.
-        float sceneRatio = maxDim / targetResolution;
-
-        var maxCord = Mathf.Max(0.01f, 75.0f * sceneRatio);
-        var maxTangent = Mathf.Max(0.1f, 100.0f * sceneRatio);
-
-        return new VectorUtils.TessellationOptions
-        {
-            StepDistance = float.MaxValue, /*Distance at which the importer generates vertices along the paths. Lower values result in a more dense tessellation.*/
-            SamplingStepSize = .01f, /*The number of samples used internally to evaluate the curves. More samples = higher quality. Should be between 0 and 1 (inclusive).*/
-            MaxCordDeviation = maxCord, /*The maximum distance on the cord to a straight line between to points after which more tessellation will be generated. To disable, specify float.MaxValue.*/
-            MaxTanAngleDeviation = maxTangent /*The maximum angle (in degrees) between the curve tangent and the next point after which more tessellation will be generated. To disable, specify Mathf.PI/2.0f.*/
-        };
     }
 }

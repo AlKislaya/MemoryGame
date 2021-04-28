@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: LevelsSequence
   m_EditorClassIdentifier: 
   Levels:
-  - {fileID: 11400000, guid: 247963eabc872b140abcb1b5a262c9cc, type: 2}
-  - {fileID: 11400000, guid: a32ef136c4cc33c47913ed9534c4fc71, type: 2}
-  - {fileID: 11400000, guid: 567e39c86db06a647a43c7013f0260bd, type: 2}
+  - Preview: {fileID: 0}
+    SvgAsset: {fileID: 4900000, guid: b12458d9c5c53a6468f9566bc87fae7b, type: 3}

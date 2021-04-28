@@ -9,7 +9,7 @@ public class LevelItem : MonoBehaviour
     public bool IsOpened => _isOpened;
 
     [SerializeField] private Button _button;
-    [SerializeField] private ButtonAnimation _buttonAnimation;
+    [SerializeField] private AnimatedButton _buttonAnimation;
     [SerializeField] private Image _previewImage;
     [SerializeField] private RectTransform _starsLayoutGroup;
     [SerializeField] private StarController _starPrefab;
