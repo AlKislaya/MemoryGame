@@ -929,7 +929,7 @@ MonoBehaviour:
   - Key: lc_autumn
     Price: 0
     Preview: {fileID: 21300000, guid: 9f60dbf54276022448d928df3a60acd9, type: 3}
-    LevelsSequence: {fileID: 11400000, guid: 5cdb5353802a84948967cb4e7f66467d, type: 2}
+    LevelsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35, type: 2}
   - Key: lc_winter
     Price: 100
     Preview: {fileID: 21300000, guid: 372ac2078a034f14a9e6057cdde3055d, type: 3}
