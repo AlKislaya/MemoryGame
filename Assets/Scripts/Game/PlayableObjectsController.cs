@@ -15,24 +15,33 @@ public class PassedLevelStats
 
 public class PlayableObjectsController : MonoBehaviour
 {
-    public event Action<PassedLevelStats> OnLevelEnded; 
+    public event Action<PassedLevelStats> OnLevelEnded;
     [SerializeField] private PlayableCard _staticCard;
-    [SerializeField] private PlayableCard _playableCard;
+    [SerializeField] private RectTransform _staticCardDefaultParent;
+    [SerializeField] private List<RectTransform> _cardsContaines;
+    //[SerializeField] private PlayableCard _playableCard;
     [SerializeField] private GameObject _selectableParent;
-    [SerializeField] private SelectableCard _selectableCardPrefab;
+    [SerializeField] private List<GameObject> _selectableCardsParents;
+    [SerializeField] private List<SelectableCard> _selectableCards;
 
     private Vector3 _placeAnimationScale = new Vector3(1.1f, 1.1f, 1f);
 
     private SvgLoader _svgLoader = new SvgLoader();
-    private List<SelectableCard> _selectableCardsInstances = new List<SelectableCard>();
     private List<VectorImage> _vectorImages = new List<VectorImage>();
     private Dictionary<int, RoundStats> _roundStats;
+    private int _lastClickedSelectable;
     private int _roundIndex;
+    private int _maxSelectablesCount;
 
     private class RoundStats
     {
         public int RightIndex;
         public int SelectedIndex;
+    }
+
+    private void Start()
+    {
+        InitSelectables();
     }
 
     //loading svg
@@ -47,6 +56,17 @@ public class PlayableObjectsController : MonoBehaviour
             Debug.LogError("0 sprites");
             return;
         }
+        _maxSelectablesCount = _vectorImages.Max(x =>
+        {
+            if (x is SelectableImages selectable)
+            {
+                return selectable.Children.Count;
+            }
+            else
+            {
+                return 0;
+            }
+        });
     }
 
     //set images, randomize selectables
@@ -69,19 +89,25 @@ public class PlayableObjectsController : MonoBehaviour
             else
             {
                 var staticSprite = (_vectorImages[i] as StaticVectorImage).Sprite;
-                _playableCard.AddImage(staticSprite, i);
+                //_playableCard.AddImage(staticSprite, i);
                 _staticCard.AddImage(staticSprite, i);
+
+                for (int j = 0; j < _maxSelectablesCount; j++)
+                {
+                    _selectableCards[j].AddImage(staticSprite, i);
+                }
             }
         }
     }
 
     public void SetDefaults()
     {
-        _playableCard.ResetCard();
         OpenCard(false);
+        //_playableCard.ResetCard();
+        _selectableCards.ForEach(x => x.ResetCard());
 
         _selectableParent.SetActive(false);
-        _playableCard.SetActive(false);
+        //_playableCard.SetActive(false);
         _staticCard.SetActive(false);
     }
 
@@ -95,6 +121,8 @@ public class PlayableObjectsController : MonoBehaviour
     {
         SetLevel();
 
+        _staticCard.SetParent(_staticCardDefaultParent);
+        _staticCard.DoStretch();
         _staticCard.SetActive(true);
         _staticCard.transform.localScale = _placeAnimationScale;
         return _staticCard.GetComponent<RectTransform>().DOScale(Vector3.one, duration);
@@ -107,7 +135,7 @@ public class PlayableObjectsController : MonoBehaviour
 
     public void StartGame()
     {
-        _playableCard.SetActive(true);
+        //_playableCard.SetActive(true);
         _staticCard.SetActive(false);
 
         _roundIndex = -1;
@@ -123,9 +151,16 @@ public class PlayableObjectsController : MonoBehaviour
             return;
         }
 
+        _lastClickedSelectable = selectableIndex;
         _roundStats[_roundIndex].SelectedIndex = selectableIndex;
+        var selectedImage = (_vectorImages[_roundIndex] as SelectableImages).Children[selectableIndex];
 
-        _playableCard.AddImage((_vectorImages[_roundIndex] as SelectableImages).Children[selectableIndex], _roundIndex);
+        //_playableCard.AddImage(selectedImage, _roundIndex);
+        for (int i  = 0; i < _maxSelectablesCount; i++)
+        {
+            _selectableCards[i].AddImage(selectedImage, _roundIndex);
+        }
+
         ShowNextCards();
     }
 
@@ -157,30 +192,65 @@ public class PlayableObjectsController : MonoBehaviour
         var sprites = (_vectorImages[_roundIndex] as SelectableImages).Children;
         for (int i = 0; i < sprites.Count; i++)
         {
-            if (_selectableCardsInstances.Count <= i)
-            {
-                var newSelectable = Instantiate(_selectableCardPrefab, _selectableParent.transform);
-                _selectableCardsInstances.Add(newSelectable);
-                newSelectable.Index = i;
-                newSelectable.OnButtonClicked += OnSelectableClicked;
-            }
-            _selectableCardsInstances[i].SetActive(true);
-            _selectableCardsInstances[i].AddImage(sprites[i], 0);
+            _selectableCards[i].SetActive(true);
+            _selectableCards[i].AddImage(sprites[i], _roundIndex);
         }
 
-        for (int i = sprites.Count; i < _selectableCardsInstances.Count; i++)
+        for (int i = sprites.Count; i < _selectableCards.Count; i++)
         {
-            _selectableCardsInstances[i].SetActive(false);
+            _selectableCards[i].SetActive(false);
+        }
+
+        _selectableCardsParents[1].SetActive(sprites.Count >= 3);
+    }
+
+    private void InitSelectables()
+    {
+        for (int i = 0; i < _selectableCards.Count; i++)
+        {
+            _selectableCards[i].Index = i;
+            _selectableCards[i].OnButtonClicked += OnSelectableClicked;
         }
     }
+    //private void InitSelectables(int count)
+    //{
+    //    for (int i = _selectableCardsInstances.Count; i < count; i++)
+    //    {
+    //        var newSelectable = Instantiate(_selectableCardPrefab, _selectableParent.transform);
+    //        _selectableCardsInstances.Add(newSelectable);
+    //        newSelectable.Index = i;
+    //        newSelectable.OnButtonClicked += OnSelectableClicked;
+    //    }
+    //}
 
     public Sequence CheckCardAnimation()
     {
-        return DOTween.Sequence().AppendCallback(() => 
+        var sequence = DOTween.Sequence();
+        for (int i = 0; i < _selectableCards.Count; i++)
+        {
+            if (i != _lastClickedSelectable)
+            {
+                sequence.Join(_selectableCards[i].DoFade(0, .5f));
+            }
+            else
+            {
+                _selectableCards[i].SetParent(_cardsContaines[1]);
+
+                sequence
+                    .Join(_selectableCards[i].DoStretch(1f))
+                    .Join(_selectableCards[i].DoMove(1f));
+            }
+        }
+
+        sequence.AppendCallback(() =>
         {
             _staticCard.SetActive(true);
-            _selectableParent.SetActive(false);
-        }
-        ).AppendInterval(1f);
+            _staticCard.SetParent(_cardsContaines[0]);
+            _staticCard.DoStretch();
+        })
+        .Append(_staticCard.DoMove(.5f))
+        .AppendInterval(2f);
+
+        return sequence;
     }
 }

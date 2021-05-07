@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.VectorGraphics;
+using DG.Tweening;
 using UnityEngine;
 
 public class PlayableCard : MonoBehaviour
@@ -11,6 +12,34 @@ public class PlayableCard : MonoBehaviour
 
     protected List<Transform> _rootChildren;
     protected List<SVGImage> _imageInstances = new List<SVGImage>();
+    protected RectTransform _rectTransform;
+
+    protected virtual void Awake()
+    {
+        _rectTransform = GetComponent<RectTransform>();
+    }
+
+    public void SetParent(RectTransform parent)
+    {
+        _rectTransform.SetParent(parent);
+    }
+
+    public Tween DoMove(float duration)
+    {
+        return _rectTransform.DOLocalMove(Vector3.zero, duration);
+    }
+
+    public void DoStretch()
+    {
+        _rectTransform.sizeDelta = Vector2.zero;
+        _rectTransform.offsetMax = Vector2.zero;
+        _rectTransform.offsetMin = Vector2.zero;
+    }
+
+    public Tween DoStretch(float duration)
+    {
+        return _rectTransform.DOSizeDelta(Vector2.zero, duration);
+    }
 
     public virtual void SetActive(bool isActive)
     {
