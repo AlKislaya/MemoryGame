@@ -126,10 +126,9 @@ public class GameView : AWindowView
         _startGameAnimation
             .Append(_counterElement.TimerTween(TimerSeconds, _seconds))
             .AppendCallback(() => _playableController.OpenCard(false))
-            .AppendInterval(1f)
+            .AppendInterval(.3f)
             .AppendCallback(() =>
             {
-                _playableController.OpenCard(true);
                 _playableController.StartGame();
                 _hintButton.Button.interactable = true;
                 _hintButton.SetAnimationEnabled(true);
@@ -149,7 +148,7 @@ public class GameView : AWindowView
         OnBlockExitStateChanged?.Invoke(true);
         _checkLevelAnimation = 
             _playableController.CheckCardAnimation()
-            .AppendInterval(.5f)
+            .AppendInterval(3f)
             .OnComplete(() =>
             {
                 OnBlockExitStateChanged?.Invoke(false);

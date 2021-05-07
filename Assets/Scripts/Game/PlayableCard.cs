@@ -13,32 +13,39 @@ public class PlayableCard : MonoBehaviour
     protected List<Transform> _rootChildren;
     protected List<SVGImage> _imageInstances = new List<SVGImage>();
     protected RectTransform _rectTransform;
+    private static float _halfScreenHeight;
 
     protected virtual void Awake()
     {
         _rectTransform = GetComponent<RectTransform>();
+        _halfScreenHeight = ApplicationController.Instance.UiRoot.CanvasSize.y / 2;
     }
 
-    public void SetParent(RectTransform parent)
+    public virtual void SetParent(RectTransform parent)
     {
         _rectTransform.SetParent(parent);
     }
 
-    public Tween DoMove(float duration)
+    public virtual Tween DoMove(float duration)
     {
         return _rectTransform.DOLocalMove(Vector3.zero, duration);
     }
 
-    public void DoStretch()
+    public virtual void DoStretch()
     {
         _rectTransform.sizeDelta = Vector2.zero;
         _rectTransform.offsetMax = Vector2.zero;
         _rectTransform.offsetMin = Vector2.zero;
     }
 
-    public Tween DoStretch(float duration)
+    public virtual Tween DoStretch(float duration)
     {
         return _rectTransform.DOSizeDelta(Vector2.zero, duration);
+    }
+
+    public virtual Tween DoHideMove(float duration)
+    {
+        return _rectTransform.DOLocalMoveY(-_halfScreenHeight - (_rectTransform.rect.height / 2) - 20, duration).SetEase(Ease.InBack);
     }
 
     public virtual void SetActive(bool isActive)
