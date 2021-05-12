@@ -6,12 +6,16 @@
             "localizationValues" : 
             [
                 {
-                    "key" : "lt_base",
-                    "value": "Base Levels"
+                    "key" : "levels_sequence",
+                    "value": "Levels"
                 },
                 {
-                    "key" : "lt_categories",
+                    "key" : "categories_sequence",
                     "value": "Categories"
+                },
+                {
+                    "key" : "level",
+                    "value": "Level"
                 },
                 {
                     "key" : "settings",
@@ -34,6 +38,46 @@
                     "value": "Free"
                 },
                 {
+                    "key" : "seconds",
+                    "value": "s"
+                },
+                {
+                    "key" : "of",
+                    "value": "of"
+                },
+                {
+                    "key" : "tap_to_start",
+                    "value": "Tap to start"
+                },
+                {
+                    "key" : "result_zero",
+                    "value": "Zero"
+                },
+                {
+                    "key" : "result_one",
+                    "value": "One"
+                },
+                {
+                    "key" : "result_two",
+                    "value": "Two"
+                },
+                {
+                    "key" : "result_three",
+                    "value": "Three"
+                },
+                {
+                    "key" : "privacy_policy",
+                    "value": "Privacy Policy"
+                },
+                {
+                    "key" : "lt_base",
+                    "value": "Base Levels"
+                },
+                {
+                    "key" : "lt_categories",
+                    "value": "Categories"
+                },
+                {
                     "key" : "lc_base",
                     "value": "Base Levels"
                 },
@@ -44,6 +88,96 @@
                 {
                     "key" : "lc_winter",
                     "value": "Winter"
+                }
+            ]
+        },
+        {
+            "languageKey": "RU",
+            "localizationValues" : 
+            [
+                {
+                    "key" : "levels_sequence",
+                    "value": "Уровни"
+                },
+                {
+                    "key" : "categories_sequence",
+                    "value": "Категории"
+                },
+                {
+                    "key" : "level",
+                    "value": "Уровень"
+                },
+                {
+                    "key" : "settings",
+                    "value": "Настройки"
+                },
+                {
+                    "key" : "sounds",
+                    "value": "Звуки"
+                },
+                {
+                    "key" : "language",
+                    "value": "Язык"
+                },
+                {
+                    "key" : "shop",
+                    "value": "Магазин"
+                },
+                {
+                    "key" : "free",
+                    "value": "Бесплатно"
+                },
+                {
+                    "key" : "seconds",
+                    "value": "с"
+                },
+                {
+                    "key" : "of",
+                    "value": "из"
+                },
+                {
+                    "key" : "tap_to_start",
+                    "value": "Нажмите для старта"
+                },
+                {
+                    "key" : "result_zero",
+                    "value": "0"
+                },
+                {
+                    "key" : "result_one",
+                    "value": "1"
+                },
+                {
+                    "key" : "result_two",
+                    "value": "2"
+                },
+                {
+                    "key" : "result_three",
+                    "value": "3"
+                },
+                {
+                    "key" : "privacy_policy",
+                    "value": "Политика Конфиденциальности"
+                },
+                {
+                    "key" : "lt_base",
+                    "value": "Уровни"
+                },
+                {
+                    "key" : "lt_categories",
+                    "value": "Категории"
+                },
+                {
+                    "key" : "lc_base",
+                    "value": "Уровни"
+                },
+                {
+                    "key" : "lc_autumn",
+                    "value": "Осень"
+                },
+                {
+                    "key" : "lc_winter",
+                    "value": "Зима"
                 }
             ]
         }

@@ -6,20 +6,20 @@ using UnityEngine.UI;
 
 public class CounterElement : MonoBehaviour
 {
-    public event Action OnButtonClicked; 
+    //public event Action OnButtonClicked; 
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Image _filledOutline;
-    [SerializeField] private Button _button;
+    //[SerializeField] private Button _button;
     [SerializeField] private Image _tickImage;
 
     private Tween _animation;
-    private Sequence _transformToButtonAnimation;
+    private Sequence _transformToDoneAnimation;
 
     //add button click listener, init transform to btn animation
     private void Start()
     {
-        _button.onClick.AddListener(onButtonClicked);
-        _transformToButtonAnimation = DOTween.Sequence()
+        //_button.onClick.AddListener(onButtonClicked);
+        _transformToDoneAnimation = DOTween.Sequence()
             .AppendCallback(() =>
             {
                 _tickImage.enabled = true;
@@ -27,21 +27,22 @@ public class CounterElement : MonoBehaviour
             })
             .Append(transform.DOScale(1.2f, .3f))
             .Append(transform.DOScale(1f, .3f))
-            .AppendCallback(() =>
-            {
-                _button.enabled = true;
-            }).Pause().SetAutoKill(false);
+            //.AppendCallback(() =>
+            //{
+            //    _button.enabled = true;
+            //})
+            .Pause().SetAutoKill(false);
     }
 
-    private void onButtonClicked()
-    {
-        OnButtonClicked?.Invoke();
-    }
+    //private void onButtonClicked()
+    //{
+    //    OnButtonClicked?.Invoke();
+    //}
 
     public void SetDefaults()
     {
         transform.localScale = Vector3.one;
-        _button.enabled = false;
+        //_button.enabled = false;
         _tickImage.enabled = false;
         _text.enabled = true;
     }
@@ -83,20 +84,20 @@ public class CounterElement : MonoBehaviour
         _filledOutline.color = color;
     }
 
-    public void TransformToButton(string text, Color color)
+    public void TransformToDone(Color color)
     {
         if (_animation != null && _animation.IsPlaying())
         {
             _animation.OnComplete(() =>
             {
                 SetColor(color);
-                _transformToButtonAnimation.Restart();
+                _transformToDoneAnimation.Restart();
             });
         }
         else
         {
             SetColor(color);
-            _transformToButtonAnimation.Restart();
+            _transformToDoneAnimation.Restart();
         }
     }
 }

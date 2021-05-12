@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using System;
+using TMPro;
 
 public class MainView : AWindowView
 {
@@ -19,6 +20,7 @@ public class MainView : AWindowView
     public Action OnSettingsClicked;
     public Action<string> OnLevelsTypeClicked;
     [SerializeField] private Button _shopButton;
+    [SerializeField] private TextMeshProUGUI _moneyBalanceText;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _typesLeftButton;
     [SerializeField] private Button _typesRightButton;
@@ -49,6 +51,12 @@ public class MainView : AWindowView
         _typesLeftButton.onClick.AddListener(() => OnLevelsTypesSwitched(1));
         _typesRightButton.onClick.AddListener(() => OnLevelsTypesSwitched(-1));
     }
+
+    public void SetMoneyBalance(int value)
+    {
+        _moneyBalanceText.text = value.ToString();
+    }
+
     protected override void OnSubscribe()
     {
         base.OnSubscribe();

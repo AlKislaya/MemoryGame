@@ -168,6 +168,7 @@ MonoBehaviour:
   _headerText: {fileID: 2528532998666938414}
   _dialogText: {fileID: 381620140795930655}
   _buttonsContainer: {fileID: 1147983631345049839}
+  _backgroundButton: {fileID: 2461162359278476737}
   _alertButtonPrefab: {fileID: 3183002861306480647, guid: dcdccafcd1871c3469d168fd7b90fff3,
     type: 3}
 --- !u!1 &1477905910262969003

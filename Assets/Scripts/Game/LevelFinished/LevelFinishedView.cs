@@ -1,6 +1,8 @@
 using Dainty.UI.WindowBase;
+using LocalizationModule;
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,16 +12,29 @@ public class LevelFinishedView : AWindowView
     public event Action OnPlayButtonClicked;
     public event Action OnReplayButtonClicked;
 
+    private const string ResultThree = "result_three";
+    private const string ResultTwo = "result_two";
+    private const string ResultOne = "result_one";
+    private const string ResultZero = "result_zero";
+
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _replayButton;
+    [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private ParticleSystem _confettiParticle;
     [SerializeField] private List<StarController> _stars;
+    private string _resultThree;
+    private string _resultTwo;
+    private string _resultOne;
+    private string _resultZero;
 
     private void Awake()
     {
         var windowSize = ApplicationController.Instance.UiRoot.CanvasSize;
         _confettiParticle.transform.localPosition = new Vector3(windowSize.x / 2, windowSize.y, 1);
+
+        SetLocals();
+        Localization.Instance.OnLanguageChanged += SetLocals;
     }
 
     public void SetProgress(float passedPercents)
@@ -34,6 +49,8 @@ public class LevelFinishedView : AWindowView
         {
             _stars[i].SetActiveState(false);
         }
+
+        _resultText.text = activeCount == 0 ? _resultZero : activeCount == 1 ? _resultOne : activeCount == 2 ? _resultTwo : _resultThree;
     }
 
     public void SetActivePlayButton(bool isActive)
@@ -77,5 +94,14 @@ public class LevelFinishedView : AWindowView
     private void onMenuButtonClicked()
     {
         OnMenuButtonClicked?.Invoke();
+    }
+
+    private void SetLocals()
+    {
+        var localization = Localization.Instance;
+        _resultZero = localization.GetLocalByKey(ResultZero);
+        _resultOne = localization.GetLocalByKey(ResultOne);
+        _resultTwo = localization.GetLocalByKey(ResultTwo);
+        _resultThree = localization.GetLocalByKey(ResultThree);
     }
 }

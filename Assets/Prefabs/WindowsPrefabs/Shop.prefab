@@ -1735,9 +1735,9 @@ MonoBehaviour:
   m_fontSize: 20
   m_fontSizeBase: 20
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 15
+  m_fontSizeMax: 20
   m_fontStyle: 16
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -2630,6 +2630,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
+      propertyPath: m_text
+      value: free
+      objectReference: {fileID: 0}
+    - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_fontSizeMin
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 310337719221271300, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
       propertyPath: m_VerticalAlignment
       value: 512
       objectReference: {fileID: 0}
@@ -2656,7 +2681,7 @@ PrefabInstance:
     - target: {fileID: 6691407508844205976, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: -27.52
+      value: -31.52
       objectReference: {fileID: 0}
     - target: {fileID: 6691407508844205976, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
@@ -2666,7 +2691,7 @@ PrefabInstance:
     - target: {fileID: 6691407508844205976, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 13.76
+      value: 11.76
       objectReference: {fileID: 0}
     - target: {fileID: 6691407508844205976, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}

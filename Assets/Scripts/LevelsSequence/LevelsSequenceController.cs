@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Dainty.UI;
 using Dainty.UI.WindowBase;
 using UnityEngine;
+using LocalizationModule;
 
 public class LevelsSequenceSettings
 {
@@ -10,15 +11,18 @@ public class LevelsSequenceSettings
 
 public class LevelsSequenceController : AWindowController<LevelsSequenceView>, IConfigurableWindow<LevelsSequenceSettings>
 {
-    private const string Header = "Levels";
+    private const string HeaderKey = "levels_sequence";
     public override string WindowId { get; }
 
     private string _categoryKey;
     private LevelsCategory _levelsCategory;
     private List<LevelProgress> _levelsProgress;
+    private string _header;
 
     public void Initialize(LevelsSequenceSettings settings)
     {
+        _header = Localization.Instance.GetLocalByKey(HeaderKey);
+
         _categoryKey = settings.Category.Key;
         _levelsCategory = settings.Category;
 
@@ -32,7 +36,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
 
     public override void BeforeShow()
     {
-        ApplicationController.Instance.TopPanelController.Show(Header);
+        ApplicationController.Instance.TopPanelController.Show(_header);
 
         if (_levelsCategory == null)
         {

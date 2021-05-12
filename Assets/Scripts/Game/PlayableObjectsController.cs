@@ -15,6 +15,9 @@ public class PassedLevelStats
 
 public class PlayableObjectsController : MonoBehaviour
 {
+    public int RoundsCount => _roundStats.Count;
+
+    public event Action<int> OnRoundChanged;
     public event Action<PassedLevelStats> OnLevelEnded;
     [SerializeField] private PlayableCard _staticCard;
     [SerializeField] private RectTransform _staticCardDefaultParent;
@@ -148,7 +151,19 @@ public class PlayableObjectsController : MonoBehaviour
         }
 
         _lastClickedSelectable = selectableIndex;
-        _roundStats[_roundIndex].SelectedIndex = selectableIndex;
+
+        int _selectableRoundIndex = 0;
+        foreach (var roundStat in _roundStats)
+        {
+            _selectableRoundIndex++;
+            if (roundStat.Key == _roundIndex)
+            {
+                roundStat.Value.SelectedIndex = selectableIndex;
+                break;
+            }
+        }
+        OnRoundChanged?.Invoke(_selectableRoundIndex);
+
         var selectedImage = (_vectorImages[_roundIndex] as SelectableImages).Children[selectableIndex];
 
         for (int i  = 0; i < _maxSelectablesCount; i++)
@@ -207,16 +222,6 @@ public class PlayableObjectsController : MonoBehaviour
             _selectableCards[i].OnButtonClicked += OnSelectableClicked;
         }
     }
-    //private void InitSelectables(int count)
-    //{
-    //    for (int i = _selectableCardsInstances.Count; i < count; i++)
-    //    {
-    //        var newSelectable = Instantiate(_selectableCardPrefab, _selectableParent.transform);
-    //        _selectableCardsInstances.Add(newSelectable);
-    //        newSelectable.Index = i;
-    //        newSelectable.OnButtonClicked += OnSelectableClicked;
-    //    }
-    //}
 
     public Sequence CheckCardAnimation()
     {

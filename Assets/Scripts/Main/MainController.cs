@@ -15,6 +15,7 @@ public class MainController : AWindowController<MainView>
     public override void BeforeShow()
     {
         ApplicationController.Instance.TopPanelController.Close();
+        view.SetMoneyBalance(MoneyController.Instance.MoneyBalance);
     }
 
     protected override void OnSubscribe()

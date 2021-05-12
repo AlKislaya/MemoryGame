@@ -29,6 +29,10 @@ namespace LocalizationModule
 
         private const string LocalPrefsKey = "local_key";
 
+        public SystemLanguage CurrentLanguage => 
+            _languageKey.Equals("EN") ? 
+            SystemLanguage.English : SystemLanguage.Russian;
+
         public event Action OnLanguageChanged;
 
         [SerializeField] private TextAsset _json;
@@ -49,28 +53,22 @@ namespace LocalizationModule
             }
             else
             {
-                //if (Application.systemLanguage == SystemLanguage.Russian)
-                //{
-                //    _languageKey = "RU";
-                //}
-                //else
-                //{
-                    _languageKey = "EN";
-                //}
+                _languageKey = Application.systemLanguage == SystemLanguage.Russian ? "RU" : "EN";
                 SaveLocalKey();
             }
 
             _currentLanguage = _languages.First(x => x.languageKey.Equals(_languageKey));
         }
 
-        public void ChangeLanguage(string languageKey)
+        public void ChangeLanguage(SystemLanguage language)
         {
-            if (_languageKey.Equals(languageKey))
+            if (CurrentLanguage == language)
             {
                 return;
             }
 
-            _languageKey = languageKey;
+            _languageKey = language == SystemLanguage.Russian ? "RU" : "EN";
+
             SaveLocalKey();
 
             _currentLanguage = _languages.First(x => x.languageKey.Equals(_languageKey));

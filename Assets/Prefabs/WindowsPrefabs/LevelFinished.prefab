@@ -29,7 +29,7 @@ RectTransform:
   m_Children:
   - {fileID: 3309948292805571899}
   m_Father: {fileID: 7881853731391953138}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -281,6 +281,7 @@ MonoBehaviour:
   _menuButton: {fileID: 8798708131195284727}
   _playButton: {fileID: 5935030615282253696}
   _replayButton: {fileID: 8117692919671767112}
+  _resultText: {fileID: 2528532998666938414}
   _confettiParticle: {fileID: 4687376711296730253}
   _stars:
   - {fileID: 8602552085485873896}
@@ -348,7 +349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3476887895795847891}
   m_Layer: 5
-  m_Name: WinText
+  m_Name: WinCoinsContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -365,11 +366,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 3284035504118621630}
   - {fileID: 5729837112237212095}
   - {fileID: 742277073771860416}
   m_Father: {fileID: 7881853731391953138}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
@@ -595,7 +595,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3476887895795847891}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -672,7 +672,7 @@ RectTransform:
   - {fileID: 8520481141112753701}
   - {fileID: 6108134681469448685}
   m_Father: {fileID: 7881853731391953138}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -927,7 +927,7 @@ GameObject:
   - component: {fileID: 8057757845668733953}
   - component: {fileID: 9175146555196550549}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: WinCoinsText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -945,7 +945,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3476887895795847891}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -6490,6 +6490,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 264247356548118041}
+  - {fileID: 3284035504118621630}
   - {fileID: 3476887895795847891}
   - {fileID: 5243184417505438630}
   - {fileID: 4848864440162995402}
@@ -6637,7 +6638,7 @@ GameObject:
   - component: {fileID: 1408238021133235315}
   - component: {fileID: 2528532998666938414}
   m_Layer: 5
-  m_Name: Text
+  m_Name: WInText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6654,12 +6655,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3476887895795847891}
-  m_RootOrder: 0
+  m_Father: {fileID: 7881853731391953138}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 20.970018}
   m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &4588767355666214175

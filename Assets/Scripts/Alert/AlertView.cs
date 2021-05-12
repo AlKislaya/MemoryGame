@@ -2,12 +2,14 @@ using Dainty.UI.WindowBase;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AlertView : AWindowView
 {
     [SerializeField] private TextMeshProUGUI _headerText;
     [SerializeField] private TextMeshProUGUI _dialogText;
     [SerializeField] private Transform _buttonsContainer;
+    [SerializeField] private Button _backgroundButton;
     [SerializeField] private AlertButton _alertButtonPrefab;
     private List<AlertButton> _alertButtons = new List<AlertButton>();
 
@@ -15,6 +17,11 @@ public class AlertView : AWindowView
     {
         _headerText.text = data.HeaderText;
         _dialogText.text = data.DialogText;
+
+        if (data.OnBackButtonClicked != null)
+        {
+            _backgroundButton.onClick.AddListener(data.OnBackButtonClicked);
+        }
 
         for (int i = 0; i < data.Buttons.Count; i++)
         {
@@ -35,6 +42,7 @@ public class AlertView : AWindowView
 
     protected override void OnUnSubscribe()
     {
+        _backgroundButton.onClick.RemoveAllListeners();
         _alertButtons.ForEach(x => x.RemoveListeners());
     }
 }

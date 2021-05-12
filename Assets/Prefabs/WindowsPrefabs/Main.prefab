@@ -523,6 +523,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _shopButton: {fileID: 2888312440549649661}
+  _moneyBalanceText: {fileID: 6538525128092812027}
   _settingsButton: {fileID: 5359934787517429850}
   _typesLeftButton: {fileID: 2464664078625181972}
   _typesRightButton: {fileID: 5895705075442974513}
@@ -978,7 +979,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 10
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dd1a6b83aac372d459534b3b28934f2b, type: 2}
   m_sharedMaterial: {fileID: -3875946142917555539, guid: dd1a6b83aac372d459534b3b28934f2b,

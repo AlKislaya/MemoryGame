@@ -3,16 +3,24 @@ using Dainty.UI.WindowBase;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using LocalizationModule;
 
 public class CategoriesSequenceController : AWindowController<CategoriesSequenceView>
 {
-    private const string  Header = "Categories";
+    private const string  HeaderKey = "categories_sequence";
+    private string _header;
     public override string WindowId { get; }
+
+    protected override void OnInitialize()
+    {
+        base.OnInitialize();
+        _header = Localization.Instance.GetLocalByKey(HeaderKey);
+    }
 
     public override void BeforeShow()
     {
         base.BeforeShow();
-        ApplicationController.Instance.TopPanelController.Show(Header);
+        ApplicationController.Instance.TopPanelController.Show(_header);
         var levelsManager = LevelsManager.Instance;
         var categories = levelsManager.LevelsCategories;
 

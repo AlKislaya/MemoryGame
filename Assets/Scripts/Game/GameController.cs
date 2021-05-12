@@ -1,4 +1,4 @@
-﻿using System;
+﻿using LocalizationModule;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +8,7 @@ using UnityEngine;
 
 public class GameController : AWindowController<GameView>
 {
-    private const string LevelHeader = "Level";
+    private const string LevelHeaderKey = "level";
 
     public override string WindowId { get; }
     private string _categoryKey;
@@ -19,12 +19,14 @@ public class GameController : AWindowController<GameView>
     private Task _loadingTask;
     private TopPanelController _topPanelController;
     private UiManager _uiManager;
+    private string _levelHeader;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
         _uiManager = ApplicationController.Instance.UiManager;
         _topPanelController = ApplicationController.Instance.TopPanelController;
+        _levelHeader = Localization.Instance.GetLocalByKey(LevelHeaderKey);
     }
 
     public void ReplayLevel()
@@ -47,7 +49,7 @@ public class GameController : AWindowController<GameView>
         _loadingToken = new CancellationTokenSource();
         _loadingTask = view.InitLevel(levelAsset, _loadingToken.Token);
 
-        ApplicationController.Instance.TopPanelController.Show($"{LevelHeader} {levelIndex + 1}");
+        ApplicationController.Instance.TopPanelController.Show($"{_levelHeader} {levelIndex + 1}");
     }
 
     protected override void OnSubscribe()
@@ -127,7 +129,11 @@ public class GameController : AWindowController<GameView>
     private void OnHintApproved()
     {
         _uiManager.Back();
-        view.ShowHint();
+        ViewOnOnLevelDone(new PassedLevelStats()
+        {
+            SelectableCount = view.RoundsCount,
+            RightSelectablesCount = view.RoundsCount - 1
+        });
     }
 
     private void OnBlockExitStateChanged(bool isBlocked)

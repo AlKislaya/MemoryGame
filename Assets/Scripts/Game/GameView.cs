@@ -1,15 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using DG.Tweening;
+using LocalizationModule;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameView : AWindowView
 {
+    private const string SecondsKey = "seconds";
+    private const string OfKey = "of";
     private const int TimerSeconds = 2;
+
+    public int RoundsCount => _playableController.RoundsCount;
 
     public event Action<PassedLevelStats> OnLevelDone;
     public event Action<bool> OnBlockExitStateChanged;
@@ -32,12 +36,20 @@ public class GameView : AWindowView
     private Sequence _placeObjectsAnimation;
     private Sequence _checkLevelAnimation;
 
-    private string _seconds = "s";
+    private string _seconds;
+    private string _of;
+
+    private void Awake()
+    {
+        SetLocals();
+        Localization.Instance.OnLanguageChanged += SetLocals;
+    }
 
     protected override void OnSubscribe()
     {
         base.OnSubscribe();
         _playableController.OnLevelEnded += OnLevelDoneInvoked;
+        _playableController.OnRoundChanged += OnRoundChanged;
         _hintButton.Button.onClick.AddListener(OnHintButtonClicked);
         _tapToStartButton.onClick.AddListener(StartGame);
     }
@@ -46,6 +58,7 @@ public class GameView : AWindowView
     {
         base.OnUnSubscribe();
         _playableController.OnLevelEnded -= OnLevelDoneInvoked;
+        _playableController.OnRoundChanged -= OnRoundChanged;
         _hintButton.Button.onClick.RemoveAllListeners();
         _tapToStartButton.onClick.RemoveListener(StartGame);
     }
@@ -98,10 +111,17 @@ public class GameView : AWindowView
         _counterElement.SetText($"{TimerSeconds}{_seconds}");
         _counterElement.SetAmount(1);
     }
-
-    public void ShowHint()
+    private void OnRoundChanged(int roundNumber)
     {
+        var count = RoundsCount;
 
+        var percents = (float)roundNumber / count;
+        _counterElement.SetText($"{roundNumber} {_of} {count}");
+        _counterElement.SetAmount(percents, .5f, Ease.InSine);
+        if (roundNumber == count)
+        {
+            _counterElement.TransformToDone(_doneColor);
+        }
     }
 
     public void DestroyLevel()
@@ -129,6 +149,8 @@ public class GameView : AWindowView
             .AppendInterval(.3f)
             .AppendCallback(() =>
             {
+                OnRoundChanged(0);
+                _counterElement.SetColor(_progressColor);
                 _playableController.StartGame();
                 _hintButton.Button.interactable = true;
                 _hintButton.SetAnimationEnabled(true);
@@ -154,5 +176,11 @@ public class GameView : AWindowView
                 OnBlockExitStateChanged?.Invoke(false);
                 OnLevelDone?.Invoke(stats);
             });
+    }
+
+    private void SetLocals()
+    {
+        _seconds = Localization.Instance.GetLocalByKey(SecondsKey);
+        _of = Localization.Instance.GetLocalByKey(OfKey);
     }
 }

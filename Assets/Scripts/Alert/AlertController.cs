@@ -2,6 +2,7 @@ using Dainty.UI.WindowBase;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+
 public class AlertButtonSettings
 {
     public string Text;
@@ -12,6 +13,7 @@ public class AlertSettings
 {
     public string HeaderText;
     public string DialogText;
+    public UnityAction OnBackButtonClicked;
     public List<AlertButtonSettings> Buttons;
 }
 
