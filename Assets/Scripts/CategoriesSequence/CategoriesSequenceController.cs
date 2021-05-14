@@ -7,7 +7,14 @@ using LocalizationModule;
 
 public class CategoriesSequenceController : AWindowController<CategoriesSequenceView>
 {
-    private const string  HeaderKey = "categories_sequence";
+    private const string HeaderKey = "categories_sequence";
+    private const string CancelKey = "cancel";
+    private const string NotEnoughtMoney_HeaderKey = "alert_not_enought_money_header";
+    private const string NotEnoughtMoney_TextKey = "alert_not_enought_money_text";
+    private const string GoToShopKey = "go_to_shop";
+    private const string EnoughtMoney_HeaderKey = "alert_enought_money_header";
+    private const string EnoughtMoney_TextKey = "alert_enought_money_text";
+    private const string BuyKey = "buy";
     private string _header;
     public override string WindowId { get; }
 
@@ -38,20 +45,65 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
     {
         if (!isOpened)
         {
-            ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
-                new AlertSettings()
-                {
-                    HeaderText = "Hey",
-                    DialogText = "duuuuude",
-                    Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+            var localization = Localization.Instance;
+            if (category.Price > MoneyController.Instance.MoneyBalance)
+            {
+                ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
+                    new AlertSettings()
                     {
-                        Callback = () => ApplicationController.Instance.UiManager.Back(),
-                        Text = "give 5 dollars",
-                        Color = Color.green
-                    }
-                    }
-                }, true);
-            //view.CreateOrUpdateCategory(category, true, 0);
+                        HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
+                        DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
+                        OnBackButtonClicked = Back,
+                        Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+                        {
+                            Callback = Back,
+                            Text = localization.GetLocalByKey(CancelKey),
+                            Color = AlertButtonColor.White
+                        },
+                        new AlertButtonSettings()
+                        {
+                            Callback = () =>
+                            {
+                                Back();
+                                ApplicationController.Instance.UiManager.Open<ShopController>(true);
+                            },
+                            Text = localization.GetLocalByKey(GoToShopKey),
+                            Color = AlertButtonColor.Green
+                        }
+                        }
+                    }, true);
+
+            }
+            else
+            {
+                ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
+                    new AlertSettings()
+                    {
+                        HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
+                        DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
+                        OnBackButtonClicked = Back,
+                        Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+                        {
+                            Callback = Back,
+                            Text = localization.GetLocalByKey(CancelKey),
+                            Color = AlertButtonColor.White
+                        },
+                        new AlertButtonSettings()
+                        {
+                            Callback = () =>
+                            {
+                                Back();
+                                if (MoneyController.Instance.GetMoney(category.Price))
+                                {
+                                    view.CreateOrUpdateCategory(category, true, 0);
+                                }
+                            },
+                            Text = localization.GetLocalByKey(BuyKey),
+                            Color = AlertButtonColor.Green
+                        }
+                        }
+                    }, true);
+            }
             return;
         }
 
@@ -69,6 +121,11 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
     protected override void OnUnSubscribe()
     {
         view.OnCategoryClicked -= OnCategoryClicked;
+    }
+
+    private void Back()
+    {
+        ApplicationController.Instance.UiManager.Back();
     }
 
     protected override void OnEscape()

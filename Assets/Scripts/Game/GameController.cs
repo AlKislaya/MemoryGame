@@ -8,7 +8,13 @@ using UnityEngine;
 
 public class GameController : AWindowController<GameView>
 {
+    private const int SkipPrice = 10;
     private const string LevelHeaderKey = "level";
+    private const string SkipLevelHeaderKey = "skip_level_header";
+    private const string SkipLevelMoneyTextKey = "skip_level_money_text";
+    private const string SkipLevelAdsTextKey = "skip_level_ads_text";
+    private const string CancelKey = "cancel";
+    private const string OkKey = "ok";
 
     public override string WindowId { get; }
     private string _categoryKey;
@@ -111,14 +117,42 @@ public class GameController : AWindowController<GameView>
 
     private void OnHintClicked()
     {
-        _uiManager.Open<AlertController, AlertSettings>(
-            new AlertSettings()
-            {
-                DialogText = "Show hint?",
-                Buttons = new List<AlertButtonSettings>() {
-                                        new AlertButtonSettings() { Text = "i'm poor", Color = Color.grey, Callback = OnHintDeclined },
-                                        new AlertButtonSettings() { Text = "give 10 bucks", Color = Color.green, Callback = OnHintApproved }}
-            }, true);
+        var localization = Localization.Instance;
+        if (MoneyController.Instance.MoneyBalance < SkipPrice)
+        {
+            //offer ads
+            _uiManager.Open<AlertController, AlertSettings>(
+                new AlertSettings()
+                {
+                    HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
+                    DialogText = localization.GetLocalByKey(SkipLevelAdsTextKey),
+                    OnBackButtonClicked = OnHintDeclined,
+                    Buttons = new List<AlertButtonSettings>() {
+                                        new AlertButtonSettings() { Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White, Callback = OnHintDeclined },
+                                        new AlertButtonSettings()
+                                        { 
+                                            Text = localization.GetLocalByKey(OkKey), 
+                                            Color = AlertButtonColor.Green, 
+                                            Callback = OnHintWatchAdsApproved }}
+                }, true);
+        }
+        else
+        {
+            _uiManager.Open<AlertController, AlertSettings>(
+                new AlertSettings()
+                {
+                    HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
+                    DialogText = localization.GetLocalByKey(SkipLevelMoneyTextKey),
+                    OnBackButtonClicked = OnHintDeclined,
+                    Buttons = new List<AlertButtonSettings>() {
+                                        new AlertButtonSettings() { Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White, Callback = OnHintDeclined },
+                                        new AlertButtonSettings()
+                                        { 
+                                            Text = localization.GetLocalByKey(OkKey), 
+                                            Color = AlertButtonColor.Green, 
+                                            Callback = OnHintApproved }}
+                }, true);
+        }
     }
 
     private void OnHintDeclined()
@@ -126,7 +160,7 @@ public class GameController : AWindowController<GameView>
         _uiManager.Back();
     }
 
-    private void OnHintApproved()
+    private void OnHintWatchAdsApproved()
     {
         _uiManager.Back();
         ViewOnOnLevelDone(new PassedLevelStats()
@@ -134,6 +168,19 @@ public class GameController : AWindowController<GameView>
             SelectableCount = view.RoundsCount,
             RightSelectablesCount = view.RoundsCount - 1
         });
+    }
+
+    private void OnHintApproved()
+    {
+        _uiManager.Back();
+        if (MoneyController.Instance.GetMoney(SkipPrice))
+        {
+            ViewOnOnLevelDone(new PassedLevelStats()
+            {
+                SelectableCount = view.RoundsCount,
+                RightSelectablesCount = view.RoundsCount - 1
+            });
+        }
     }
 
     private void OnBlockExitStateChanged(bool isBlocked)

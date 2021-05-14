@@ -169,8 +169,15 @@ MonoBehaviour:
   _dialogText: {fileID: 381620140795930655}
   _buttonsContainer: {fileID: 1147983631345049839}
   _backgroundButton: {fileID: 2461162359278476737}
-  _alertButtonPrefab: {fileID: 3183002861306480647, guid: dcdccafcd1871c3469d168fd7b90fff3,
+  _alertButtonPrefab: {fileID: 6864476889300191490, guid: dcdccafcd1871c3469d168fd7b90fff3,
     type: 3}
+  _buttonColors:
+  - AlertColor: 0
+    BackgroundColor: {r: 1, g: 1, b: 1, a: 1}
+    TextColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  - AlertColor: 1
+    BackgroundColor: {r: 0.22745098, g: 0.6666667, b: 0.40784314, a: 1}
+    TextColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1477905910262969003
 GameObject:
   m_ObjectHideFlags: 0
@@ -425,9 +432,9 @@ MonoBehaviour:
   m_fontSize: 18
   m_fontSizeBase: 18
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 10
+  m_fontSizeMax: 18
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -843,8 +850,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 10.25}
-  m_SizeDelta: {x: -20, y: -20.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -20, y: -41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7594019765701626578
 MonoBehaviour:
@@ -1016,9 +1023,9 @@ MonoBehaviour:
   m_fontSize: 25
   m_fontSizeBase: 25
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 25
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

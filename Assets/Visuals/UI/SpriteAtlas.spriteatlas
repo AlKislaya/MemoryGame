@@ -20,7 +20,19 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
       padding: 4
@@ -31,8 +43,11 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: f3519ab2f5a8bad409abf095beb222a4, type: 3}
-    totalSpriteSurfaceArea: 1834705
+    - {fileID: 102900000, guid: d57c8d4f335915d48ae0a9b50dfd24d1, type: 3}
+    - {fileID: 102900000, guid: c899d4c4864d4ff4a9c2bc4c00bf0a27, type: 3}
+    - {fileID: 102900000, guid: 593cc1d6860dd6e4c83a2851187ec3e8, type: 3}
+    - {fileID: 102900000, guid: b7a2b5ea651fccb43aeddb50fe3d6566, type: 3}
+    totalSpriteSurfaceArea: 1635401
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -45,21 +60,16 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b55505e1d3e539b499dbeaea3d5c8be6, type: 3}
   - {fileID: 21300000, guid: 3cf62ae19ff778c429c911db71a5a1b9, type: 3}
   - {fileID: 21300000, guid: fa52b502f1713d446a3b1137ef111478, type: 3}
-  - {fileID: 21300000, guid: 22baa032c4c8d854396ba3fcd707fbe3, type: 3}
   - {fileID: 21300000, guid: cc6be732bc6e3884dbd2663cad579812, type: 3}
   - {fileID: 21300000, guid: 1a7f5aa2f53b1f14e95aa9da7fd81874, type: 3}
   - {fileID: 21300000, guid: ba4408b279f617e459d5c855a3ac7f8f, type: 3}
-  - {fileID: 21300000, guid: 1726987383d356a41a9fe0ab5b86355e, type: 3}
   - {fileID: 21300000, guid: 4d7da3b3427ecfc499a859f16444bba4, type: 3}
   - {fileID: 21300000, guid: 2fd0a6143097de448a0738ee245948c6, type: 3}
   - {fileID: 21300000, guid: ba331e342baf85743885aac2db209a96, type: 3}
-  - {fileID: 21300000, guid: 7c7fed448ef46f94b889119fc37b7580, type: 3}
   - {fileID: 21300000, guid: c2284674bd574da4ea78e26b479dbc62, type: 3}
   - {fileID: 21300000, guid: 757a40e480dddb24e926a7ddf852accc, type: 3}
   - {fileID: 21300000, guid: 61d2dbe4fc3fc7541ae85d13ec61765c, type: 3}
   - {fileID: 21300000, guid: c1a51755ca84c284f8ea116b1d5e78a2, type: 3}
-  - {fileID: 21300000, guid: 9f60dbf54276022448d928df3a60acd9, type: 3}
-  - {fileID: 21300000, guid: d55ef0065ee2b2e4d8381749a51f9d03, type: 3}
   - {fileID: 21300000, guid: fb7e1cc64d604724085bacdb19038452, type: 3}
   - {fileID: 21300000, guid: 712983d60dfc53b47ba50cd05bc1aeb8, type: 3}
   - {fileID: 21300000, guid: 1dfbe9d6fbf19614194d8c4328a5ff54, type: 3}
@@ -76,16 +86,15 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dbdf902863723e44a93cc099e77ae4ba, type: 3}
   - {fileID: 21300000, guid: bf8ce4b834d552748a77d5538b524fdb, type: 3}
   - {fileID: 21300000, guid: 3197d719294f9b5449dce804f6981795, type: 3}
-  - {fileID: 21300000, guid: dc047e19f601ec14d90fe68f971ec282, type: 3}
   - {fileID: 21300000, guid: b4245f2933409584988fb5549cf411df, type: 3}
   - {fileID: 21300000, guid: e6e50e491f60e3342936c11c433ffcde, type: 3}
   - {fileID: 21300000, guid: 0cd0ecc930526664eb32ddacf4251eeb, type: 3}
+  - {fileID: 21300000, guid: bbad8ce9f4e661d4eaf5e44242a7eebd, type: 3}
   - {fileID: 21300000, guid: 554bf45b13bd1a8499b711d3ca8bedb5, type: 3}
   - {fileID: 21300000, guid: 566a188bf9cd1fa41b51243741bca9be, type: 3}
   - {fileID: 21300000, guid: b5cd18cb4de250e4690c00bdf36398b1, type: 3}
   - {fileID: 21300000, guid: e3fb885d8093b654b83978e0610cec20, type: 3}
   - {fileID: 21300000, guid: 61e93bddb1dbe544aab537090fc02c7a, type: 3}
-  - {fileID: 21300000, guid: 55f1c20ea840eb548a3a5b30ba399ed0, type: 3}
   - {fileID: 21300000, guid: a892269e99ab5d34887738c1cc408016, type: 3}
   - {fileID: 21300000, guid: 19d28aae940b1554d9418e2aa3f22b87, type: 3}
   - {fileID: 21300000, guid: e4498aaed8a84d1429fa40bc4d33d759, type: 3}
@@ -102,21 +111,16 @@ SpriteAtlas:
   - pixel
   - starLarge_stroke
   - lock_category
-  - coins_small
   - play_btn
   - rect6pt_fill
   - rect19pt_outline
-  - shop_top
   - cross
   - tickIcon
   - pin
-  - plus_icon
   - settings
   - rect19pt4pt_outline
   - rect6pt_outline
   - sequenceRect_InnerShadow
-  - hint
-  - roundedPath
   - 1.7ptRect_Stroke
   - circle_outline
   - star_innerShadow
@@ -133,16 +137,15 @@ SpriteAtlas:
   - panel_innerShadow
   - circle_fill
   - pricePanel
-  - coins_medium
   - star_fill
   - star_stroke
   - lock_level
+  - tick
   - 1.7ptRect_Fill
   - questionSign
   - sequenceRectSide
   - line
   - star_flare
-  - coins_large
   - rect12pt_outline
   - replay_btn
   - star_strokeLevels

@@ -6817,7 +6817,7 @@ PrefabInstance:
     - target: {fileID: 670609268911031894, guid: 9f5225377f667df4c95568bddad7c94e,
         type: 3}
       propertyPath: m_RaycastTarget
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 670609268911031894, guid: 9f5225377f667df4c95568bddad7c94e,
         type: 3}

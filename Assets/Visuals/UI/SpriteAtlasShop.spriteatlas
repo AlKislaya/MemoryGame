@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SpriteAtlasShop
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 7639acf1db43b6b46bb409f9d5bf93e2, type: 3}
+    totalSpriteSurfaceArea: 191594
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 22baa032c4c8d854396ba3fcd707fbe3, type: 3}
+  - {fileID: 21300000, guid: 1726987383d356a41a9fe0ab5b86355e, type: 3}
+  - {fileID: 21300000, guid: 7c7fed448ef46f94b889119fc37b7580, type: 3}
+  - {fileID: 21300000, guid: d55ef0065ee2b2e4d8381749a51f9d03, type: 3}
+  - {fileID: 21300000, guid: dc047e19f601ec14d90fe68f971ec282, type: 3}
+  - {fileID: 21300000, guid: 55f1c20ea840eb548a3a5b30ba399ed0, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - coins_small
+  - shop_top
+  - plus_icon
+  - roundedPath
+  - coins_medium
+  - coins_large
+  m_RenderDataMap: {}
+  m_Tag: SpriteAtlasShop
+  m_IsVariant: 0

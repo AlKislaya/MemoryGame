@@ -8,10 +8,11 @@ public class AlertButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Image _image;
 
-    public void Initialize(AlertButtonSettings buttonSettings)
+    public void Initialize(AlertButtonSettings buttonSettings, Color backgroundColor, Color textColor)
     {
         _text.text = buttonSettings.Text;
-        _image.color = buttonSettings.Color;
+        _text.color = textColor;
+        _image.color = backgroundColor;
         _button.onClick.AddListener(buttonSettings.Callback);
     }
     

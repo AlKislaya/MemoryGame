@@ -1,12 +1,18 @@
 using Dainty.UI.WindowBase;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
 using UnityEngine.Events;
 
+[Serializable]
+public enum AlertButtonColor
+{
+    White,
+    Green
+}
 public class AlertButtonSettings
 {
     public string Text;
-    public Color32 Color;
+    public AlertButtonColor Color;
     public UnityAction Callback;
 }
 public class AlertSettings

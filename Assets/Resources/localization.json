@@ -6,6 +6,14 @@
             "localizationValues" : 
             [
                 {
+                    "key" : "cancel",
+                    "value": "Cancel"
+                },
+                {
+                    "key" : "ok",
+                    "value": "ok"
+                },
+                {
                     "key" : "levels_sequence",
                     "value": "Levels"
                 },
@@ -50,6 +58,18 @@
                     "value": "Tap to start"
                 },
                 {
+                    "key" : "skip_level_header",
+                    "value": "skip_level_header"
+                },
+                {
+                    "key" : "skip_level_money_text",
+                    "value": "skip_level_money_text"
+                },
+                {
+                    "key" : "skip_level_ads_text",
+                    "value": "skip_level_ads_text"
+                },
+                {
                     "key" : "result_zero",
                     "value": "Zero"
                 },
@@ -64,6 +84,30 @@
                 {
                     "key" : "result_three",
                     "value": "Three"
+                },
+                {
+                    "key" : "alert_not_enought_money_header",
+                    "value": "alert_not_enought_money_header"
+                },
+                {
+                    "key" : "alert_not_enought_money_text",
+                    "value": "alert_not_enought_money_text"
+                },
+                {
+                    "key" : "go_to_shop",
+                    "value": "go_to_shop"
+                },
+                {
+                    "key" : "alert_enought_money_header",
+                    "value": "alert_enought_money_header"
+                },
+                {
+                    "key" : "alert_enought_money_text",
+                    "value": "alert_enought_money_text"
+                },
+                {
+                    "key" : "buy",
+                    "value": "buy"
                 },
                 {
                     "key" : "privacy_policy",
@@ -95,6 +139,14 @@
             "languageKey": "RU",
             "localizationValues" : 
             [
+                {
+                    "key" : "cancel",
+                    "value": "Cancel"
+                },
+                {
+                    "key" : "ok",
+                    "value": "ok"
+                },
                 {
                     "key" : "levels_sequence",
                     "value": "Уровни"
@@ -140,6 +192,18 @@
                     "value": "Нажмите для старта"
                 },
                 {
+                    "key" : "skip_level_header",
+                    "value": "skip_level_header"
+                },
+                {
+                    "key" : "skip_level_money_text",
+                    "value": "skip_level_money_text"
+                },
+                {
+                    "key" : "skip_level_ads_text",
+                    "value": "skip_level_ads_text"
+                },
+                {
                     "key" : "result_zero",
                     "value": "0"
                 },
@@ -154,6 +218,30 @@
                 {
                     "key" : "result_three",
                     "value": "3"
+                },
+                {
+                    "key" : "alert_not_enought_money_header",
+                    "value": "alert_not_enought_money_header"
+                },
+                {
+                    "key" : "alert_not_enought_money_text",
+                    "value": "alert_not_enought_money_text"
+                },
+                {
+                    "key" : "go_to_shop",
+                    "value": "go_to_shop"
+                },
+                {
+                    "key" : "alert_enought_money_header",
+                    "value": "alert_enought_money_header"
+                },
+                {
+                    "key" : "alert_enought_money_text",
+                    "value": "alert_enought_money_text"
+                },
+                {
+                    "key" : "buy",
+                    "value": "buy"
                 },
                 {
                     "key" : "privacy_policy",
