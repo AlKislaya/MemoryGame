@@ -2,51 +2,51 @@
   <defs>
     <style>
       .cls-1 {
-        fill: #ffe3a8;
+        fill: #ffe6b2;
       }
 
       .cls-2 {
-        fill: #e17084;
+        fill: #eb8598;
       }
 
       .cls-3 {
-        fill: #d84761;
+        fill: #e6627a;
       }
 
       .cls-4 {
-        fill: #c22a46;
+        fill: #d8435f;
       }
 
       .cls-5 {
-        fill: #48b75c;
+        fill: #71c277;
       }
 
       .cls-6 {
-        fill: #389348;
+        fill: #51ae62;
       }
 
       .cls-7 {
-        fill: #2c6f38;
+        fill: #428b50;
       }
 
       .cls-8 {
-        fill: #4893cc;
+        fill: #65a9dc;
       }
 
       .cls-9 {
-        fill: #3379af;
+        fill: #4f95ca;
       }
 
       .cls-10 {
-        fill: #275f88;
+        fill: #3f79a4;
       }
 
       .cls-11 {
-        fill: #4b7899;
+        fill: #6593b5;
       }
 
       .cls-12 {
-        fill: #5589af;
+        fill: #70a5ca;
       }
 
       .cls-13 {
@@ -54,16 +54,16 @@
       }
 
       .cls-14 {
-        fill: #f89821;
+        fill: #faa43b;
       }
 
       .cls-15 {
-        fill: #f6ab74;
+        fill: #d08e5d;
       }
     </style>
   </defs>
     <path class="cls-1" d="M30.46,112.89v59.45a9.64,9.64,0,0,0,19.27,0V112.89Zm0,0"/>
-    <g id="selectable-49" data-name="selectable">
+    <g id="selectable-49">
       <g>
         <g>
           <rect class="cls-2" x="33.21" y="115.65" width="13.76" height="13.76"/>
@@ -150,7 +150,7 @@
         <path class="cls-13" d="M63.16,138.58l-9.73,9.73a.64.64,0,0,0-.21.48.71.71,0,0,0,.21.49L63.16,159a.63.63,0,0,0,.48.21.73.73,0,0,0,.49-.19l9.73-9.73a.68.68,0,0,0,0-1l-9.73-9.73A.68.68,0,0,0,63.16,138.58Zm.48,19-8.75-8.76L63.64,140l8.75,8.75Z"/>
       </g>
     </g>
-    <g id="selectable-50" data-name="selectable">
+    <g id="selectable-50">
       <g>
         <rect class="cls-14" x="46.75" y="44.72" width="3.49" height="3.49"/>
         <rect class="cls-14" x="87.12" y="44.72" width="3.49" height="3.49"/>
@@ -205,7 +205,7 @@
         <path class="cls-13" d="M77.27,58a.46.46,0,0,0-.4-.25.45.45,0,0,0-.4.25l-3.25,6.51A9.22,9.22,0,0,0,67.1,62.2a9.32,9.32,0,0,0-8.41,5.33H53.34V52.43h15.1v8.44h.88V52a.43.43,0,0,0-.44-.44h-16a.44.44,0,0,0-.45.44V68a.45.45,0,0,0,.45.45h5.42a9.32,9.32,0,0,0,16.86,7.77l-.77-.45A8.43,8.43,0,1,1,67.1,63.09a8.33,8.33,0,0,1,5.7,2.24L68.48,74a.46.46,0,0,0,0,.44.47.47,0,0,0,.38.21h16a.47.47,0,0,0,.38-.21.46.46,0,0,0,0-.44ZM69.6,73.74,76.87,59.2l7.27,14.54Z"/>
       </g>
     </g>
-    <g id="selectable-51" data-name="selectable">
+    <g id="selectable-51">
       <rect class="cls-5" x="14.85" y="81.49" width="8.68" height="8.68"/>
       <rect class="cls-2" x="14.85" y="81.49" width="8.68" height="8.68"/>
       <rect class="cls-15" x="14.85" y="81.49" width="8.68" height="8.68"/>
