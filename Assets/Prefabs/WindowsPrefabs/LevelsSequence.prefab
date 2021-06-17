@@ -390,6 +390,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1477905910262969002}
   - component: {fileID: 1477905910262969005}
+  - component: {fileID: 3978960208880341079}
   m_Layer: 5
   m_Name: ContainersLayout
   m_TagString: Untagged
@@ -444,6 +445,21 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3978960208880341079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1477905910262969003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5f20de2a900ec43bfd3995e3c4c841, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _conformX: 1
+  _conformY: 1
+  _logging: 0
 --- !u!1 &1477905910585742747
 GameObject:
   m_ObjectHideFlags: 0
