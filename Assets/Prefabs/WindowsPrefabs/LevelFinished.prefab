@@ -281,6 +281,8 @@ MonoBehaviour:
   _menuButton: {fileID: 8798708131195284727}
   _playButton: {fileID: 5935030615282253696}
   _replayButton: {fileID: 8117692919671767112}
+  _coinsLabelContainer: {fileID: 1511235615610074211}
+  _coinsText: {fileID: 9175146555196550549}
   _resultText: {fileID: 2528532998666938414}
   _confettiParticle: {fileID: 4687376711296730253}
   _stars:
@@ -980,7 +982,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +20
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 957a5219f8686f841aea7a9af0378322, type: 2}
   m_sharedMaterial: {fileID: -7154206061625395704, guid: 957a5219f8686f841aea7a9af0378322,

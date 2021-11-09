@@ -20,6 +20,8 @@ public class LevelFinishedView : AWindowView
     [SerializeField] private Button _menuButton;
     [SerializeField] private Button _playButton;
     [SerializeField] private Button _replayButton;
+    [SerializeField] private GameObject _coinsLabelContainer;
+    [SerializeField] private TextMeshProUGUI _coinsText;
     [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private ParticleSystem _confettiParticle;
     [SerializeField] private List<StarController> _stars;
@@ -35,6 +37,15 @@ public class LevelFinishedView : AWindowView
 
         SetLocals();
         Localization.Instance.OnLanguageChanged += SetLocals;
+    }
+
+    public void ShowAddedCoinsLabel(bool isShown, int coinsCount = 0)
+    {
+        if (coinsCount != 0)
+        { 
+            _coinsText.text = $"+ {coinsCount}"; 
+        }
+        _coinsLabelContainer.SetActive(isShown);
     }
 
     public void SetProgress(float passedPercents)

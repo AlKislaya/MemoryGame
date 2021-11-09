@@ -13,6 +13,8 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
 {
     public override string WindowId { get; }
 
+    private const int CoinsValue = 10;
+
     private LevelsManager _levelsManager;
     private GameController _gameController;
     private LevelFinishedSettings _levelFinishedSettings;
@@ -33,6 +35,7 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         _currentPercents = (float)levelFinishedSettings.Stats.RightSelectablesCount / (float)levelFinishedSettings.Stats.SelectableCount;
         var categoryLevelsCount = _levelsManager.GetCategoryByKey(levelFinishedSettings.CategoryKey).LevelsSequence.Levels.Count;
         var levelsProgress = _levelsManager.GetLevelsProgressByCategory(levelFinishedSettings.CategoryKey).Levels;
+        view.ShowAddedCoinsLabel(false);
         
         if (_currentPercents > levelsProgress[levelIndex].PassedPercents)
         {
@@ -41,6 +44,11 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
                 && levelIndex + 1 < categoryLevelsCount)
             {
                 _levelsManager.SetNewLevelProgress(levelFinishedSettings.CategoryKey);
+            }
+            if (_currentPercents >= 1f)
+            {
+                MoneyController.Instance.AddMoney(CoinsValue);
+                view.ShowAddedCoinsLabel(true, CoinsValue);
             }
         }
         else if (!levelsProgress[levelIndex].IsPassed && _currentPercents == 0)
