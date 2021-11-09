@@ -38,6 +38,7 @@ public class MoneyController : Singleton<MoneyController>
         }
 
         _money -= value;
+        SaveToPrefs();
         return true;
     }
 

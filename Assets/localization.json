@@ -11,7 +11,7 @@
                 },
                 {
                     "key" : "ok",
-                    "value": "ok"
+                    "value": "Ok"
                 },
                 {
                     "key" : "levels_sequence",
@@ -59,55 +59,55 @@
                 },
                 {
                     "key" : "skip_level_header",
-                    "value": "skip_level_header"
+                    "value": "Skip level?"
                 },
                 {
                     "key" : "skip_level_money_text",
-                    "value": "skip_level_money_text"
+                    "value": "for 10 coins"
                 },
                 {
                     "key" : "skip_level_ads_text",
-                    "value": "skip_level_ads_text"
+                    "value": "Ads"
                 },
                 {
                     "key" : "result_zero",
-                    "value": "Zero"
+                    "value": "Let's try again"
                 },
                 {
                     "key" : "result_one",
-                    "value": "One"
+                    "value": "You can do better!"
                 },
                 {
                     "key" : "result_two",
-                    "value": "Two"
+                    "value": "Great!"
                 },
                 {
                     "key" : "result_three",
-                    "value": "Three"
+                    "value": "Incredible!"
                 },
                 {
                     "key" : "alert_not_enought_money_header",
-                    "value": "alert_not_enought_money_header"
+                    "value": "Not enough coins :("
                 },
                 {
                     "key" : "alert_not_enought_money_text",
-                    "value": "alert_not_enought_money_text"
+                    "value": "Coins can be obtained for completing levels or in the store"
                 },
                 {
                     "key" : "go_to_shop",
-                    "value": "go_to_shop"
+                    "value": "Shop"
                 },
                 {
                     "key" : "alert_enought_money_header",
-                    "value": "alert_enought_money_header"
+                    "value": "Open category?"
                 },
                 {
                     "key" : "alert_enought_money_text",
-                    "value": "alert_enought_money_text"
+                    "value": ""
                 },
                 {
                     "key" : "buy",
-                    "value": "buy"
+                    "value": "Buy"
                 },
                 {
                     "key" : "privacy_policy",
@@ -126,12 +126,12 @@
                     "value": "Base Levels"
                 },
                 {
-                    "key" : "lc_autumn",
-                    "value": "Autumn"
+                    "key" : "lc_summer",
+                    "value": "Summer"
                 },
                 {
-                    "key" : "lc_winter",
-                    "value": "Winter"
+                    "key" : "lc_handdrawn",
+                    "value": "Hand-Drawn"
                 }
             ]
         },
@@ -141,11 +141,11 @@
             [
                 {
                     "key" : "cancel",
-                    "value": "Cancel"
+                    "value": "Отмена"
                 },
                 {
                     "key" : "ok",
-                    "value": "ok"
+                    "value": "Ок"
                 },
                 {
                     "key" : "levels_sequence",
@@ -193,55 +193,55 @@
                 },
                 {
                     "key" : "skip_level_header",
-                    "value": "skip_level_header"
+                    "value": "Пропустить уровень?"
                 },
                 {
                     "key" : "skip_level_money_text",
-                    "value": "skip_level_money_text"
+                    "value": "за 10 монеток"
                 },
                 {
                     "key" : "skip_level_ads_text",
-                    "value": "skip_level_ads_text"
+                    "value": "Здесь может быть ваша реклама"
                 },
                 {
                     "key" : "result_zero",
-                    "value": "0"
+                    "value": "Попробуй еще раз"
                 },
                 {
                     "key" : "result_one",
-                    "value": "1"
+                    "value": "Ты можешь лучше!"
                 },
                 {
                     "key" : "result_two",
-                    "value": "2"
+                    "value": "Отлично!"
                 },
                 {
                     "key" : "result_three",
-                    "value": "3"
+                    "value": "Невероятно!"
                 },
                 {
                     "key" : "alert_not_enought_money_header",
-                    "value": "alert_not_enought_money_header"
+                    "value": "Недостаточно монет :("
                 },
                 {
                     "key" : "alert_not_enought_money_text",
-                    "value": "alert_not_enought_money_text"
+                    "value": "Монеты можно получить за прохождение уровней или пополнить в магазине"
                 },
                 {
                     "key" : "go_to_shop",
-                    "value": "go_to_shop"
+                    "value": "Магазин"
                 },
                 {
                     "key" : "alert_enought_money_header",
-                    "value": "alert_enought_money_header"
+                    "value": "Разблокировать категорию?"
                 },
                 {
                     "key" : "alert_enought_money_text",
-                    "value": "alert_enought_money_text"
+                    "value": ""
                 },
                 {
                     "key" : "buy",
-                    "value": "buy"
+                    "value": "Купить"
                 },
                 {
                     "key" : "privacy_policy",
@@ -260,12 +260,12 @@
                     "value": "Уровни"
                 },
                 {
-                    "key" : "lc_autumn",
-                    "value": "Осень"
+                    "key" : "lc_summer",
+                    "value": "Лето"
                 },
                 {
-                    "key" : "lc_winter",
-                    "value": "Зима"
+                    "key" : "lc_handdrawn",
+                    "value": "Hand-Drawn"
                 }
             ]
         }

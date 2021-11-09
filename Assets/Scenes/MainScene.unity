@@ -339,7 +339,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &341016887
 GameObject:
@@ -386,7 +386,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &607889173
 PrefabInstance:
@@ -982,18 +982,16 @@ MonoBehaviour:
       type: 3}
     LevelsSequence: {fileID: 11400000, guid: 02228bb863e05744c8582b89a5b6b4ec, type: 2}
   _levelsCategories:
-  - Key: lc_autumn
-    Price: 0
-    Preview: {fileID: 21300000, guid: 9f60dbf54276022448d928df3a60acd9, type: 3}
-    LevelsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35, type: 2}
-  - Key: lc_hand
-    Price: 0
-    Preview: {fileID: 21300000, guid: 372ac2078a034f14a9e6057cdde3055d, type: 3}
-    LevelsSequence: {fileID: 11400000, guid: 5cdb5353802a84948967cb4e7f66467d, type: 2}
-  - Key: lc_winter
+  - Key: lc_summer
     Price: 100
-    Preview: {fileID: 21300000, guid: 372ac2078a034f14a9e6057cdde3055d, type: 3}
+    Preview: {fileID: 3286163911610860551, guid: 6333c2e4b998da049a42f883765f7fe4,
+      type: 3}
     LevelsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35, type: 2}
+  - Key: lc_handdrawn
+    Price: 100
+    Preview: {fileID: 3286163911610860551, guid: 1ab5c053edfd47d47b94e2e451641f56,
+      type: 3}
+    LevelsSequence: {fileID: 11400000, guid: 5cdb5353802a84948967cb4e7f66467d, type: 2}
 --- !u!4 &1410480237
 Transform:
   m_ObjectHideFlags: 0
@@ -1006,7 +1004,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1656115340
 LightingSettings:
@@ -1201,7 +1199,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2068593916
 PrefabInstance:

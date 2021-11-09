@@ -95,6 +95,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
                                 Back();
                                 if (MoneyController.Instance.GetMoney(category.Price))
                                 {
+                                    LevelsManager.Instance.GetLevelsProgressByCategory(category.Key);
                                     view.CreateOrUpdateCategory(category, true, 0);
                                 }
                             },
