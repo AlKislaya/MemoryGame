@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.dainty.modules.ui": {
+      "version": "ssh://git@bitbucket.org/dainty_games/module.ui.git#1.1.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f538c50a68e56db3b3bde9745471998743994995"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 1,
