@@ -17,6 +17,9 @@ public class ApplicationController : Singleton<ApplicationController>
     protected override void Awake()
     {
         base.Awake();
+
+        Application.targetFrameRate = 60;
+
         _uiManager = new UiManager(_uiRoot, _uiManagerSettings);
         _uiManager.Open<MainController>(false, WindowTransition.None);
     }
