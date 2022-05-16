@@ -76,12 +76,15 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         view.OnMenuButtonClicked += ViewOnOnMenuButtonClicked;
         view.OnPlayButtonClicked += ViewOnOnPlayButtonClicked;
         view.OnReplayButtonClicked += ViewOnOnReplayButtonClicked;
+        view.RewardedAdButtonClicked += ViewOnRewardedAdButtonClicked;
     }
     protected override void OnUnSubscribe()
     {
         view.OnMenuButtonClicked -= ViewOnOnMenuButtonClicked;
         view.OnPlayButtonClicked -= ViewOnOnPlayButtonClicked;
         view.OnReplayButtonClicked -= ViewOnOnReplayButtonClicked;
+        view.RewardedAdButtonClicked -= ViewOnRewardedAdButtonClicked;
+
         view.StopConfettiAnimation();
     }
 
@@ -101,6 +104,17 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
     {
         uiManager.Back();
         uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+    }
+
+    private void ViewOnRewardedAdButtonClicked()
+    {
+        ApplicationController.Instance.AdsController.ShowRewarded(null, success =>
+        {
+            if (success)
+            {
+                MoneyController.Instance.AddMoney(20);
+            }
+        }, null);
     }
 
     private void OpenGame()

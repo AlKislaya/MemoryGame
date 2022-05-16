@@ -11,6 +11,7 @@ public class LevelFinishedView : AWindowView
     public event Action OnMenuButtonClicked;
     public event Action OnPlayButtonClicked;
     public event Action OnReplayButtonClicked;
+    public event Action RewardedAdButtonClicked;
 
     private const string ResultThree = "result_three";
     private const string ResultTwo = "result_two";
@@ -22,6 +23,7 @@ public class LevelFinishedView : AWindowView
     [SerializeField] private Button _replayButton;
     [SerializeField] private GameObject _coinsLabelContainer;
     [SerializeField] private TextMeshProUGUI _coinsText;
+    [SerializeField] private Button _rewardedAdButton;
     [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private ParticleSystem _confettiParticle;
     [SerializeField] private List<StarController> _stars;
@@ -83,6 +85,7 @@ public class LevelFinishedView : AWindowView
         _menuButton.onClick.AddListener(onMenuButtonClicked);
         _playButton.onClick.AddListener(onPlayButtonClicked);
         _replayButton.onClick.AddListener(onReplayButtonClicked);
+        _rewardedAdButton.onClick.AddListener(OnRewardedAdButtonClicked);
     }
 
     protected override void OnUnSubscribe()
@@ -90,6 +93,7 @@ public class LevelFinishedView : AWindowView
         _menuButton.onClick.RemoveListener(onMenuButtonClicked);
         _playButton.onClick.RemoveListener(onPlayButtonClicked);
         _replayButton.onClick.RemoveListener(onReplayButtonClicked);
+        _rewardedAdButton.onClick.RemoveAllListeners();
     }
 
     private void onReplayButtonClicked()
@@ -105,6 +109,11 @@ public class LevelFinishedView : AWindowView
     private void onMenuButtonClicked()
     {
         OnMenuButtonClicked?.Invoke();
+    }
+
+    private void OnRewardedAdButtonClicked()
+    {
+        RewardedAdButtonClicked?.Invoke();
     }
 
     private void SetLocals()

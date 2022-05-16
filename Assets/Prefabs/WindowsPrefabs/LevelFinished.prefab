@@ -282,11 +282,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a8db065400a6e54cb09f13faa5e570c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _menuButton: {fileID: 8798708131195284727}
   _playButton: {fileID: 5935030615282253696}
   _replayButton: {fileID: 8117692919671767112}
   _coinsLabelContainer: {fileID: 1511235615610074211}
   _coinsText: {fileID: 9175146555196550549}
+  _rewardedAdButton: {fileID: 688187615220958366}
   _resultText: {fileID: 2528532998666938414}
   _confettiParticle: {fileID: 4687376711296730253}
   _stars:
@@ -7015,6 +7017,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f5225377f667df4c95568bddad7c94e, type: 3}
+--- !u!114 &688187615220958366 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 819409014053397758, guid: 9f5225377f667df4c95568bddad7c94e,
+    type: 3}
+  m_PrefabInstance: {fileID: 203733823466659936}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3309948292805571899 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3403739154731783515, guid: 9f5225377f667df4c95568bddad7c94e,
