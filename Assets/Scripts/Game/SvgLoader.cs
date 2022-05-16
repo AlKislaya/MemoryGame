@@ -42,7 +42,6 @@ namespace SvgLoaderModule
         public async Task<List<VectorImage>> GetSpritesArrange(CancellationToken token)
         {
             var sceneRect = _sceneInfo.SceneViewport;
-            var sceneMatrix = _sceneInfo.Scene.Root.Transform;
             var selectableShapes = new List<SceneNode>();
 
             foreach (var sceneNodeID in _sceneInfo.NodeIDs)
@@ -64,30 +63,29 @@ namespace SvgLoaderModule
 
                 var selectable = selectableShapes.FirstOrDefault(x => x == rootChild);
 
+                VectorImage vectorImage;
                 if (selectable != null)
                 {
-                    SelectableImages selectableImages = new SelectableImages();
-
-                    selectableImages.Children = new List<Sprite>();
-
                     if (rootChild.Children.Count == 0)
                     {
                         Debug.Log("No children detected");
                         continue;
                     }
 
-                    var sprites = await GetSpritesFromSceneNodesAsync(rootChild.Children, sceneRect);
-                    selectableImages.Children.AddRange(sprites);
-                    vectorImages.Add(selectableImages);
+                    vectorImage = new SelectableImages
+                    {
+                        Children = await GetSpritesFromSceneNodesAsync(rootChild.Children, sceneRect)
+                    };
                 }
                 else
                 {
-                    StaticVectorImage staticImage = new StaticVectorImage();
-
-                    staticImage.Sprite = await GetSpriteFromSceneNodeAsync(rootChild, sceneRect);
-
-                    vectorImages.Add(staticImage);
+                    vectorImage = new StaticVectorImage
+                    {
+                        Sprite = await GetSpriteFromSceneNodeAsync(rootChild, sceneRect)
+                    };
                 }
+
+                vectorImages.Add(vectorImage);
             }
 
             return vectorImages;
@@ -96,7 +94,7 @@ namespace SvgLoaderModule
         private async Task<Sprite> GetSpriteFromSceneNodeAsync(SceneNode node, Rect sceneRect)
         {
             var geometry = await Task.Run(() => VectorUtils.TessellateScene(
-                new Scene()
+                new Scene
                 {
                     Root = node
                 },
@@ -124,27 +122,6 @@ namespace SvgLoaderModule
                 .Select(geometry => VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
                     SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis))
                 .ToList();
-        }
-
-        private List<Shape> GetShapes(SceneNode rootNode)
-        {
-            var shapes = new List<Shape>();
-            if (rootNode.Children == null)
-            {
-                if (rootNode.Shapes != null)
-                {
-                    shapes.AddRange(rootNode.Shapes);
-                }
-            }
-            else
-            {
-                foreach (var node in rootNode.Children)
-                {
-                    shapes.AddRange(GetShapes(node));
-                }
-            }
-
-            return shapes;
         }
 
         private VectorUtils.TessellationOptions CalculateTesselationSettings(SceneNode root, float pixelsPerUnit, int targetResolution)
