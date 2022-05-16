@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.dainty.modules.ads": {
+      "version": "ssh://git@bitbucket.org/dainty_games/module.ads.git#1.0.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.textmeshpro": "3.0.6"
+      },
+      "hash": "c6b2e42c2ca411a92dda8367b9779ffe8ee2cd58"
+    },
     "com.dainty.modules.ui": {
       "version": "ssh://git@bitbucket.org/dainty_games/module.ui.git#1.1.2",
       "depth": 0,
