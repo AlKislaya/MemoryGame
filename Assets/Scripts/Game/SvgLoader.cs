@@ -31,9 +31,11 @@ namespace SvgLoaderModule
         private SVGParser.SceneInfo _sceneInfo;
         private VectorUtils.TessellationOptions _tesselationSettings;
 
-        public void ImportSVG(TextAsset textAsset)
+        public async Task ImportSVGAsync(TextAsset textAsset)
         {
-            _sceneInfo = SVGParser.ImportSVG(new StringReader(textAsset.text), ViewportOptions.OnlyApplyRootViewBox);
+            var text = textAsset.text;
+            var dpi = Screen.dpi; // a hack to run SVGParser.ImportSVG() on a background thread :)
+            _sceneInfo = await Task.Run(() => SVGParser.ImportSVG(new StringReader(text), ViewportOptions.OnlyApplyRootViewBox, dpi));
             _tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, PixelsPerUnit, TargetResolution);
         }
 

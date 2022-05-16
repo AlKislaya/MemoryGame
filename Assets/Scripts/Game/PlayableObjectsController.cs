@@ -50,7 +50,7 @@ public class PlayableObjectsController : MonoBehaviour
     //loading svg
     public async Task LoadLevel(TextAsset levelAsset, CancellationToken token)
     {
-        _svgLoader.ImportSVG(levelAsset);
+        await _svgLoader.ImportSVGAsync(levelAsset);
 
         _vectorImages = await _svgLoader.GetSpritesArrange(token);
 
