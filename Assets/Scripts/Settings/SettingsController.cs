@@ -9,4 +9,19 @@ public class SettingsController : AWindowController<SettingsView>
         base.BeforeShow();
         view.SetDefaults();
     }
+
+    protected override void OnSubscribe()
+    {
+        view.CloseButtonClick += ViewOnCloseButtonClick;
+    }
+
+    protected override void OnUnSubscribe()
+    {
+        view.CloseButtonClick -= ViewOnCloseButtonClick;
+    }
+
+    private void ViewOnCloseButtonClick()
+    {
+        uiManager.Back();
+    }
 }

@@ -48,7 +48,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             var localization = Localization.Instance;
             if (category.Price > MoneyController.Instance.MoneyBalance)
             {
-                ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
+                uiManager.Open<AlertController, AlertSettings>(
                     new AlertSettings()
                     {
                         HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
@@ -65,7 +65,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
                             Callback = () =>
                             {
                                 Back();
-                                ApplicationController.Instance.UiManager.Open<ShopController>(true);
+                                uiManager.Open<ShopController>(true);
                             },
                             Text = localization.GetLocalByKey(GoToShopKey),
                             Color = AlertButtonColor.Green
@@ -76,7 +76,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             }
             else
             {
-                ApplicationController.Instance.UiManager.Open<AlertController, AlertSettings>(
+                uiManager.Open<AlertController, AlertSettings>(
                     new AlertSettings()
                     {
                         HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
@@ -108,7 +108,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             return;
         }
 
-        ApplicationController.Instance.UiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
+        uiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
             (new LevelsSequenceSettings() {Category = category},
             false,
             WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
@@ -126,11 +126,11 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
 
     private void Back()
     {
-        ApplicationController.Instance.UiManager.Back();
+        uiManager.Back();
     }
 
     protected override void OnEscape()
     {
-        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }

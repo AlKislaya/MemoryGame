@@ -55,7 +55,7 @@ public class TopPanelController : MonoBehaviour
 
     private void OnSafeAreaChanged()
     {
-        var safeArea = GetSafeArea();
+        var safeArea = ApplicationController.Instance.UiRoot.GetSafeArea();
         _topOffset = _canvasRect.rect.height - (safeArea.height + safeArea.y) + _shadowHeight;
 
         var size = _rectTransform.sizeDelta;
@@ -69,22 +69,5 @@ public class TopPanelController : MonoBehaviour
             pos.y = _topOffset;
             _rectTransform.anchoredPosition = pos;
         }
-    }
-
-    private Rect GetSafeArea()
-    {
-        var safeArea = Screen.safeArea;
-
-        var width = Screen.width;
-        var height = Screen.height;
-        var canvasSize = _canvasRect.rect.size;
-
-        safeArea.x = safeArea.x * canvasSize.x / width;
-        safeArea.y = safeArea.y * canvasSize.y / height;
-
-        safeArea.width = safeArea.width * canvasSize.x / width;
-        safeArea.height = safeArea.height * canvasSize.y / height;
-
-        return safeArea;
     }
 }

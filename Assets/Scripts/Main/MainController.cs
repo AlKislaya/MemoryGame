@@ -34,26 +34,26 @@ public class MainController : AWindowController<MainView>
 
     private void OnShopClicked()
     {
-        ApplicationController.Instance.UiManager.Open<ShopController>(true);
+        uiManager.Open<ShopController>(true);
     }
 
     private void OnSettingsClicked()
     {
-        ApplicationController.Instance.UiManager.Open<SettingsController>(true);
+        uiManager.Open<SettingsController>(true);
     }
 
     private void OnLevelTypeClicked(string key)
     {
         if (key == _levelsManager.BaseLevelsKey)
         {
-            ApplicationController.Instance.UiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
+            uiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
                 (new LevelsSequenceSettings() { Category = _levelsManager.GetCategoryByKey(key) },
                 false,
                 WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
         else
         {
-            ApplicationController.Instance.UiManager.Open<CategoriesSequenceController>(false, WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            uiManager.Open<CategoriesSequenceController>(false, WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
     }
 }

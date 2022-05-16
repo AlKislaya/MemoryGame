@@ -29,7 +29,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
         if (_levelsCategory == null)
         {
             Debug.LogError("Did not find category "+ _categoryKey);
-            ApplicationController.Instance.UiManager.Back();
+            uiManager.Back();
             return;
         }
     }
@@ -41,7 +41,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
         if (_levelsCategory == null)
         {
             Debug.LogError("Didn't init category");
-            ApplicationController.Instance.UiManager.Back();
+            uiManager.Back();
             return;
         }
 
@@ -74,8 +74,8 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
 
     private void OnLevelClicked(int levelNumber)
     {
-        var gameController = ApplicationController.Instance.UiManager
-            .Open<GameController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+        var gameController =
+            uiManager.Open<GameController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         gameController.LoadLevel(_categoryKey, levelNumber);
     }
 
@@ -91,6 +91,6 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
 
     protected override void OnEscape()
     {
-        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }

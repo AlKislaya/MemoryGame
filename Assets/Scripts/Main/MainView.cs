@@ -30,9 +30,9 @@ public class MainView : AWindowView
     private Ease _ease = Ease.OutSine;
     private float _duration = .3f;
 
-    private void Awake()
+    protected override void OnInitialized()
     {
-        _screenWidth = ApplicationController.Instance.UiManager.UiRoot.CanvasSize.x;
+        _screenWidth = UiRoot.CanvasSize.x;
         for (int i = 0; i < _levelTypes.Count; i++)
         {
             if (i < _activeTypeIndex)
@@ -48,8 +48,6 @@ public class MainView : AWindowView
                 _levelTypes[i].RectTransform.anchoredPosition = Vector2.zero;
             }
         }
-        _typesLeftButton.onClick.AddListener(() => OnLevelsTypesSwitched(1));
-        _typesRightButton.onClick.AddListener(() => OnLevelsTypesSwitched(-1));
     }
 
     public void SetMoneyBalance(int value)
@@ -64,6 +62,9 @@ public class MainView : AWindowView
         _levelTypes.ForEach(x => x.Button.onClick.AddListener(() => OnLevelsTypeClicked?.Invoke(x.Key)));
         _settingsButton.onClick.AddListener(onSettingsClicked);
         _shopButton.onClick.AddListener(OnShopButtonClicked);
+
+        _typesLeftButton.onClick.AddListener(() => OnLevelsTypesSwitched(1));
+        _typesRightButton.onClick.AddListener(() => OnLevelsTypesSwitched(-1));
     }
 
     protected override void OnUnSubscribe()
@@ -73,6 +74,9 @@ public class MainView : AWindowView
         _levelTypes.ForEach(x => x.Button.onClick.RemoveListener(() => OnLevelsTypeClicked?.Invoke(x.Key)));
         _settingsButton.onClick.RemoveListener(onSettingsClicked);
         _shopButton.onClick.RemoveListener(OnShopButtonClicked);
+
+        _typesLeftButton.onClick.RemoveAllListeners();
+        _typesRightButton.onClick.RemoveAllListeners();
     }
 
     private void OnLevelsTypesSwitched(int direction)

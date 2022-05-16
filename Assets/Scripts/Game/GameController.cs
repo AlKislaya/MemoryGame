@@ -24,13 +24,11 @@ public class GameController : AWindowController<GameView>
     private CancellationTokenSource _loadingToken;
     private Task _loadingTask;
     private TopPanelController _topPanelController;
-    private UiManager _uiManager;
     private string _levelHeader;
 
     protected override void OnInitialize()
     {
         base.OnInitialize();
-        _uiManager = ApplicationController.Instance.UiManager;
         _topPanelController = ApplicationController.Instance.TopPanelController;
         _levelHeader = Localization.Instance.GetLocalByKey(LevelHeaderKey);
     }
@@ -106,7 +104,7 @@ public class GameController : AWindowController<GameView>
 
     private void ViewOnOnLevelDone(PassedLevelStats stats)
     {
-        _uiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
+        uiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
         {
             CategoryKey = _categoryKey,
             LevelIndex = _levelIndex,
@@ -121,7 +119,7 @@ public class GameController : AWindowController<GameView>
         if (MoneyController.Instance.MoneyBalance < SkipPrice)
         {
             //offer ads
-            _uiManager.Open<AlertController, AlertSettings>(
+            uiManager.Open<AlertController, AlertSettings>(
                 new AlertSettings()
                 {
                     HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
@@ -138,7 +136,7 @@ public class GameController : AWindowController<GameView>
         }
         else
         {
-            _uiManager.Open<AlertController, AlertSettings>(
+            uiManager.Open<AlertController, AlertSettings>(
                 new AlertSettings()
                 {
                     HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
@@ -157,12 +155,12 @@ public class GameController : AWindowController<GameView>
 
     private void OnHintDeclined()
     {
-        _uiManager.Back();
+        uiManager.Back();
     }
 
     private void OnHintWatchAdsApproved()
     {
-        _uiManager.Back();
+        uiManager.Back();
         ViewOnOnLevelDone(new PassedLevelStats()
         {
             SelectableCount = view.RoundsCount,
@@ -172,7 +170,7 @@ public class GameController : AWindowController<GameView>
 
     private void OnHintApproved()
     {
-        _uiManager.Back();
+        uiManager.Back();
         if (MoneyController.Instance.GetMoney(SkipPrice))
         {
             ViewOnOnLevelDone(new PassedLevelStats()
@@ -194,7 +192,7 @@ public class GameController : AWindowController<GameView>
         {
             return;
         }
-        _uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     public override void Dispose()

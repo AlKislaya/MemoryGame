@@ -17,10 +17,10 @@ public class DefaultWindowAnimation : AWindowAnimation
 
         if (_canvasWidth == 0)
         {
-            _canvasWidth = ApplicationController.Instance.UiRoot.CanvasSize.x;
+            _canvasWidth = UIRoot.CanvasSize.x;
             DOTween.Sequence()
                 .AppendInterval(.5f)
-                .AppendCallback(() => _canvasWidth = ApplicationController.Instance.UiRoot.CanvasSize.x)
+                .AppendCallback(() => _canvasWidth = UIRoot.CanvasSize.x)
                 .Play();
         }
     }

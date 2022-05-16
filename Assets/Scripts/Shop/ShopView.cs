@@ -1,6 +1,5 @@
+using System;
 using Dainty.UI.WindowBase;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,9 @@ public class ShopView : AWindowView
 {
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _backgroundShadeButton;
+
+    public event Action CloseButtonClick;
+
     protected override void OnSubscribe()
     {
         base.OnSubscribe();
@@ -23,6 +25,6 @@ public class ShopView : AWindowView
 
     private void OnCloseClicked()
     {
-        ApplicationController.Instance.UiManager.Back();
+        CloseButtonClick?.Invoke();
     }
 }

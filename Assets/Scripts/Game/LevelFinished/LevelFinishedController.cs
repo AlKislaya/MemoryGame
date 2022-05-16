@@ -99,19 +99,18 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
 
     private void ViewOnOnMenuButtonClicked()
     {
-        var manager = ApplicationController.Instance.UiManager;
-        manager.Back();
-        manager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        uiManager.Back();
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     private void OpenGame()
     {
-        ApplicationController.Instance.UiManager.Back();
+        uiManager.Back();
     }
 
     protected override void OnEscape()
     {
         base.OnEscape();
-        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }

@@ -26,6 +26,8 @@ public class SettingsView : AWindowView
     [SerializeField] private ToggleGroup _languageToggleGroup;
     [SerializeField] private List<LanguageToggle> _languageToggles;
 
+    public event Action CloseButtonClick;
+
     private void Start()
     {
         _languageBackButton.onClick.AddListener(OpenMainContainer);
@@ -98,6 +100,6 @@ public class SettingsView : AWindowView
 
     private void OnCloseClicked()
     {
-        ApplicationController.Instance.UiManager.Back();
+        CloseButtonClick?.Invoke();
     }
 }

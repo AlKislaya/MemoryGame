@@ -30,9 +30,9 @@ public class LevelFinishedView : AWindowView
     private string _resultOne;
     private string _resultZero;
 
-    private void Awake()
+    protected override void OnInitialized()
     {
-        var windowSize = ApplicationController.Instance.UiRoot.CanvasSize;
+        var windowSize = UiRoot.CanvasSize;
         _confettiParticle.transform.localPosition = new Vector3(windowSize.x / 2, windowSize.y, 1);
 
         SetLocals();

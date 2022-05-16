@@ -18,7 +18,7 @@ public class WinWindowAnimation : AWindowAnimation
         base.OnInitialized();
         if (_canvasHalfHeight == 0)
         {
-            _canvasHalfHeight = ApplicationController.Instance.UiRoot.CanvasSize.y / 2;
+            _canvasHalfHeight = UIRoot.CanvasSize.y / 2;
         }
     }
 
