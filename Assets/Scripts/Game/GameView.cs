@@ -63,9 +63,9 @@ public class GameView : AWindowView
         _tapToStartButton.onClick.RemoveListener(StartGame);
     }
 
-    public async Task InitLevel(Level levelAsset, CancellationToken token)
+    public Task InitLevel(Level levelAsset, CancellationToken token)
     {
-        await _playableController.LoadLevel(levelAsset.SvgAsset, token);
+        return _playableController.LoadLevel(levelAsset.SvgAsset, token);
     }
 
     public void ShowLoader(bool show)

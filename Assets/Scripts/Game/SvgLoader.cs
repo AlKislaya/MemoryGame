@@ -76,18 +76,15 @@ namespace SvgLoaderModule
                         continue;
                     }
 
-                    for (int i = 0; i < rootChild.Children.Count; i++)
-                    {
-                        selectableImages.Children.Add(await GetSpriteFromSceneNode(rootChild.Children[i], sceneRect));
-                    }
-
+                    var sprites = await GetSpritesFromSceneNodesAsync(rootChild.Children, sceneRect);
+                    selectableImages.Children.AddRange(sprites);
                     vectorImages.Add(selectableImages);
                 }
                 else
                 {
                     StaticVectorImage staticImage = new StaticVectorImage();
 
-                    staticImage.Sprite = await GetSpriteFromSceneNode(rootChild, sceneRect);
+                    staticImage.Sprite = await GetSpriteFromSceneNodeAsync(rootChild, sceneRect);
 
                     vectorImages.Add(staticImage);
                 }
@@ -96,7 +93,7 @@ namespace SvgLoaderModule
             return vectorImages;
         }
 
-        private async Task<Sprite> GetSpriteFromSceneNode(SceneNode node, Rect sceneRect)
+        private async Task<Sprite> GetSpriteFromSceneNodeAsync(SceneNode node, Rect sceneRect)
         {
             var geometry = await Task.Run(() => VectorUtils.TessellateScene(
                 new Scene()
@@ -108,6 +105,25 @@ namespace SvgLoaderModule
 
             return VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
                     SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
+        }
+
+        private async Task<List<Sprite>> GetSpritesFromSceneNodesAsync(IList<SceneNode> nodes, Rect sceneRect)
+        {
+            var geometryList = await Task.Run(() => nodes
+                    .Select(node => VectorUtils.TessellateScene(
+                        new Scene
+                        {
+                            Root = node
+                        },
+                        _tesselationSettings,
+                        _sceneInfo.NodeOpacity))
+                    .ToList()
+            );
+
+            return geometryList
+                .Select(geometry => VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
+                    SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis))
+                .ToList();
         }
 
         private List<Shape> GetShapes(SceneNode rootNode)
