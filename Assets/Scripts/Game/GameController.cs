@@ -81,6 +81,12 @@ public class GameController : AWindowController<GameView>
             {
                 _loadingTask.ContinueWith(task =>
                 {
+                    if (task.Exception != null)
+                    {
+                        Debug.LogException(task.Exception);
+                        return;
+                    }
+
                     Debug.Log("Task Done");
                     view.ShowLoader(false);
                     view.PlaceObjects();
