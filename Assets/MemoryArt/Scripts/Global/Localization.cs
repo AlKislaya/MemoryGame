@@ -8,38 +8,42 @@ namespace LocalizationModule
     public class Localization : Singleton<Localization>
     {
         #region Local structure
+
         [Serializable]
         private class LanguagesWrapper
         {
             public List<Language> languages;
         }
+
         [Serializable]
         private class Language
         {
             public string languageKey;
             public List<LocalizationValue> localizationValues;
         }
+
         [Serializable]
         private class LocalizationValue
         {
             public string key;
             public string value;
         }
+
         #endregion
 
         private const string LocalPrefsKey = "local_key";
-
-        public SystemLanguage CurrentLanguage => 
-            _languageKey.Equals("EN") ? 
-            SystemLanguage.English : SystemLanguage.Russian;
-
-        public event Action OnLanguageChanged;
 
         [SerializeField] private TextAsset _json;
 
         private List<Language> _languages;
         private Language _currentLanguage;
         private string _languageKey;
+
+        public SystemLanguage CurrentLanguage => _languageKey.Equals("EN")
+            ? SystemLanguage.English
+            : SystemLanguage.Russian;
+
+        public event Action LanguageChanged;
 
         protected override void Awake()
         {
@@ -73,7 +77,7 @@ namespace LocalizationModule
 
             _currentLanguage = _languages.First(x => x.languageKey.Equals(_languageKey));
 
-            OnLanguageChanged?.Invoke();
+            LanguageChanged?.Invoke();
         }
 
         public string GetLocalByKey(string key)

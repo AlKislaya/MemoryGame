@@ -1,15 +1,12 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CounterElement : MonoBehaviour
 {
-    //public event Action OnButtonClicked; 
     [SerializeField] private TextMeshProUGUI _text;
     [SerializeField] private Image _filledOutline;
-    //[SerializeField] private Button _button;
     [SerializeField] private Image _tickImage;
 
     private Tween _animation;
@@ -18,7 +15,6 @@ public class CounterElement : MonoBehaviour
     //add button click listener, init transform to btn animation
     private void Start()
     {
-        //_button.onClick.AddListener(onButtonClicked);
         _transformToDoneAnimation = DOTween.Sequence()
             .AppendCallback(() =>
             {
@@ -27,22 +23,13 @@ public class CounterElement : MonoBehaviour
             })
             .Append(transform.DOScale(1.2f, .3f))
             .Append(transform.DOScale(1f, .3f))
-            //.AppendCallback(() =>
-            //{
-            //    _button.enabled = true;
-            //})
-            .Pause().SetAutoKill(false);
+            .Pause()
+            .SetAutoKill(false);
     }
-
-    //private void onButtonClicked()
-    //{
-    //    OnButtonClicked?.Invoke();
-    //}
 
     public void SetDefaults()
     {
         transform.localScale = Vector3.one;
-        //_button.enabled = false;
         _tickImage.enabled = false;
         _text.enabled = true;
     }

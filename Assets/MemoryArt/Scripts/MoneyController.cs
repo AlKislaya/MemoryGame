@@ -5,9 +5,9 @@ public class MoneyController : Singleton<MoneyController>
     private const string MoneyPrefsKey = "money_balance";
     private const int _firstBalance = 150;
 
-    public int MoneyBalance => _money;
-
     private int _money;
+
+    public int MoneyBalance => _money;
 
     protected override void Awake()
     {

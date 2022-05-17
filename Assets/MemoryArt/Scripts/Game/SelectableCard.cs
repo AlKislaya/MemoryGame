@@ -5,11 +5,14 @@ using UnityEngine.UI;
 
 public class SelectableCard : PlayableCard
 {
-    public event Action<int> OnButtonClicked;
     [HideInInspector] public int Index;
+
     [SerializeField] private Button _button;
     [SerializeField] private CanvasGroup _canvasGroup;
+
     private RectTransform _parentRect;
+
+    public event Action<int> ButtonClick;
 
     protected override void Awake()
     {
@@ -19,7 +22,7 @@ public class SelectableCard : PlayableCard
 
     private void Start()
     {
-        _button.onClick.AddListener(() => OnButtonClicked?.Invoke(Index));
+        _button.onClick.AddListener(() => ButtonClick?.Invoke(Index));
     }
 
     public Tween DoFade(float alpha, float duration)

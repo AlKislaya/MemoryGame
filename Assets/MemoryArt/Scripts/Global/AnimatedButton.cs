@@ -6,7 +6,6 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class AnimatedButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    public Button Button => _button;
     [SerializeField] private RectTransform _shadow;
     [SerializeField] private Transform _icon;
     [SerializeField] private Vector3 _targetScale;
@@ -20,12 +19,14 @@ public class AnimatedButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
     private float _scaleDistance;
     private Sequence _animation;
 
-    void Awake()
+    public Button Button => _button;
+
+    private void Awake()
     {
         _button = GetComponent<Button>();
     }
 
-    void Start()
+    private void Start()
     {
         _startScale = _icon.localScale;
         _startShadowPosition = _shadow.anchoredPosition;
@@ -45,6 +46,7 @@ public class AnimatedButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             return;
         }
+
         StartAnimation(_targetScale, _targetShadowPosition);
     }
 
@@ -54,6 +56,7 @@ public class AnimatedButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         {
             return;
         }
+
         StartAnimation(_startScale, _startShadowPosition);
     }
 
@@ -66,6 +69,6 @@ public class AnimatedButton : MonoBehaviour, IPointerDownHandler, IPointerUpHand
         _animation = DOTween.Sequence()
             .Append(_icon.DOScale(targetScale, currDuration))
             .Join(_shadow.DOScale(targetScale, currDuration))
-            .Join(_shadow.DOAnchorPos(targetPosition, currDuration)).Play();
+            .Join(_shadow.DOAnchorPos(targetPosition, currDuration));
     }
 }

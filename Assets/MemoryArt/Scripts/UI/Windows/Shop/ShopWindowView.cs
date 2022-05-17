@@ -16,11 +16,12 @@ public class ShopWindowView : AWindowView
         _closeButton.onClick.AddListener(OnCloseClicked);
         _backgroundShadeButton.onClick.AddListener(OnCloseClicked);
     }
+
     protected override void OnUnSubscribe()
     {
         base.OnSubscribe();
-        _backgroundShadeButton.onClick.RemoveListener(OnCloseClicked);
-        _closeButton.onClick.RemoveListener(OnCloseClicked);
+        _backgroundShadeButton.onClick.RemoveAllListeners();
+        _closeButton.onClick.RemoveAllListeners();
     }
 
     private void OnCloseClicked()

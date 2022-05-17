@@ -2,7 +2,6 @@ using Dainty.UI;
 using Dainty.UI.WindowBase;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 using LocalizationModule;
 
 public class CategoriesSequenceWindowController : AWindowController<CategoriesSequenceWindowView>
@@ -15,7 +14,9 @@ public class CategoriesSequenceWindowController : AWindowController<CategoriesSe
     private const string EnoughtMoney_HeaderKey = "alert_enought_money_header";
     private const string EnoughtMoney_TextKey = "alert_enought_money_text";
     private const string BuyKey = "buy";
+    
     private string _header;
+    
     public override string WindowId { get; }
 
     protected override void OnInitialize()
@@ -34,14 +35,15 @@ public class CategoriesSequenceWindowController : AWindowController<CategoriesSe
         for (int i = 0; i < categories.Count; i++)
         {
             var progressExists = levelsManager.IsCategoryProgressExists(categories[i].Key);
-            var passedLevelsCount = progressExists ?
-                levelsManager.GetLevelsProgressByCategory(categories[i].Key).Levels.Count(x => x.IsPassed) : 0;
+            var passedLevelsCount = progressExists
+                ? levelsManager.GetLevelsProgressByCategory(categories[i].Key).Levels.Count(x => x.IsPassed)
+                : 0;
 
             view.CreateOrUpdateCategory(categories[i], categories[i].Price == 0 || progressExists, passedLevelsCount);
         }
     }
 
-    private void OnCategoryClicked(LevelsCategory category, bool isOpened)
+    private void OnCategoryClick(LevelsCategory category, bool isOpened)
     {
         if (!isOpened)
         {
@@ -54,25 +56,26 @@ public class CategoriesSequenceWindowController : AWindowController<CategoriesSe
                         HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
                         DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
                         OnBackButtonClicked = Back,
-                        Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+                        Buttons = new List<AlertButtonSettings>()
                         {
-                            Callback = Back,
-                            Text = localization.GetLocalByKey(CancelKey),
-                            Color = AlertButtonColor.White
-                        },
-                        new AlertButtonSettings()
-                        {
-                            Callback = () =>
+                            new AlertButtonSettings()
                             {
-                                Back();
-                                uiManager.Open<ShopWindowController>(true);
+                                Callback = Back,
+                                Text = localization.GetLocalByKey(CancelKey),
+                                Color = AlertButtonColor.White
                             },
-                            Text = localization.GetLocalByKey(GoToShopKey),
-                            Color = AlertButtonColor.Green
-                        }
+                            new AlertButtonSettings()
+                            {
+                                Callback = () =>
+                                {
+                                    Back();
+                                    uiManager.Open<ShopWindowController>(true);
+                                },
+                                Text = localization.GetLocalByKey(GoToShopKey),
+                                Color = AlertButtonColor.Green
+                            }
                         }
                     }, true);
-
             }
             else
             {
@@ -82,46 +85,48 @@ public class CategoriesSequenceWindowController : AWindowController<CategoriesSe
                         HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
                         DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
                         OnBackButtonClicked = Back,
-                        Buttons = new List<AlertButtonSettings>(){ new AlertButtonSettings()
+                        Buttons = new List<AlertButtonSettings>()
                         {
-                            Callback = Back,
-                            Text = localization.GetLocalByKey(CancelKey),
-                            Color = AlertButtonColor.White
-                        },
-                        new AlertButtonSettings()
-                        {
-                            Callback = () =>
+                            new AlertButtonSettings()
                             {
-                                Back();
-                                if (MoneyController.Instance.GetMoney(category.Price))
-                                {
-                                    LevelsManager.Instance.GetLevelsProgressByCategory(category.Key);
-                                    view.CreateOrUpdateCategory(category, true, 0);
-                                }
+                                Callback = Back,
+                                Text = localization.GetLocalByKey(CancelKey),
+                                Color = AlertButtonColor.White
                             },
-                            Text = localization.GetLocalByKey(BuyKey),
-                            Color = AlertButtonColor.Green
-                        }
+                            new AlertButtonSettings()
+                            {
+                                Callback = () =>
+                                {
+                                    Back();
+                                    if (MoneyController.Instance.GetMoney(category.Price))
+                                    {
+                                        LevelsManager.Instance.GetLevelsProgressByCategory(category.Key);
+                                        view.CreateOrUpdateCategory(category, true, 0);
+                                    }
+                                },
+                                Text = localization.GetLocalByKey(BuyKey),
+                                Color = AlertButtonColor.Green
+                            }
                         }
                     }, true);
             }
+
             return;
         }
 
-        uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>
-            (new LevelsSequenceWindowSettings() {Category = category},
-            false,
+        var settings = new LevelsSequenceWindowSettings { Category = category };
+        uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
             WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
     }
 
     protected override void OnSubscribe()
     {
-        view.OnCategoryClicked += OnCategoryClicked;
+        view.CategoryClick += OnCategoryClick;
     }
 
     protected override void OnUnSubscribe()
     {
-        view.OnCategoryClicked -= OnCategoryClicked;
+        view.CategoryClick -= OnCategoryClick;
     }
 
     private void Back()

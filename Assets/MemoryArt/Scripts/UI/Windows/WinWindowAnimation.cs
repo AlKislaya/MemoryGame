@@ -7,9 +7,11 @@ using UnityEngine.UI;
 public class WinWindowAnimation : AWindowAnimation
 {
     private const float _animationDuration = .4f;
+
     [SerializeField] private Canvas _canvas;
     [SerializeField] private Image _backgroundShade;
     [SerializeField] private RectTransform _panelContainer;
+
     private Tween _tween;
     private static float _canvasHalfHeight;
 
@@ -34,7 +36,8 @@ public class WinWindowAnimation : AWindowAnimation
         _panelContainer.anchoredPosition = new Vector2(0, _canvasHalfHeight);
 
         _backgroundShade.DOFade(.7f, _animationDuration).SetEase(Ease.OutQuad);
-        _tween = DOTween.Sequence().Append(_panelContainer.DOAnchorPos(Vector2.zero, _animationDuration).SetEase(Ease.OutQuad))
+        _tween = DOTween.Sequence()
+            .Append(_panelContainer.DOAnchorPos(Vector2.zero, _animationDuration).SetEase(Ease.OutQuad))
             .AppendCallback(() => animationFinished?.Invoke());
     }
 

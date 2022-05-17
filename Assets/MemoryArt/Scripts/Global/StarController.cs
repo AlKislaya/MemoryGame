@@ -3,26 +3,33 @@ using UnityEngine.UI;
 
 public class StarController : MonoBehaviour
 {
-    public bool IsActive => _isActive;
     [SerializeField] private Image _fillImage;
     [SerializeField] private Image _innerShadowImage;
     [SerializeField] private Image _flareImage;
-    [Header("Active Star")]
-    [SerializeField] private Color32 _fillActive;
+
+    [Header("Active Star")] [SerializeField]
+    private Color32 _fillActive;
+
     [SerializeField] private Color32 _innerShadowActive;
     [SerializeField] private Color32 _flareActive;
-    [Header("Unactive Star")]
-    [SerializeField] private Color32 _fillUnactive;
+
+    [Header("Unactive Star")] [SerializeField]
+    private Color32 _fillUnactive;
+
     [SerializeField] private Color32 _innerShadowUnactive;
     [SerializeField] private Color32 _flareUnactive;
+
     private bool _isActive = true;
-    
+
+    public bool IsActive => _isActive;
+
     public void SetActiveState(bool isActive)
     {
         if (isActive == _isActive)
         {
             return;
         }
+
         _isActive = isActive;
 
         if (isActive)

@@ -15,13 +15,15 @@ public class AlertWindowView : AWindowView
         public Color BackgroundColor;
         public Color TextColor;
     }
+
     [SerializeField] private TextMeshProUGUI _headerText;
     [SerializeField] private TextMeshProUGUI _dialogText;
     [SerializeField] private Transform _buttonsContainer;
     [SerializeField] private Button _backgroundButton;
     [SerializeField] private AlertButton _alertButtonPrefab;
     [SerializeField] private List<ButtonColors> _buttonColors;
-    private List<AlertButton> _alertButtons = new List<AlertButton>();
+
+    private readonly List<AlertButton> _alertButtons = new List<AlertButton>();
 
     public void InitializeAlert(AlertWindowSettings data)
     {
@@ -40,6 +42,7 @@ public class AlertWindowView : AWindowView
                 var newButton = Instantiate(_alertButtonPrefab, _buttonsContainer);
                 _alertButtons.Add(newButton);
             }
+
             var colors = _buttonColors.FirstOrDefault(x => x.AlertColor == data.Buttons[i].Color);
             _alertButtons[i].Initialize(data.Buttons[i], colors.BackgroundColor, colors.TextColor);
             _alertButtons[i].SetActive(true);

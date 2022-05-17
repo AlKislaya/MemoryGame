@@ -8,10 +8,6 @@ using UnityEngine.UI;
 
 public class LevelFinishedWindowView : AWindowView
 {
-    public event Action OnMenuButtonClicked;
-    public event Action OnPlayButtonClicked;
-    public event Action OnReplayButtonClicked;
-
     private const string ResultThree = "result_three";
     private const string ResultTwo = "result_two";
     private const string ResultOne = "result_one";
@@ -25,10 +21,15 @@ public class LevelFinishedWindowView : AWindowView
     [SerializeField] private TextMeshProUGUI _resultText;
     [SerializeField] private ParticleSystem _confettiParticle;
     [SerializeField] private List<StarController> _stars;
+
     private string _resultThree;
     private string _resultTwo;
     private string _resultOne;
     private string _resultZero;
+
+    public event Action MenuButtonClicked;
+    public event Action PlayButtonClicked;
+    public event Action ReplayButtonClicked;
 
     protected override void OnInitialized()
     {
@@ -36,15 +37,16 @@ public class LevelFinishedWindowView : AWindowView
         _confettiParticle.transform.localPosition = new Vector3(windowSize.x / 2, windowSize.y, 1);
 
         SetLocals();
-        Localization.Instance.OnLanguageChanged += SetLocals;
+        Localization.Instance.LanguageChanged += SetLocals;
     }
 
     public void ShowAddedCoinsLabel(bool isShown, int coinsCount = 0)
     {
         if (coinsCount != 0)
-        { 
-            _coinsText.text = $"+ {coinsCount}"; 
+        {
+            _coinsText.text = $"+ {coinsCount}";
         }
+
         _coinsLabelContainer.SetActive(isShown);
     }
 
@@ -56,12 +58,19 @@ public class LevelFinishedWindowView : AWindowView
         {
             _stars[i].SetActiveState(true);
         }
+
         for (int i = activeCount; i < _stars.Count; i++)
         {
             _stars[i].SetActiveState(false);
         }
 
-        _resultText.text = activeCount == 0 ? _resultZero : activeCount == 1 ? _resultOne : activeCount == 2 ? _resultTwo : _resultThree;
+        _resultText.text = activeCount switch
+        {
+            0 => _resultZero,
+            1 => _resultOne,
+            2 => _resultTwo,
+            _ => _resultThree
+        };
     }
 
     public void SetActivePlayButton(bool isActive)
@@ -73,6 +82,7 @@ public class LevelFinishedWindowView : AWindowView
     {
         _confettiParticle.Play();
     }
+
     public void StopConfettiAnimation()
     {
         _confettiParticle.Stop(false, ParticleSystemStopBehavior.StopEmittingAndClear);
@@ -80,31 +90,31 @@ public class LevelFinishedWindowView : AWindowView
 
     protected override void OnSubscribe()
     {
-        _menuButton.onClick.AddListener(onMenuButtonClicked);
-        _playButton.onClick.AddListener(onPlayButtonClicked);
-        _replayButton.onClick.AddListener(onReplayButtonClicked);
+        _menuButton.onClick.AddListener(OnMenuButtonClicked);
+        _playButton.onClick.AddListener(OnPlayButtonClicked);
+        _replayButton.onClick.AddListener(OnReplayButtonClicked);
     }
 
     protected override void OnUnSubscribe()
     {
-        _menuButton.onClick.RemoveListener(onMenuButtonClicked);
-        _playButton.onClick.RemoveListener(onPlayButtonClicked);
-        _replayButton.onClick.RemoveListener(onReplayButtonClicked);
+        _menuButton.onClick.RemoveAllListeners();
+        _playButton.onClick.RemoveAllListeners();
+        _replayButton.onClick.RemoveAllListeners();
     }
 
-    private void onReplayButtonClicked()
+    private void OnReplayButtonClicked()
     {
-        OnReplayButtonClicked?.Invoke();
+        ReplayButtonClicked?.Invoke();
     }
 
-    private void onPlayButtonClicked()
+    private void OnPlayButtonClicked()
     {
-        OnPlayButtonClicked?.Invoke();
+        PlayButtonClicked?.Invoke();
     }
 
-    private void onMenuButtonClicked()
+    private void OnMenuButtonClicked()
     {
-        OnMenuButtonClicked?.Invoke();
+        MenuButtonClicked?.Invoke();
     }
 
     private void SetLocals()

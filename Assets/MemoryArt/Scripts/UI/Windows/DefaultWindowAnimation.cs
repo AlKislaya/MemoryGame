@@ -6,6 +6,7 @@ using UnityEngine;
 public class DefaultWindowAnimation : AWindowAnimation
 {
     [SerializeField] private Canvas _canvas;
+
     private RectTransform _canvasRect;
     private static float _canvasWidth;
     private Tween _tween;
@@ -49,7 +50,8 @@ public class DefaultWindowAnimation : AWindowAnimation
     public override void PlayCloseAnimation(bool pop, Action animationFinished = null)
     {
         _tween?.Kill();
-        _tween = DOTween.Sequence().Append(_canvasRect.DOAnchorPos(new Vector2(pop ? _canvasWidth : -_canvasWidth, 0), .5f))
+        _tween = DOTween.Sequence()
+            .Append(_canvasRect.DOAnchorPos(new Vector2(pop ? _canvasWidth : -_canvasWidth, 0), .5f))
             .AppendCallback(() => animationFinished?.Invoke());
     }
 }

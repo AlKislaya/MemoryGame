@@ -8,8 +8,10 @@ public class CategoriesSequenceWindowView : AWindowView
 {
     [SerializeField] private CategoryItem _categoryPrefab;
     [SerializeField] private Transform _categoriesContainer;
-    private List<CategoryItem> _categoriesInstances = new List<CategoryItem>();
-    public event Action<LevelsCategory, bool> OnCategoryClicked;
+
+    private readonly List<CategoryItem> _categoriesInstances = new List<CategoryItem>();
+
+    public event Action<LevelsCategory, bool> CategoryClick;
 
     public void CreateOrUpdateCategory(LevelsCategory categoryData, bool isOpened, int passedLevels)
     {
@@ -20,12 +22,13 @@ public class CategoriesSequenceWindowView : AWindowView
             {
                 category.SetAvailableState(isOpened);
             }
+
             category.SetPassedLevels(passedLevels);
             return;
         }
 
         var newCategoryInstance = Instantiate(_categoryPrefab, _categoriesContainer);
-        newCategoryInstance.Initialize(categoryData, onCategoryClicked);
+        newCategoryInstance.Initialize(categoryData, OnCategoryClick);
 
         newCategoryInstance.SetAvailableState(isOpened);
         newCategoryInstance.SetPassedLevels(passedLevels);
@@ -33,8 +36,8 @@ public class CategoriesSequenceWindowView : AWindowView
         _categoriesInstances.Add(newCategoryInstance);
     }
 
-    private void onCategoryClicked(LevelsCategory data, bool isOpened)
+    private void OnCategoryClick(LevelsCategory data, bool isOpened)
     {
-        OnCategoryClicked?.Invoke(data, isOpened);
+        CategoryClick?.Invoke(data, isOpened);
     }
 }

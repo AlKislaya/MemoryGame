@@ -4,8 +4,10 @@ using System;
 
 public class MainWindowController : AWindowController<MainWindowView>
 {
-    public override string WindowId { get; }
     private LevelsManager _levelsManager;
+
+    public override string WindowId { get; }
+
     protected override void OnInitialize()
     {
         base.OnInitialize();
@@ -46,14 +48,14 @@ public class MainWindowController : AWindowController<MainWindowView>
     {
         if (key == _levelsManager.BaseLevelsKey)
         {
-            uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>
-                (new LevelsSequenceWindowSettings() { Category = _levelsManager.GetCategoryByKey(key) },
-                false,
+            var settings = new LevelsSequenceWindowSettings { Category = _levelsManager.GetCategoryByKey(key) };
+            uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
                 WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
         else
         {
-            uiManager.Open<CategoriesSequenceWindowController>(false, WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            uiManager.Open<CategoriesSequenceWindowController>(
+                WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
     }
 }

@@ -58,9 +58,9 @@ public class GameWindowController : AWindowController<GameWindowView>
 
     protected override void OnSubscribe()
     {
-        view.OnLevelDone += ViewOnOnLevelDone;
-        view.OnBlockExitStateChanged += OnBlockExitStateChanged;
-        view.OnHintClicked += OnHintClicked;
+        view.LevelDone += ViewOnOnLevelDone;
+        view.BlockExitStateChanged += OnBlockExitStateChanged;
+        view.HintClicked += OnHintClicked;
 
         ApplicationController.Instance.Camera.allowMSAA = true;
         ProcessLevel();
@@ -103,9 +103,9 @@ public class GameWindowController : AWindowController<GameWindowView>
 
     protected override void OnUnSubscribe()
     {
-        view.OnLevelDone -= ViewOnOnLevelDone;
-        view.OnBlockExitStateChanged -= OnBlockExitStateChanged;
-        view.OnHintClicked -= OnHintClicked;
+        view.LevelDone -= ViewOnOnLevelDone;
+        view.BlockExitStateChanged -= OnBlockExitStateChanged;
+        view.HintClicked -= OnHintClicked;
     }
 
     private void ViewOnOnLevelDone(PassedLevelStats stats)

@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class ApplicationController : Singleton<ApplicationController>
 {
-    public Camera Camera => _camera;
-    public UiManager UiManager => _uiManager;
-    public UiRoot UiRoot => _uiRoot;
-    public TopPanelController TopPanelController => _topPanelController;
-
     [SerializeField] private Camera _camera;
     [SerializeField] private UiRoot _uiRoot;
     [SerializeField] private UiManagerSettings _uiManagerSettings;
     [SerializeField] private TopPanelController _topPanelController;
+
     private UiManager _uiManager;
+
+    public Camera Camera => _camera;
+    public UiManager UiManager => _uiManager;
+    public UiRoot UiRoot => _uiRoot;
+    public TopPanelController TopPanelController => _topPanelController;
 
     protected override void Awake()
     {

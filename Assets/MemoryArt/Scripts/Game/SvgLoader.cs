@@ -5,14 +5,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
+
 namespace SvgLoaderModule
 {
     public class VectorImage
-    { }
+    {
+    }
+
     public class StaticVectorImage : VectorImage
     {
         public Sprite Sprite;
     }
+
     public class SelectableImages : VectorImage
     {
         public List<Sprite> Children;
@@ -26,6 +30,7 @@ namespace SvgLoaderModule
         private const string SelectableKey = "selectable";
         private const bool FlipYAxis = true;
         private const VectorUtils.Alignment SpriteAlignment = VectorUtils.Alignment.Center;
+
         private readonly Vector2 SpritePivot = Vector2.zero;
 
         private SVGParser.SceneInfo _sceneInfo;
@@ -35,7 +40,8 @@ namespace SvgLoaderModule
         {
             var text = textAsset.text;
             var dpi = Screen.dpi; // a hack to run SVGParser.ImportSVG() on a background thread :)
-            _sceneInfo = await Task.Run(() => SVGParser.ImportSVG(new StringReader(text), ViewportOptions.OnlyApplyRootViewBox, dpi));
+            _sceneInfo = await Task.Run(() =>
+                SVGParser.ImportSVG(new StringReader(text), ViewportOptions.OnlyApplyRootViewBox, dpi));
             _tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, PixelsPerUnit, TargetResolution);
         }
 
@@ -102,20 +108,20 @@ namespace SvgLoaderModule
                 _sceneInfo.NodeOpacity));
 
             return VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
-                    SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
+                SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
         }
 
         private async Task<List<Sprite>> GetSpritesFromSceneNodesAsync(IList<SceneNode> nodes, Rect sceneRect)
         {
             var geometryList = await Task.Run(() => nodes
-                    .Select(node => VectorUtils.TessellateScene(
-                        new Scene
-                        {
-                            Root = node
-                        },
-                        _tesselationSettings,
-                        _sceneInfo.NodeOpacity))
-                    .ToList()
+                .Select(node => VectorUtils.TessellateScene(
+                    new Scene
+                    {
+                        Root = node
+                    },
+                    _tesselationSettings,
+                    _sceneInfo.NodeOpacity))
+                .ToList()
             );
 
             return geometryList
@@ -124,7 +130,8 @@ namespace SvgLoaderModule
                 .ToList();
         }
 
-        private VectorUtils.TessellationOptions CalculateTesselationSettings(SceneNode root, float pixelsPerUnit, int targetResolution)
+        private VectorUtils.TessellationOptions CalculateTesselationSettings(SceneNode root, float pixelsPerUnit,
+            int targetResolution)
         {
             var bounds = VectorUtils.ApproximateSceneNodeBounds(root);
             float maxDim = Mathf.Max(bounds.width, bounds.height) / pixelsPerUnit;

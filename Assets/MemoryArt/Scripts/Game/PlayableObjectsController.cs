@@ -142,7 +142,7 @@ public class PlayableObjectsController : MonoBehaviour
         ShowNextCards();
     }
 
-    private void OnSelectableClicked(int selectableIndex)
+    private void OnSelectableClick(int selectableIndex)
     {
         if (_roundIndex >= _vectorImages.Count)
         {
@@ -219,7 +219,7 @@ public class PlayableObjectsController : MonoBehaviour
         for (int i = 0; i < _selectableCards.Count; i++)
         {
             _selectableCards[i].Index = i;
-            _selectableCards[i].OnButtonClicked += OnSelectableClicked;
+            _selectableCards[i].ButtonClick += OnSelectableClick;
         }
     }
 

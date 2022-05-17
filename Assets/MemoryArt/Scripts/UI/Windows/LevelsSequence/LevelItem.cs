@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class LevelItem : MonoBehaviour
 {
-    public bool IsOpened => _isOpened;
-
     [SerializeField] private Button _button;
     [SerializeField] private AnimatedButton _buttonAnimation;
     [SerializeField] private Image _previewImage;
@@ -20,10 +18,13 @@ public class LevelItem : MonoBehaviour
     [SerializeField] private Sprite _lockSprite;
     [SerializeField] private Color _lockModeFillcolor;
     [SerializeField] private List<GameObject> _openedLevelItems;
+
     private List<StarController> _stars;
     private int _levelNumber;
     private bool _isOpened;
     private bool _isNew;
+
+    public bool IsOpened => _isOpened;
 
     public void Initialize(int levelNumber, Action<int> onButtonClickedCallback)
     {
@@ -58,6 +59,7 @@ public class LevelItem : MonoBehaviour
             {
                 _stars.Add(Instantiate(_starPrefab, _starsLayoutGroup));
             }
+
             LayoutRebuilder.MarkLayoutForRebuild(_starsLayoutGroup);
         }
 
@@ -69,10 +71,12 @@ public class LevelItem : MonoBehaviour
         {
             activeCount = 0;
         }
+
         for (int i = 0; i < activeCount; i++)
         {
             _stars[i].SetActiveState(true);
         }
+
         for (int i = activeCount; i < _stars.Count; i++)
         {
             _stars[i].SetActiveState(false);

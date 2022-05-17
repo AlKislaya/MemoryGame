@@ -7,8 +7,10 @@ public class LevelsSequenceWindowView : AWindowView
 {
     [SerializeField] private LevelItem _levelPrefab;
     [SerializeField] private Transform _levelsContainer;
-    private List<LevelItem> _levelInstances = new List<LevelItem>();
-    public event Action<int> OnLevelClicked;
+
+    private readonly List<LevelItem> _levelInstances = new List<LevelItem>();
+
+    public event Action<int> LevelClicked;
 
     public void AddLevel(int levelIndex, bool isOpened, LevelProgress levelProgress = null, Sprite preview = null)
     {
@@ -20,7 +22,7 @@ public class LevelsSequenceWindowView : AWindowView
         else
         {
             levelInstance = Instantiate(_levelPrefab, _levelsContainer);
-            levelInstance.Initialize(levelIndex, onLevelClicked);
+            levelInstance.Initialize(levelIndex, OnLevelClicked);
             _levelInstances.Add(levelInstance);
         }
 
@@ -46,7 +48,7 @@ public class LevelsSequenceWindowView : AWindowView
         for (int i = _levelInstances.Count; i < capacity; i++)
         {
             var levelInstance = Instantiate(_levelPrefab, _levelsContainer);
-            levelInstance.Initialize(i, onLevelClicked);
+            levelInstance.Initialize(i, OnLevelClicked);
             _levelInstances.Add(levelInstance);
         }
 
@@ -61,8 +63,8 @@ public class LevelsSequenceWindowView : AWindowView
         }
     }
 
-    private void onLevelClicked(int levelIndex)
+    private void OnLevelClicked(int levelIndex)
     {
-        OnLevelClicked?.Invoke(levelIndex);
+        LevelClicked?.Invoke(levelIndex);
     }
 }

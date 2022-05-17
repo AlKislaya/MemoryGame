@@ -16,19 +16,21 @@ public class MainWindowView : AWindowView
         public RectTransform RectTransform;
     }
 
-    public Action OnShopClicked;
-    public Action OnSettingsClicked;
-    public Action<string> OnLevelsTypeClicked;
     [SerializeField] private Button _shopButton;
     [SerializeField] private TextMeshProUGUI _moneyBalanceText;
     [SerializeField] private Button _settingsButton;
     [SerializeField] private Button _typesLeftButton;
     [SerializeField] private Button _typesRightButton;
     [SerializeField] private List<LevelType> _levelTypes;
+
     private int _activeTypeIndex = 0;
     private float _screenWidth;
     private Ease _ease = Ease.OutSine;
     private float _duration = .3f;
+
+    public event Action OnShopClicked;
+    public event Action OnSettingsClicked;
+    public event Action<string> OnLevelsTypeClicked;
 
     protected override void OnInitialized()
     {
@@ -50,11 +52,6 @@ public class MainWindowView : AWindowView
         }
     }
 
-    public void SetMoneyBalance(int value)
-    {
-        _moneyBalanceText.text = value.ToString();
-    }
-
     protected override void OnSubscribe()
     {
         base.OnSubscribe();
@@ -71,12 +68,17 @@ public class MainWindowView : AWindowView
     {
         base.OnUnSubscribe();
 
-        _levelTypes.ForEach(x => x.Button.onClick.RemoveListener(() => OnLevelsTypeClicked?.Invoke(x.Key)));
-        _settingsButton.onClick.RemoveListener(onSettingsClicked);
-        _shopButton.onClick.RemoveListener(OnShopButtonClicked);
+        _levelTypes.ForEach(x => x.Button.onClick.RemoveAllListeners());
+        _settingsButton.onClick.RemoveAllListeners();
+        _shopButton.onClick.RemoveAllListeners();
 
         _typesLeftButton.onClick.RemoveAllListeners();
         _typesRightButton.onClick.RemoveAllListeners();
+    }
+
+    public void SetMoneyBalance(int value)
+    {
+        _moneyBalanceText.text = value.ToString();
     }
 
     private void OnLevelsTypesSwitched(int direction)
@@ -104,9 +106,11 @@ public class MainWindowView : AWindowView
             newIndex = 0;
         }
 
-        _levelTypes[newIndex].RectTransform.anchoredPosition = new Vector2(direction == -1 ? _screenWidth : -_screenWidth, 0);
+        _levelTypes[newIndex].RectTransform.anchoredPosition =
+            new Vector2(direction == -1 ? _screenWidth : -_screenWidth, 0);
         DOTween.Sequence()
-            .Append(_levelTypes[_activeTypeIndex].RectTransform.DOAnchorPos(new Vector2(direction == 1 ? _screenWidth : -_screenWidth, 0), _duration).SetEase(_ease))
+            .Append(_levelTypes[_activeTypeIndex].RectTransform
+                .DOAnchorPos(new Vector2(direction == 1 ? _screenWidth : -_screenWidth, 0), _duration).SetEase(_ease))
             .Join(_levelTypes[newIndex].RectTransform.DOAnchorPos(Vector2.zero, _duration).SetEase(_ease))
             .AppendCallback(() => onAnimationCompleted?.Invoke());
         _activeTypeIndex = newIndex;

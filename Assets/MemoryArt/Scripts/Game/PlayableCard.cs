@@ -5,15 +5,16 @@ using UnityEngine;
 
 public class PlayableCard : MonoBehaviour
 {
+    private static float _halfScreenHeight;
+
     [SerializeField] protected bool _isOpen;
     [SerializeField] protected Transform _cardRoot;
     [SerializeField] protected Transform _imagesContainer;
     [SerializeField] protected SVGImage _imagePrefab;
 
+    protected readonly List<SVGImage> _imageInstances = new List<SVGImage>();
     protected List<Transform> _rootChildren;
-    protected List<SVGImage> _imageInstances = new List<SVGImage>();
     protected RectTransform _rectTransform;
-    private static float _halfScreenHeight;
 
     protected virtual void Awake()
     {
@@ -45,7 +46,9 @@ public class PlayableCard : MonoBehaviour
 
     public virtual Tween DoHideMove(float duration)
     {
-        return _rectTransform.DOLocalMoveY(-_halfScreenHeight - (_rectTransform.rect.height / 2) - 20, duration).SetEase(Ease.InBack);
+        return _rectTransform
+            .DOLocalMoveY(-_halfScreenHeight - (_rectTransform.rect.height / 2) - 20, duration)
+            .SetEase(Ease.InBack);
     }
 
     public virtual void SetActive(bool isActive)
@@ -101,6 +104,7 @@ public class PlayableCard : MonoBehaviour
         {
             _rootChildren[i].SetSiblingIndex(isOpen ? i : _rootChildren.Count - 1 - i);
         }
+
         _isOpen = isOpen;
     }
 }

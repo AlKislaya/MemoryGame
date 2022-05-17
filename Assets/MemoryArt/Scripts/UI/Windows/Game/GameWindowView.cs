@@ -13,13 +13,6 @@ public class GameWindowView : AWindowView
     private const string OfKey = "of";
     private const int TimerSeconds = 2;
 
-    public int RoundsCount => _playableController.RoundsCount;
-
-    public event Action<PassedLevelStats> OnLevelDone;
-    public event Action<bool> OnBlockExitStateChanged;
-    public event Action OnHintClicked;
-    public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
-
     [SerializeField] private AnimatedButton _hintButton;
     [SerializeField] private PlayableObjectsController _playableController;
     [SerializeField] private Button _tapToStartButton;
@@ -27,8 +20,9 @@ public class GameWindowView : AWindowView
     [SerializeField] private CounterElement _counterElement;
     [SerializeField] private GameObject _loader;
 
-    [Header("Timer Colors")]
-    [SerializeField] private Color _timerColor;
+    [Header("Timer Colors")] [SerializeField]
+    private Color _timerColor;
+
     [SerializeField] private Color _progressColor;
     [SerializeField] private Color _doneColor;
 
@@ -39,10 +33,22 @@ public class GameWindowView : AWindowView
     private string _seconds;
     private string _of;
 
+    public int RoundsCount => _playableController.RoundsCount;
+    public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
+
+    public event Action<PassedLevelStats> LevelDone;
+    public event Action<bool> BlockExitStateChanged;
+    public event Action HintClicked;
+
     private void Awake()
     {
         SetLocals();
-        Localization.Instance.OnLanguageChanged += SetLocals;
+        Localization.Instance.LanguageChanged += SetLocals;
+    }
+
+    private void OnDestroy()
+    {
+        Localization.Instance.LanguageChanged -= SetLocals;
     }
 
     protected override void OnSubscribe()
@@ -60,7 +66,7 @@ public class GameWindowView : AWindowView
         _playableController.OnLevelEnded -= OnLevelDoneInvoked;
         _playableController.OnRoundChanged -= OnRoundChanged;
         _hintButton.Button.onClick.RemoveAllListeners();
-        _tapToStartButton.onClick.RemoveListener(StartGame);
+        _tapToStartButton.onClick.RemoveAllListeners();
     }
 
     public Task InitLevel(Level levelAsset, CancellationToken token)
@@ -76,15 +82,13 @@ public class GameWindowView : AWindowView
     //place objects animation
     public void PlaceObjects()
     {
-        _placeObjectsAnimation = DOTween.Sequence();
-        _placeObjectsAnimation.Append(_playableController.PlaceCard(.3f));
-        _placeObjectsAnimation.AppendCallback(() =>
-        {
-            _tapToStartButton.gameObject.SetActive(true);
-            _tapToStartText.SetActive(true);
-        });
-
-        _placeObjectsAnimation.Play();
+        _placeObjectsAnimation = DOTween.Sequence()
+            .Append(_playableController.PlaceCard(.3f))
+            .AppendCallback(() =>
+            {
+                _tapToStartButton.gameObject.SetActive(true);
+                _tapToStartText.SetActive(true);
+            });
     }
 
     //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
@@ -111,6 +115,7 @@ public class GameWindowView : AWindowView
         _counterElement.SetText($"{TimerSeconds}{_seconds}");
         _counterElement.SetAmount(1);
     }
+
     private void OnRoundChanged(int roundNumber)
     {
         var count = RoundsCount;
@@ -141,9 +146,7 @@ public class GameWindowView : AWindowView
         _tapToStartText.SetActive(false);
 
         _playableController.OpenCard(true);
-        _startGameAnimation = DOTween.Sequence();
-
-        _startGameAnimation
+        _startGameAnimation = DOTween.Sequence()
             .Append(_counterElement.TimerTween(TimerSeconds, _seconds))
             .AppendCallback(() => _playableController.OpenCard(false))
             .AppendInterval(.3f)
@@ -161,20 +164,19 @@ public class GameWindowView : AWindowView
 
     private void OnHintButtonClicked()
     {
-        OnHintClicked?.Invoke();
+        HintClicked?.Invoke();
     }
 
     private void OnLevelDoneInvoked(PassedLevelStats stats)
     {
         OnUnSubscribe();
-        OnBlockExitStateChanged?.Invoke(true);
-        _checkLevelAnimation = 
-            _playableController.CheckCardAnimation()
+        BlockExitStateChanged?.Invoke(true);
+        _checkLevelAnimation = _playableController.CheckCardAnimation()
             .AppendInterval(3f)
             .OnComplete(() =>
             {
-                OnBlockExitStateChanged?.Invoke(false);
-                OnLevelDone?.Invoke(stats);
+                BlockExitStateChanged?.Invoke(false);
+                LevelDone?.Invoke(stats);
             });
     }
 

@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class LevelsManager : Singleton<LevelsManager>
 {
-    public string BaseLevelsKey => _baseLevelsCategory.Key;
-    //all categories except base
-    public List<LevelsCategory> LevelsCategories => _levelsCategories;
-
     [SerializeField] private LevelsCategory _baseLevelsCategory;
     [SerializeField] private List<LevelsCategory> _levelsCategories;
+
     private Dictionary<string, LevelsProgress> _levelsProgress = new Dictionary<string, LevelsProgress>();
+
+    public string BaseLevelsKey => _baseLevelsCategory.Key;
+
+    //all categories except base
+    public List<LevelsCategory> LevelsCategories => _levelsCategories;
 
     public bool IsCategoryProgressExists(string categoryKey)
     {
@@ -20,8 +22,8 @@ public class LevelsManager : Singleton<LevelsManager>
 
     public LevelsCategory GetCategoryByKey(string categoryKey)
     {
-        return _baseLevelsCategory.Key.Equals(categoryKey) ?
-            _baseLevelsCategory 
+        return _baseLevelsCategory.Key.Equals(categoryKey)
+            ? _baseLevelsCategory
             : _levelsCategories.FirstOrDefault(x => x.Key.Equals(categoryKey));
     }
 
@@ -83,7 +85,7 @@ public class LevelsManager : Singleton<LevelsManager>
 
     private void SaveLevelsProgress(string categoryKey)
     {
-        Debug.Log("SAVED! "+ categoryKey+" : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+        Debug.Log("SAVED! " + categoryKey + " : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
         PlayerPrefs.SetString(categoryKey, JsonUtility.ToJson(_levelsProgress[categoryKey]));
     }
 }

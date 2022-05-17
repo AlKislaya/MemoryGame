@@ -7,10 +7,8 @@ using UnityEngine.UI;
 
 public class CategoryItem : MonoBehaviour
 {
-    public bool IsOpened => _isOpened;
-    public string Key => _category.Key;
-
     private const char Delimiter = '/';
+
     [SerializeField] private Button _button;
     [SerializeField] private LocalizableText _categoryName;
     [SerializeField] private TextMeshProUGUI _levelsCountText;
@@ -18,8 +16,12 @@ public class CategoryItem : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _priceText;
     [SerializeField] private Image _previewImage;
     [SerializeField] private List<GameObject> _lockElements;
+
     private LevelsCategory _category;
     private bool _isOpened;
+
+    public bool IsOpened => _isOpened;
+    public string Key => _category.Key;
 
     public void Initialize(LevelsCategory category, Action<LevelsCategory, bool> onButtonClickedCallback)
     {

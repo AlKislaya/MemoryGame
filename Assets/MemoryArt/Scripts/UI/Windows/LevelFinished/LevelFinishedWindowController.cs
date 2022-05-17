@@ -73,31 +73,37 @@ public class LevelFinishedWindowController : AWindowController<LevelFinishedWind
 
     protected override void OnSubscribe()
     {
-        view.OnMenuButtonClicked += ViewOnOnMenuButtonClicked;
-        view.OnPlayButtonClicked += ViewOnOnPlayButtonClicked;
-        view.OnReplayButtonClicked += ViewOnOnReplayButtonClicked;
+        view.MenuButtonClicked += ViewOnMenuButtonClicked;
+        view.PlayButtonClicked += ViewOnPlayButtonClicked;
+        view.ReplayButtonClicked += ViewOnReplayButtonClicked;
     }
     protected override void OnUnSubscribe()
     {
-        view.OnMenuButtonClicked -= ViewOnOnMenuButtonClicked;
-        view.OnPlayButtonClicked -= ViewOnOnPlayButtonClicked;
-        view.OnReplayButtonClicked -= ViewOnOnReplayButtonClicked;
+        view.MenuButtonClicked -= ViewOnMenuButtonClicked;
+        view.PlayButtonClicked -= ViewOnPlayButtonClicked;
+        view.ReplayButtonClicked -= ViewOnReplayButtonClicked;
         view.StopConfettiAnimation();
     }
 
-    private void ViewOnOnReplayButtonClicked()
+    protected override void OnEscape()
+    {
+        base.OnEscape();
+        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+    }
+
+    private void ViewOnReplayButtonClicked()
     {
         _gameWindowController.ReplayLevel();
         OpenGame();
     }
 
-    private void ViewOnOnPlayButtonClicked()
+    private void ViewOnPlayButtonClicked()
     {
         _gameWindowController.LoadLevel(_settings.CategoryKey, _settings.LevelIndex + 1);
         OpenGame();
     }
 
-    private void ViewOnOnMenuButtonClicked()
+    private void ViewOnMenuButtonClicked()
     {
         uiManager.Back();
         uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
@@ -106,11 +112,5 @@ public class LevelFinishedWindowController : AWindowController<LevelFinishedWind
     private void OpenGame()
     {
         uiManager.Back();
-    }
-
-    protected override void OnEscape()
-    {
-        base.OnEscape();
-        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 }

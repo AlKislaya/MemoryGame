@@ -18,8 +18,8 @@ public class SettingsWindowView : AWindowView
     [SerializeField] private GameObject _mainContainer;
     [SerializeField] private Button _backgroundShadeButton;
     [SerializeField] private Button _closeButton;
-    [Header("Language")]
-    [SerializeField] private GameObject _languageContainer;
+
+    [Header("Language")] [SerializeField] private GameObject _languageContainer;
     [SerializeField] private TextMeshProUGUI _languageKey;
     [SerializeField] private Button _languageButton;
     [SerializeField] private Button _languageBackButton;
@@ -31,7 +31,7 @@ public class SettingsWindowView : AWindowView
     private void Start()
     {
         _languageBackButton.onClick.AddListener(OpenMainContainer);
-        Localization.Instance.OnLanguageChanged += UpdateLocalKey;
+        Localization.Instance.LanguageChanged += UpdateLocalKey;
         UpdateLocalKey();
 
         var currLanguage = Localization.Instance.CurrentLanguage;
@@ -43,16 +43,6 @@ public class SettingsWindowView : AWindowView
                 break;
             }
         }
-    }
-
-    public void SetDefaults()
-    {
-        OpenMainContainer();
-    }
-
-    private void UpdateLocalKey()
-    {
-        _languageKey.text = Localization.Instance.CurrentLanguage == SystemLanguage.English ? "En" : "Ру";
     }
 
     protected override void OnSubscribe()
@@ -67,10 +57,20 @@ public class SettingsWindowView : AWindowView
     protected override void OnUnSubscribe()
     {
         base.OnSubscribe();
-        _backgroundShadeButton.onClick.RemoveListener(OnCloseClicked);
-        _closeButton.onClick.RemoveListener(OnCloseClicked);
-        _languageButton.onClick.RemoveListener(OpenLanguageContainer);
-        _languageToggles.ForEach(x => x.Toggle.onValueChanged.RemoveListener(OnToggleValueChanged));
+        _backgroundShadeButton.onClick.RemoveAllListeners();
+        _closeButton.onClick.RemoveAllListeners();
+        _languageButton.onClick.RemoveAllListeners();
+        _languageToggles.ForEach(x => x.Toggle.onValueChanged.RemoveAllListeners());
+    }
+
+    public void SetDefaults()
+    {
+        OpenMainContainer();
+    }
+
+    private void UpdateLocalKey()
+    {
+        _languageKey.text = Localization.Instance.CurrentLanguage == SystemLanguage.English ? "En" : "Ру";
     }
 
     private void OnToggleValueChanged(bool isOn)

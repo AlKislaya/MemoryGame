@@ -9,15 +9,17 @@ public class LevelsSequenceWindowSettings
     public LevelsCategory Category;
 }
 
-public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWindowView>, IConfigurableWindow<LevelsSequenceWindowSettings>
+public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWindowView>,
+    IConfigurableWindow<LevelsSequenceWindowSettings>
 {
     private const string HeaderKey = "levels_sequence";
-    public override string WindowId { get; }
 
     private string _categoryKey;
     private LevelsCategory _levelsCategory;
     private List<LevelProgress> _levelsProgress;
     private string _header;
+
+    public override string WindowId { get; }
 
     public void Initialize(LevelsSequenceWindowSettings settings)
     {
@@ -28,7 +30,7 @@ public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWi
 
         if (_levelsCategory == null)
         {
-            Debug.LogError("Did not find category "+ _categoryKey);
+            Debug.LogError("Did not find category " + _categoryKey);
             uiManager.Back();
             return;
         }
@@ -53,8 +55,8 @@ public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWi
         view.SetLevelsCapacity(levelsCapacity);
 
         //checking that new level exists
-        if (_levelsProgress[_levelsProgress.Count - 1].IsPassed 
-            && _levelsProgress[_levelsProgress.Count - 1].PassedPercents != 0 
+        if (_levelsProgress[_levelsProgress.Count - 1].IsPassed
+            && _levelsProgress[_levelsProgress.Count - 1].PassedPercents != 0
             && _levelsProgress.Count != levelsCapacity)
         {
             levelsManager.SetNewLevelProgress(_categoryKey);
@@ -72,25 +74,25 @@ public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWi
         }
     }
 
-    private void OnLevelClicked(int levelNumber)
-    {
-        var gameController =
-            uiManager.Open<GameWindowController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
-        gameController.LoadLevel(_categoryKey, levelNumber);
-    }
-
     protected override void OnSubscribe()
     {
-        view.OnLevelClicked += OnLevelClicked;
+        view.LevelClicked += OnLevelClicked;
     }
 
     protected override void OnUnSubscribe()
     {
-        view.OnLevelClicked -= OnLevelClicked;
+        view.LevelClicked -= OnLevelClicked;
     }
 
     protected override void OnEscape()
     {
         uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+    }
+
+    private void OnLevelClicked(int levelNumber)
+    {
+        var gameController =
+            uiManager.Open<GameWindowController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+        gameController.LoadLevel(_categoryKey, levelNumber);
     }
 }

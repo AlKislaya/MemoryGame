@@ -6,12 +6,6 @@ using UnityEngine.UI;
 
 public class TopPanelController : MonoBehaviour
 {
-    public bool IsBackButtonInteractable
-    {
-        get => _backButton.interactable;
-        set => _backButton.interactable = value;
-    }
-
     [SerializeField] private RectTransform _rectTransform;
     [SerializeField] private TextMeshProUGUI _header;
     [SerializeField] private Button _backButton;
@@ -25,6 +19,12 @@ public class TopPanelController : MonoBehaviour
     private float _topOffset;
     private float _height;
 
+    public bool IsBackButtonInteractable
+    {
+        get => _backButton.interactable;
+        set => _backButton.interactable = value;
+    }
+
     private void Awake()
     {
         _height = _rectTransform.sizeDelta.y;
@@ -35,21 +35,26 @@ public class TopPanelController : MonoBehaviour
 
     private void OnBackButtonClicked()
     {
-        ApplicationController.Instance.UiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        ApplicationController.Instance.UiManager.Back(
+            WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
     }
 
     public void Show(string header)
     {
         _header.text = header;
         _animation?.Kill();
-        _animation = _rectTransform.DOAnchorPosY(-_height, .5f).SetEase(Ease.InSine);
+        _animation = _rectTransform
+            .DOAnchorPosY(-_height, .5f)
+            .SetEase(Ease.InSine);
         _isClosed = false;
     }
 
     public void Close()
     {
         _animation?.Kill();
-        _animation = _rectTransform.DOAnchorPosY(_topOffset, .2f).SetEase(Ease.OutSine);
+        _animation = _rectTransform
+            .DOAnchorPosY(_topOffset, .2f)
+            .SetEase(Ease.OutSine);
         _isClosed = true;
     }
 

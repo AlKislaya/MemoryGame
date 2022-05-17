@@ -9,12 +9,14 @@ public enum AlertButtonColor
     White,
     Green
 }
+
 public class AlertButtonSettings
 {
     public string Text;
     public AlertButtonColor Color;
     public UnityAction Callback;
 }
+
 public class AlertWindowSettings
 {
     public string HeaderText;

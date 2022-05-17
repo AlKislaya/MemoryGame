@@ -15,7 +15,7 @@ public class AlertButton : MonoBehaviour
         _image.color = backgroundColor;
         _button.onClick.AddListener(buttonSettings.Callback);
     }
-    
+
     public void RemoveListeners()
     {
         _button.onClick.RemoveAllListeners();

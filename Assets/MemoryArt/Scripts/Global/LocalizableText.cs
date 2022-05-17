@@ -8,7 +8,7 @@ namespace LocalizationModule
     {
         public string Key
         {
-            set 
+            set
             {
                 _key = value;
                 UpdateLocal();
@@ -19,7 +19,7 @@ namespace LocalizationModule
 
         private void Awake()
         {
-            Localization.Instance.OnLanguageChanged += UpdateLocal;
+            Localization.Instance.LanguageChanged += UpdateLocal;
             UpdateLocal();
         }
 
@@ -30,6 +30,7 @@ namespace LocalizationModule
                 Debug.LogWarning("No local key in " + gameObject.name);
                 return;
             }
+
             GetComponent<TextMeshProUGUI>().text = Localization.Instance.GetLocalByKey(_key);
         }
     }
