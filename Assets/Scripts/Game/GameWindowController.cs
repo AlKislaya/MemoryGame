@@ -6,7 +6,7 @@ using Dainty.UI;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
-public class GameController : AWindowController<GameView>
+public class GameWindowController : AWindowController<GameWindowView>
 {
     private const int SkipPrice = 10;
     private const string LevelHeaderKey = "level";
@@ -110,12 +110,12 @@ public class GameController : AWindowController<GameView>
 
     private void ViewOnOnLevelDone(PassedLevelStats stats)
     {
-        uiManager.Open<LevelFinishedController, LevelFinishedSettings>(new LevelFinishedSettings()
+        uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(new LevelFinishedWindowSettings()
         {
             CategoryKey = _categoryKey,
             LevelIndex = _levelIndex,
             Stats = stats,
-            GameController = this
+            GameWindowController = this
         }, true);
     }
 
@@ -125,8 +125,8 @@ public class GameController : AWindowController<GameView>
         if (MoneyController.Instance.MoneyBalance < SkipPrice)
         {
             //offer ads
-            uiManager.Open<AlertController, AlertSettings>(
-                new AlertSettings()
+            uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                new AlertWindowSettings()
                 {
                     HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                     DialogText = localization.GetLocalByKey(SkipLevelAdsTextKey),
@@ -142,8 +142,8 @@ public class GameController : AWindowController<GameView>
         }
         else
         {
-            uiManager.Open<AlertController, AlertSettings>(
-                new AlertSettings()
+            uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                new AlertWindowSettings()
                 {
                     HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                     DialogText = localization.GetLocalByKey(SkipLevelMoneyTextKey),

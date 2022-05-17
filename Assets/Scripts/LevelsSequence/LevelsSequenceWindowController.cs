@@ -4,12 +4,12 @@ using Dainty.UI.WindowBase;
 using UnityEngine;
 using LocalizationModule;
 
-public class LevelsSequenceSettings
+public class LevelsSequenceWindowSettings
 {
     public LevelsCategory Category;
 }
 
-public class LevelsSequenceController : AWindowController<LevelsSequenceView>, IConfigurableWindow<LevelsSequenceSettings>
+public class LevelsSequenceWindowController : AWindowController<LevelsSequenceWindowView>, IConfigurableWindow<LevelsSequenceWindowSettings>
 {
     private const string HeaderKey = "levels_sequence";
     public override string WindowId { get; }
@@ -19,7 +19,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
     private List<LevelProgress> _levelsProgress;
     private string _header;
 
-    public void Initialize(LevelsSequenceSettings settings)
+    public void Initialize(LevelsSequenceWindowSettings settings)
     {
         _header = Localization.Instance.GetLocalByKey(HeaderKey);
 
@@ -75,7 +75,7 @@ public class LevelsSequenceController : AWindowController<LevelsSequenceView>, I
     private void OnLevelClicked(int levelNumber)
     {
         var gameController =
-            uiManager.Open<GameController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            uiManager.Open<GameWindowController>(WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         gameController.LoadLevel(_categoryKey, levelNumber);
     }
 

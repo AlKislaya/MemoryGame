@@ -2,7 +2,7 @@ using Dainty.UI;
 using Dainty.UI.WindowBase;
 using System;
 
-public class MainController : AWindowController<MainView>
+public class MainWindowController : AWindowController<MainWindowView>
 {
     public override string WindowId { get; }
     private LevelsManager _levelsManager;
@@ -34,26 +34,26 @@ public class MainController : AWindowController<MainView>
 
     private void OnShopClicked()
     {
-        uiManager.Open<ShopController>(true);
+        uiManager.Open<ShopWindowController>(true);
     }
 
     private void OnSettingsClicked()
     {
-        uiManager.Open<SettingsController>(true);
+        uiManager.Open<SettingsWindowController>(true);
     }
 
     private void OnLevelTypeClicked(string key)
     {
         if (key == _levelsManager.BaseLevelsKey)
         {
-            uiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
-                (new LevelsSequenceSettings() { Category = _levelsManager.GetCategoryByKey(key) },
+            uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>
+                (new LevelsSequenceWindowSettings() { Category = _levelsManager.GetCategoryByKey(key) },
                 false,
                 WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
         else
         {
-            uiManager.Open<CategoriesSequenceController>(false, WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            uiManager.Open<CategoriesSequenceWindowController>(false, WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
     }
 }

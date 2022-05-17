@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AlertView : AWindowView
+public class AlertWindowView : AWindowView
 {
     [Serializable]
     public class ButtonColors
@@ -23,7 +23,7 @@ public class AlertView : AWindowView
     [SerializeField] private List<ButtonColors> _buttonColors;
     private List<AlertButton> _alertButtons = new List<AlertButton>();
 
-    public void InitializeAlert(AlertSettings data)
+    public void InitializeAlert(AlertWindowSettings data)
     {
         _headerText.text = data.HeaderText;
         _dialogText.text = data.DialogText;

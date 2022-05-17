@@ -7,7 +7,7 @@ using LocalizationModule;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameView : AWindowView
+public class GameWindowView : AWindowView
 {
     private const string SecondsKey = "seconds";
     private const string OfKey = "of";

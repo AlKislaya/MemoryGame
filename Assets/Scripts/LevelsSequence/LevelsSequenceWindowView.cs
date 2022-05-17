@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
-public class LevelsSequenceView : AWindowView
+public class LevelsSequenceWindowView : AWindowView
 {
     [SerializeField] private LevelItem _levelPrefab;
     [SerializeField] private Transform _levelsContainer;

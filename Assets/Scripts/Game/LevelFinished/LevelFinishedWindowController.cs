@@ -1,23 +1,23 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
 
-public class LevelFinishedSettings
+public class LevelFinishedWindowSettings
 {
     public string CategoryKey;
     public int LevelIndex;
     public PassedLevelStats Stats;
-    public GameController GameController;
+    public GameWindowController GameWindowController;
 }
 
-public class LevelFinishedController : AWindowController<LevelFinishedView>, IConfigurableWindow<LevelFinishedSettings>
+public class LevelFinishedWindowController : AWindowController<LevelFinishedWindowView>, IConfigurableWindow<LevelFinishedWindowSettings>
 {
     public override string WindowId { get; }
 
     private const int CoinsValue = 10;
 
     private LevelsManager _levelsManager;
-    private GameController _gameController;
-    private LevelFinishedSettings _levelFinishedSettings;
+    private GameWindowController _gameWindowController;
+    private LevelFinishedWindowSettings _settings;
     private float _currentPercents;
 
     protected override void OnInitialize()
@@ -27,23 +27,23 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         _levelsManager = LevelsManager.Instance;
     }
 
-    public void Initialize(LevelFinishedSettings levelFinishedSettings)
+    public void Initialize(LevelFinishedWindowSettings data)
     {
-        _gameController = levelFinishedSettings.GameController;
-        _levelFinishedSettings = levelFinishedSettings;
-        var levelIndex = levelFinishedSettings.LevelIndex;
-        _currentPercents = (float)levelFinishedSettings.Stats.RightSelectablesCount / (float)levelFinishedSettings.Stats.SelectableCount;
-        var categoryLevelsCount = _levelsManager.GetCategoryByKey(levelFinishedSettings.CategoryKey).LevelsSequence.Levels.Count;
-        var levelsProgress = _levelsManager.GetLevelsProgressByCategory(levelFinishedSettings.CategoryKey).Levels;
+        _gameWindowController = data.GameWindowController;
+        _settings = data;
+        var levelIndex = data.LevelIndex;
+        _currentPercents = (float)data.Stats.RightSelectablesCount / (float)data.Stats.SelectableCount;
+        var categoryLevelsCount = _levelsManager.GetCategoryByKey(data.CategoryKey).LevelsSequence.Levels.Count;
+        var levelsProgress = _levelsManager.GetLevelsProgressByCategory(data.CategoryKey).Levels;
         view.ShowAddedCoinsLabel(false);
         
         if (_currentPercents > levelsProgress[levelIndex].PassedPercents)
         {
-            _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, _currentPercents);
+            _levelsManager.SetPassedLevel(data.CategoryKey, levelIndex, _currentPercents);
             if (levelsProgress.Count - 1 == levelIndex
                 && levelIndex + 1 < categoryLevelsCount)
             {
-                _levelsManager.SetNewLevelProgress(levelFinishedSettings.CategoryKey);
+                _levelsManager.SetNewLevelProgress(data.CategoryKey);
             }
             if (_currentPercents >= 1f)
             {
@@ -53,13 +53,13 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
         }
         else if (!levelsProgress[levelIndex].IsPassed && _currentPercents == 0)
         {
-            _levelsManager.SetPassedLevel(levelFinishedSettings.CategoryKey, levelIndex, 0);
+            _levelsManager.SetPassedLevel(data.CategoryKey, levelIndex, 0);
         }
 
 
         view.SetProgress(_currentPercents);
         view.SetActivePlayButton(!((_currentPercents == 0 && levelsProgress.Count - 1 == levelIndex)
-                                   || levelFinishedSettings.LevelIndex == categoryLevelsCount - 1));
+                                   || data.LevelIndex == categoryLevelsCount - 1));
     }
 
     public override void BeforeShow()
@@ -87,13 +87,13 @@ public class LevelFinishedController : AWindowController<LevelFinishedView>, ICo
 
     private void ViewOnOnReplayButtonClicked()
     {
-        _gameController.ReplayLevel();
+        _gameWindowController.ReplayLevel();
         OpenGame();
     }
 
     private void ViewOnOnPlayButtonClicked()
     {
-        _gameController.LoadLevel(_levelFinishedSettings.CategoryKey, _levelFinishedSettings.LevelIndex + 1);
+        _gameWindowController.LoadLevel(_settings.CategoryKey, _settings.LevelIndex + 1);
         OpenGame();
     }
 

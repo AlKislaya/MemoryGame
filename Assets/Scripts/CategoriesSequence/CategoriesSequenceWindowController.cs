@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEngine;
 using LocalizationModule;
 
-public class CategoriesSequenceController : AWindowController<CategoriesSequenceView>
+public class CategoriesSequenceWindowController : AWindowController<CategoriesSequenceWindowView>
 {
     private const string HeaderKey = "categories_sequence";
     private const string CancelKey = "cancel";
@@ -48,8 +48,8 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             var localization = Localization.Instance;
             if (category.Price > MoneyController.Instance.MoneyBalance)
             {
-                uiManager.Open<AlertController, AlertSettings>(
-                    new AlertSettings()
+                uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                    new AlertWindowSettings()
                     {
                         HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
                         DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
@@ -65,7 +65,7 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
                             Callback = () =>
                             {
                                 Back();
-                                uiManager.Open<ShopController>(true);
+                                uiManager.Open<ShopWindowController>(true);
                             },
                             Text = localization.GetLocalByKey(GoToShopKey),
                             Color = AlertButtonColor.Green
@@ -76,8 +76,8 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             }
             else
             {
-                uiManager.Open<AlertController, AlertSettings>(
-                    new AlertSettings()
+                uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                    new AlertWindowSettings()
                     {
                         HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
                         DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
@@ -108,8 +108,8 @@ public class CategoriesSequenceController : AWindowController<CategoriesSequence
             return;
         }
 
-        uiManager.Open<LevelsSequenceController, LevelsSequenceSettings>
-            (new LevelsSequenceSettings() {Category = category},
+        uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>
+            (new LevelsSequenceWindowSettings() {Category = category},
             false,
             WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
     }

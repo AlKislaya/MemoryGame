@@ -15,7 +15,7 @@ public class AlertButtonSettings
     public AlertButtonColor Color;
     public UnityAction Callback;
 }
-public class AlertSettings
+public class AlertWindowSettings
 {
     public string HeaderText;
     public string DialogText;
@@ -23,11 +23,11 @@ public class AlertSettings
     public List<AlertButtonSettings> Buttons;
 }
 
-public class AlertController : AWindowController<AlertView>, IConfigurableWindow<AlertSettings>
+public class AlertWindowController : AWindowController<AlertWindowView>, IConfigurableWindow<AlertWindowSettings>
 {
     public override string WindowId { get; }
 
-    public void Initialize(AlertSettings data)
+    public void Initialize(AlertWindowSettings data)
     {
         view.InitializeAlert(data);
     }

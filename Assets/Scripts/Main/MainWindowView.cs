@@ -6,7 +6,7 @@ using DG.Tweening;
 using System;
 using TMPro;
 
-public class MainView : AWindowView
+public class MainWindowView : AWindowView
 {
     [Serializable]
     public class LevelType

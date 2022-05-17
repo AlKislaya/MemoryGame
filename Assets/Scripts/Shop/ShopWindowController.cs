@@ -1,14 +1,8 @@
 using Dainty.UI.WindowBase;
 
-public class SettingsController : AWindowController<SettingsView>
+public class ShopWindowController : AWindowController<ShopWindowView>
 {
     public override string WindowId { get; }
-
-    public override void BeforeShow()
-    {
-        base.BeforeShow();
-        view.SetDefaults();
-    }
 
     protected override void OnSubscribe()
     {

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SettingsView : AWindowView
+public class SettingsWindowView : AWindowView
 {
     [Serializable]
     public class LanguageToggle

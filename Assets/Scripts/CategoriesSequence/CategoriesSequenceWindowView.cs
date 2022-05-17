@@ -4,7 +4,7 @@ using System.Linq;
 using Dainty.UI.WindowBase;
 using UnityEngine;
 
-public class CategoriesSequenceView : AWindowView
+public class CategoriesSequenceWindowView : AWindowView
 {
     [SerializeField] private CategoryItem _categoryPrefab;
     [SerializeField] private Transform _categoriesContainer;

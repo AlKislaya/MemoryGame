@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelFinishedView : AWindowView
+public class LevelFinishedWindowView : AWindowView
 {
     public event Action OnMenuButtonClicked;
     public event Action OnPlayButtonClicked;

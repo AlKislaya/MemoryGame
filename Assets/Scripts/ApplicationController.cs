@@ -21,6 +21,6 @@ public class ApplicationController : Singleton<ApplicationController>
         Application.targetFrameRate = 60;
 
         _uiManager = new UiManager(_uiRoot, _uiManagerSettings);
-        _uiManager.Open<MainController>(false, WindowTransition.None);
+        _uiManager.Open<MainWindowController>(false, WindowTransition.None);
     }
 }

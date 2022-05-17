@@ -3,7 +3,7 @@ using Dainty.UI.WindowBase;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ShopView : AWindowView
+public class ShopWindowView : AWindowView
 {
     [SerializeField] private Button _closeButton;
     [SerializeField] private Button _backgroundShadeButton;
