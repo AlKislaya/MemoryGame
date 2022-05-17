@@ -1,21 +1,24 @@
 using Dainty.UI.WindowBase;
 
-public class ShopWindowController : AWindowController<ShopWindowView>
+namespace MemoryArt.UI.Windows
 {
-    public override string WindowId { get; }
-
-    protected override void OnSubscribe()
+    public class ShopWindowController : AWindowController<ShopWindowView>
     {
-        view.CloseButtonClick += ViewOnCloseButtonClick;
-    }
+        public override string WindowId { get; }
 
-    protected override void OnUnSubscribe()
-    {
-        view.CloseButtonClick -= ViewOnCloseButtonClick;
-    }
+        protected override void OnSubscribe()
+        {
+            view.CloseButtonClick += ViewOnCloseButtonClick;
+        }
 
-    private void ViewOnCloseButtonClick()
-    {
-        uiManager.Back();
+        protected override void OnUnSubscribe()
+        {
+            view.CloseButtonClick -= ViewOnCloseButtonClick;
+        }
+
+        private void ViewOnCloseButtonClick()
+        {
+            uiManager.Back();
+        }
     }
 }

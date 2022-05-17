@@ -1,48 +1,51 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StarController : MonoBehaviour
+namespace MemoryArt.Global
 {
-    [SerializeField] private Image _fillImage;
-    [SerializeField] private Image _innerShadowImage;
-    [SerializeField] private Image _flareImage;
-
-    [Header("Active Star")] [SerializeField]
-    private Color32 _fillActive;
-
-    [SerializeField] private Color32 _innerShadowActive;
-    [SerializeField] private Color32 _flareActive;
-
-    [Header("Unactive Star")] [SerializeField]
-    private Color32 _fillUnactive;
-
-    [SerializeField] private Color32 _innerShadowUnactive;
-    [SerializeField] private Color32 _flareUnactive;
-
-    private bool _isActive = true;
-
-    public bool IsActive => _isActive;
-
-    public void SetActiveState(bool isActive)
+    public class StarController : MonoBehaviour
     {
-        if (isActive == _isActive)
-        {
-            return;
-        }
+        [SerializeField] private Image _fillImage;
+        [SerializeField] private Image _innerShadowImage;
+        [SerializeField] private Image _flareImage;
 
-        _isActive = isActive;
+        [Header("Active Star")] [SerializeField]
+        private Color32 _fillActive;
 
-        if (isActive)
+        [SerializeField] private Color32 _innerShadowActive;
+        [SerializeField] private Color32 _flareActive;
+
+        [Header("Unactive Star")] [SerializeField]
+        private Color32 _fillUnactive;
+
+        [SerializeField] private Color32 _innerShadowUnactive;
+        [SerializeField] private Color32 _flareUnactive;
+
+        private bool _isActive = true;
+
+        public bool IsActive => _isActive;
+
+        public void SetActiveState(bool isActive)
         {
-            _fillImage.color = _fillActive;
-            _innerShadowImage.color = _innerShadowActive;
-            _flareImage.color = _flareActive;
-        }
-        else
-        {
-            _fillImage.color = _fillUnactive;
-            _innerShadowImage.color = _innerShadowUnactive;
-            _flareImage.color = _flareUnactive;
+            if (isActive == _isActive)
+            {
+                return;
+            }
+
+            _isActive = isActive;
+
+            if (isActive)
+            {
+                _fillImage.color = _fillActive;
+                _innerShadowImage.color = _innerShadowActive;
+                _flareImage.color = _flareActive;
+            }
+            else
+            {
+                _fillImage.color = _fillUnactive;
+                _innerShadowImage.color = _innerShadowUnactive;
+                _flareImage.color = _flareUnactive;
+            }
         }
     }
 }

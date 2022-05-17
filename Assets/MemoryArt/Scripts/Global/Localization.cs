@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MemoryArt.Global.Patterns;
 using UnityEngine;
 
-namespace LocalizationModule
+namespace MemoryArt.Global
 {
     public class Localization : Singleton<Localization>
     {

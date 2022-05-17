@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
 
-namespace SvgLoaderModule
+namespace MemoryArt.Game
 {
     public class VectorImage
     {

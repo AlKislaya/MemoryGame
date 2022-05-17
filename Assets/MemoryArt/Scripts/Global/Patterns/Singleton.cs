@@ -1,21 +1,24 @@
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : Singleton<T>
+namespace MemoryArt.Global.Patterns
 {
-    protected static T _instance;
-
-    public static T Instance => _instance;
-
-    protected virtual void Awake()
+    public class Singleton<T> : MonoBehaviour where T : Singleton<T>
     {
-        if (_instance != null && _instance != this as T)
+        protected static T _instance;
+
+        public static T Instance => _instance;
+
+        protected virtual void Awake()
         {
-            Destroy(gameObject);
-        }
-        else
-        {
-            _instance = this as T;
-            DontDestroyOnLoad(_instance);
+            if (_instance != null && _instance != this as T)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                _instance = this as T;
+                DontDestroyOnLoad(_instance);
+            }
         }
     }
 }

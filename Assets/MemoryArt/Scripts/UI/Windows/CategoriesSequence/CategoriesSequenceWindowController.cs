@@ -1,141 +1,145 @@
-using Dainty.UI;
-using Dainty.UI.WindowBase;
 using System.Collections.Generic;
 using System.Linq;
-using LocalizationModule;
+using Dainty.UI;
+using Dainty.UI.WindowBase;
+using MemoryArt.Game.Levels;
+using MemoryArt.Global;
 
-public class CategoriesSequenceWindowController : AWindowController<CategoriesSequenceWindowView>
+namespace MemoryArt.UI.Windows
 {
-    private const string HeaderKey = "categories_sequence";
-    private const string CancelKey = "cancel";
-    private const string NotEnoughtMoney_HeaderKey = "alert_not_enought_money_header";
-    private const string NotEnoughtMoney_TextKey = "alert_not_enought_money_text";
-    private const string GoToShopKey = "go_to_shop";
-    private const string EnoughtMoney_HeaderKey = "alert_enought_money_header";
-    private const string EnoughtMoney_TextKey = "alert_enought_money_text";
-    private const string BuyKey = "buy";
-    
-    private string _header;
-    
-    public override string WindowId { get; }
-
-    protected override void OnInitialize()
+    public class CategoriesSequenceWindowController : AWindowController<CategoriesSequenceWindowView>
     {
-        base.OnInitialize();
-        _header = Localization.Instance.GetLocalByKey(HeaderKey);
-    }
+        private const string HeaderKey = "categories_sequence";
+        private const string CancelKey = "cancel";
+        private const string NotEnoughtMoney_HeaderKey = "alert_not_enought_money_header";
+        private const string NotEnoughtMoney_TextKey = "alert_not_enought_money_text";
+        private const string GoToShopKey = "go_to_shop";
+        private const string EnoughtMoney_HeaderKey = "alert_enought_money_header";
+        private const string EnoughtMoney_TextKey = "alert_enought_money_text";
+        private const string BuyKey = "buy";
+    
+        private string _header;
+    
+        public override string WindowId { get; }
 
-    public override void BeforeShow()
-    {
-        base.BeforeShow();
-        ApplicationController.Instance.TopPanelController.Show(_header);
-        var levelsManager = LevelsManager.Instance;
-        var categories = levelsManager.LevelsCategories;
-
-        for (int i = 0; i < categories.Count; i++)
+        protected override void OnInitialize()
         {
-            var progressExists = levelsManager.IsCategoryProgressExists(categories[i].Key);
-            var passedLevelsCount = progressExists
-                ? levelsManager.GetLevelsProgressByCategory(categories[i].Key).Levels.Count(x => x.IsPassed)
-                : 0;
-
-            view.CreateOrUpdateCategory(categories[i], categories[i].Price == 0 || progressExists, passedLevelsCount);
+            base.OnInitialize();
+            _header = Localization.Instance.GetLocalByKey(HeaderKey);
         }
-    }
 
-    private void OnCategoryClick(LevelsCategory category, bool isOpened)
-    {
-        if (!isOpened)
+        public override void BeforeShow()
         {
-            var localization = Localization.Instance;
-            if (category.Price > MoneyController.Instance.MoneyBalance)
+            base.BeforeShow();
+            ApplicationController.Instance.TopPanelController.Show(_header);
+            var levelsManager = LevelsManager.Instance;
+            var categories = levelsManager.LevelsCategories;
+
+            for (int i = 0; i < categories.Count; i++)
             {
-                uiManager.Open<AlertWindowController, AlertWindowSettings>(
-                    new AlertWindowSettings()
-                    {
-                        HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
-                        DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
-                        OnBackButtonClicked = Back,
-                        Buttons = new List<AlertButtonSettings>()
-                        {
-                            new AlertButtonSettings()
-                            {
-                                Callback = Back,
-                                Text = localization.GetLocalByKey(CancelKey),
-                                Color = AlertButtonColor.White
-                            },
-                            new AlertButtonSettings()
-                            {
-                                Callback = () =>
-                                {
-                                    Back();
-                                    uiManager.Open<ShopWindowController>(true);
-                                },
-                                Text = localization.GetLocalByKey(GoToShopKey),
-                                Color = AlertButtonColor.Green
-                            }
-                        }
-                    }, true);
+                var progressExists = levelsManager.IsCategoryProgressExists(categories[i].Key);
+                var passedLevelsCount = progressExists
+                    ? levelsManager.GetLevelsProgressByCategory(categories[i].Key).Levels.Count(x => x.IsPassed)
+                    : 0;
+
+                view.CreateOrUpdateCategory(categories[i], categories[i].Price == 0 || progressExists, passedLevelsCount);
             }
-            else
+        }
+
+        private void OnCategoryClick(LevelsCategory category, bool isOpened)
+        {
+            if (!isOpened)
             {
-                uiManager.Open<AlertWindowController, AlertWindowSettings>(
-                    new AlertWindowSettings()
-                    {
-                        HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
-                        DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
-                        OnBackButtonClicked = Back,
-                        Buttons = new List<AlertButtonSettings>()
+                var localization = Localization.Instance;
+                if (category.Price > MoneyController.Instance.MoneyBalance)
+                {
+                    uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                        new AlertWindowSettings()
                         {
-                            new AlertButtonSettings()
+                            HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
+                            DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
+                            OnBackButtonClicked = Back,
+                            Buttons = new List<AlertButtonSettings>()
                             {
-                                Callback = Back,
-                                Text = localization.GetLocalByKey(CancelKey),
-                                Color = AlertButtonColor.White
-                            },
-                            new AlertButtonSettings()
-                            {
-                                Callback = () =>
+                                new AlertButtonSettings()
                                 {
-                                    Back();
-                                    if (MoneyController.Instance.GetMoney(category.Price))
+                                    Callback = Back,
+                                    Text = localization.GetLocalByKey(CancelKey),
+                                    Color = AlertButtonColor.White
+                                },
+                                new AlertButtonSettings()
+                                {
+                                    Callback = () =>
                                     {
-                                        LevelsManager.Instance.GetLevelsProgressByCategory(category.Key);
-                                        view.CreateOrUpdateCategory(category, true, 0);
-                                    }
-                                },
-                                Text = localization.GetLocalByKey(BuyKey),
-                                Color = AlertButtonColor.Green
+                                        Back();
+                                        uiManager.Open<ShopWindowController>(true);
+                                    },
+                                    Text = localization.GetLocalByKey(GoToShopKey),
+                                    Color = AlertButtonColor.Green
+                                }
                             }
-                        }
-                    }, true);
+                        }, true);
+                }
+                else
+                {
+                    uiManager.Open<AlertWindowController, AlertWindowSettings>(
+                        new AlertWindowSettings()
+                        {
+                            HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
+                            DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
+                            OnBackButtonClicked = Back,
+                            Buttons = new List<AlertButtonSettings>()
+                            {
+                                new AlertButtonSettings()
+                                {
+                                    Callback = Back,
+                                    Text = localization.GetLocalByKey(CancelKey),
+                                    Color = AlertButtonColor.White
+                                },
+                                new AlertButtonSettings()
+                                {
+                                    Callback = () =>
+                                    {
+                                        Back();
+                                        if (MoneyController.Instance.GetMoney(category.Price))
+                                        {
+                                            LevelsManager.Instance.GetLevelsProgressByCategory(category.Key);
+                                            view.CreateOrUpdateCategory(category, true, 0);
+                                        }
+                                    },
+                                    Text = localization.GetLocalByKey(BuyKey),
+                                    Color = AlertButtonColor.Green
+                                }
+                            }
+                        }, true);
+                }
+
+                return;
             }
 
-            return;
+            var settings = new LevelsSequenceWindowSettings { Category = category };
+            uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
+                WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
         }
 
-        var settings = new LevelsSequenceWindowSettings { Category = category };
-        uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
-            WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
-    }
+        protected override void OnSubscribe()
+        {
+            view.CategoryClick += OnCategoryClick;
+        }
 
-    protected override void OnSubscribe()
-    {
-        view.CategoryClick += OnCategoryClick;
-    }
+        protected override void OnUnSubscribe()
+        {
+            view.CategoryClick -= OnCategoryClick;
+        }
 
-    protected override void OnUnSubscribe()
-    {
-        view.CategoryClick -= OnCategoryClick;
-    }
+        private void Back()
+        {
+            uiManager.Back();
+        }
 
-    private void Back()
-    {
-        uiManager.Back();
-    }
-
-    protected override void OnEscape()
-    {
-        uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        protected override void OnEscape()
+        {
+            uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        }
     }
 }

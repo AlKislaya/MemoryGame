@@ -1,27 +1,30 @@
 using Dainty.UI.WindowBase;
 
-public class SettingsWindowController : AWindowController<SettingsWindowView>
+namespace MemoryArt.UI.Windows
 {
-    public override string WindowId { get; }
-
-    public override void BeforeShow()
+    public class SettingsWindowController : AWindowController<SettingsWindowView>
     {
-        base.BeforeShow();
-        view.SetDefaults();
-    }
+        public override string WindowId { get; }
 
-    protected override void OnSubscribe()
-    {
-        view.CloseButtonClick += ViewOnCloseButtonClick;
-    }
+        public override void BeforeShow()
+        {
+            base.BeforeShow();
+            view.SetDefaults();
+        }
 
-    protected override void OnUnSubscribe()
-    {
-        view.CloseButtonClick -= ViewOnCloseButtonClick;
-    }
+        protected override void OnSubscribe()
+        {
+            view.CloseButtonClick += ViewOnCloseButtonClick;
+        }
 
-    private void ViewOnCloseButtonClick()
-    {
-        uiManager.Back();
+        protected override void OnUnSubscribe()
+        {
+            view.CloseButtonClick -= ViewOnCloseButtonClick;
+        }
+
+        private void ViewOnCloseButtonClick()
+        {
+            uiManager.Back();
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace LocalizationModule
+namespace MemoryArt.Global
 {
     [RequireComponent(typeof(TextMeshProUGUI))]
     public class LocalizableText : MonoBehaviour

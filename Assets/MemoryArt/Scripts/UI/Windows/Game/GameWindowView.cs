@@ -3,186 +3,191 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using DG.Tweening;
-using LocalizationModule;
+using MemoryArt.Game;
+using MemoryArt.Game.Levels;
+using MemoryArt.Global;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameWindowView : AWindowView
+namespace MemoryArt.UI.Windows
 {
-    private const string SecondsKey = "seconds";
-    private const string OfKey = "of";
-    private const int TimerSeconds = 2;
-
-    [SerializeField] private AnimatedButton _hintButton;
-    [SerializeField] private PlayableObjectsController _playableController;
-    [SerializeField] private Button _tapToStartButton;
-    [SerializeField] private GameObject _tapToStartText;
-    [SerializeField] private CounterElement _counterElement;
-    [SerializeField] private GameObject _loader;
-
-    [Header("Timer Colors")] [SerializeField]
-    private Color _timerColor;
-
-    [SerializeField] private Color _progressColor;
-    [SerializeField] private Color _doneColor;
-
-    private Sequence _startGameAnimation;
-    private Sequence _placeObjectsAnimation;
-    private Sequence _checkLevelAnimation;
-
-    private string _seconds;
-    private string _of;
-
-    public int RoundsCount => _playableController.RoundsCount;
-    public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
-
-    public event Action<PassedLevelStats> LevelDone;
-    public event Action<bool> BlockExitStateChanged;
-    public event Action HintClicked;
-
-    private void Awake()
+    public class GameWindowView : AWindowView
     {
-        SetLocals();
-        Localization.Instance.LanguageChanged += SetLocals;
-    }
+        private const string SecondsKey = "seconds";
+        private const string OfKey = "of";
+        private const int TimerSeconds = 2;
 
-    private void OnDestroy()
-    {
-        Localization.Instance.LanguageChanged -= SetLocals;
-    }
+        [SerializeField] private AnimatedButton _hintButton;
+        [SerializeField] private PlayableObjectsController _playableController;
+        [SerializeField] private Button _tapToStartButton;
+        [SerializeField] private GameObject _tapToStartText;
+        [SerializeField] private CounterElement _counterElement;
+        [SerializeField] private GameObject _loader;
 
-    protected override void OnSubscribe()
-    {
-        base.OnSubscribe();
-        _playableController.OnLevelEnded += OnLevelDoneInvoked;
-        _playableController.OnRoundChanged += OnRoundChanged;
-        _hintButton.Button.onClick.AddListener(OnHintButtonClicked);
-        _tapToStartButton.onClick.AddListener(StartGame);
-    }
+        [Header("Timer Colors")] [SerializeField]
+        private Color _timerColor;
 
-    protected override void OnUnSubscribe()
-    {
-        base.OnUnSubscribe();
-        _playableController.OnLevelEnded -= OnLevelDoneInvoked;
-        _playableController.OnRoundChanged -= OnRoundChanged;
-        _hintButton.Button.onClick.RemoveAllListeners();
-        _tapToStartButton.onClick.RemoveAllListeners();
-    }
+        [SerializeField] private Color _progressColor;
+        [SerializeField] private Color _doneColor;
 
-    public Task InitLevel(Level levelAsset, CancellationToken token)
-    {
-        return _playableController.LoadLevel(levelAsset.SvgAsset, token);
-    }
+        private Sequence _startGameAnimation;
+        private Sequence _placeObjectsAnimation;
+        private Sequence _checkLevelAnimation;
 
-    public void ShowLoader(bool show)
-    {
-        _loader.SetActive(show);
-    }
+        private string _seconds;
+        private string _of;
 
-    //place objects animation
-    public void PlaceObjects()
-    {
-        _placeObjectsAnimation = DOTween.Sequence()
-            .Append(_playableController.PlaceCard(.3f))
-            .AppendCallback(() =>
-            {
-                _tapToStartButton.gameObject.SetActive(true);
-                _tapToStartText.SetActive(true);
-            });
-    }
+        public int RoundsCount => _playableController.RoundsCount;
+        public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
 
-    //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
-    public void SetDefaults()
-    {
-        _playableController.SetDefaults();
-        //hide tap to start buttons
-        _tapToStartButton.gameObject.SetActive(false);
-        _tapToStartText.SetActive(false);
-        //init timer
-        SetTimer();
+        public event Action<PassedLevelStats> LevelDone;
+        public event Action<bool> BlockExitStateChanged;
+        public event Action HintClicked;
 
-        if (_hintButton.Button != null)
+        private void Awake()
         {
-            _hintButton.Button.interactable = false;
-            _hintButton.SetAnimationEnabled(false);
+            SetLocals();
+            Localization.Instance.LanguageChanged += SetLocals;
         }
-    }
 
-    private void SetTimer()
-    {
-        _counterElement.SetDefaults();
-        _counterElement.SetColor(_timerColor);
-        _counterElement.SetText($"{TimerSeconds}{_seconds}");
-        _counterElement.SetAmount(1);
-    }
-
-    private void OnRoundChanged(int roundNumber)
-    {
-        var count = RoundsCount;
-
-        var percents = (float)roundNumber / count;
-        _counterElement.SetText($"{roundNumber} {_of} {count}");
-        _counterElement.SetAmount(percents, .5f, Ease.InSine);
-        if (roundNumber == count)
+        private void OnDestroy()
         {
-            _counterElement.TransformToDone(_doneColor);
+            Localization.Instance.LanguageChanged -= SetLocals;
         }
-    }
 
-    public void DestroyLevel()
-    {
-        _playableController.DestroyLevel();
-    }
+        protected override void OnSubscribe()
+        {
+            base.OnSubscribe();
+            _playableController.OnLevelEnded += OnLevelDoneInvoked;
+            _playableController.OnRoundChanged += OnRoundChanged;
+            _hintButton.Button.onClick.AddListener(OnHintButtonClicked);
+            _tapToStartButton.onClick.AddListener(StartGame);
+        }
 
-    public void StopAnimations()
-    {
-        _startGameAnimation?.Kill();
-        _placeObjectsAnimation?.Kill();
-    }
+        protected override void OnUnSubscribe()
+        {
+            base.OnUnSubscribe();
+            _playableController.OnLevelEnded -= OnLevelDoneInvoked;
+            _playableController.OnRoundChanged -= OnRoundChanged;
+            _hintButton.Button.onClick.RemoveAllListeners();
+            _tapToStartButton.onClick.RemoveAllListeners();
+        }
 
-    private void StartGame()
-    {
-        _tapToStartButton.gameObject.SetActive(false);
-        _tapToStartText.SetActive(false);
+        public Task InitLevel(Level levelAsset, CancellationToken token)
+        {
+            return _playableController.LoadLevel(levelAsset.SvgAsset, token);
+        }
 
-        _playableController.OpenCard(true);
-        _startGameAnimation = DOTween.Sequence()
-            .Append(_counterElement.TimerTween(TimerSeconds, _seconds))
-            .AppendCallback(() => _playableController.OpenCard(false))
-            .AppendInterval(.3f)
-            .AppendCallback(() =>
+        public void ShowLoader(bool show)
+        {
+            _loader.SetActive(show);
+        }
+
+        //place objects animation
+        public void PlaceObjects()
+        {
+            _placeObjectsAnimation = DOTween.Sequence()
+                .Append(_playableController.PlaceCard(.3f))
+                .AppendCallback(() =>
+                {
+                    _tapToStartButton.gameObject.SetActive(true);
+                    _tapToStartText.SetActive(true);
+                });
+        }
+
+        //reset playable controller, reset colors, reset counter, show play btn zone, close swatches
+        public void SetDefaults()
+        {
+            _playableController.SetDefaults();
+            //hide tap to start buttons
+            _tapToStartButton.gameObject.SetActive(false);
+            _tapToStartText.SetActive(false);
+            //init timer
+            SetTimer();
+
+            if (_hintButton.Button != null)
             {
-                OnRoundChanged(0);
-                _counterElement.SetColor(_progressColor);
-                _playableController.StartGame();
-                _hintButton.Button.interactable = true;
-                _hintButton.SetAnimationEnabled(true);
-            });
+                _hintButton.Button.interactable = false;
+                _hintButton.SetAnimationEnabled(false);
+            }
+        }
 
-        _startGameAnimation.Play();
-    }
+        private void SetTimer()
+        {
+            _counterElement.SetDefaults();
+            _counterElement.SetColor(_timerColor);
+            _counterElement.SetText($"{TimerSeconds}{_seconds}");
+            _counterElement.SetAmount(1);
+        }
 
-    private void OnHintButtonClicked()
-    {
-        HintClicked?.Invoke();
-    }
+        private void OnRoundChanged(int roundNumber)
+        {
+            var count = RoundsCount;
 
-    private void OnLevelDoneInvoked(PassedLevelStats stats)
-    {
-        OnUnSubscribe();
-        BlockExitStateChanged?.Invoke(true);
-        _checkLevelAnimation = _playableController.CheckCardAnimation()
-            .AppendInterval(3f)
-            .OnComplete(() =>
+            var percents = (float)roundNumber / count;
+            _counterElement.SetText($"{roundNumber} {_of} {count}");
+            _counterElement.SetAmount(percents, .5f, Ease.InSine);
+            if (roundNumber == count)
             {
-                BlockExitStateChanged?.Invoke(false);
-                LevelDone?.Invoke(stats);
-            });
-    }
+                _counterElement.TransformToDone(_doneColor);
+            }
+        }
 
-    private void SetLocals()
-    {
-        _seconds = Localization.Instance.GetLocalByKey(SecondsKey);
-        _of = Localization.Instance.GetLocalByKey(OfKey);
+        public void DestroyLevel()
+        {
+            _playableController.DestroyLevel();
+        }
+
+        public void StopAnimations()
+        {
+            _startGameAnimation?.Kill();
+            _placeObjectsAnimation?.Kill();
+        }
+
+        private void StartGame()
+        {
+            _tapToStartButton.gameObject.SetActive(false);
+            _tapToStartText.SetActive(false);
+
+            _playableController.OpenCard(true);
+            _startGameAnimation = DOTween.Sequence()
+                .Append(_counterElement.TimerTween(TimerSeconds, _seconds))
+                .AppendCallback(() => _playableController.OpenCard(false))
+                .AppendInterval(.3f)
+                .AppendCallback(() =>
+                {
+                    OnRoundChanged(0);
+                    _counterElement.SetColor(_progressColor);
+                    _playableController.StartGame();
+                    _hintButton.Button.interactable = true;
+                    _hintButton.SetAnimationEnabled(true);
+                });
+
+            _startGameAnimation.Play();
+        }
+
+        private void OnHintButtonClicked()
+        {
+            HintClicked?.Invoke();
+        }
+
+        private void OnLevelDoneInvoked(PassedLevelStats stats)
+        {
+            OnUnSubscribe();
+            BlockExitStateChanged?.Invoke(true);
+            _checkLevelAnimation = _playableController.CheckCardAnimation()
+                .AppendInterval(3f)
+                .OnComplete(() =>
+                {
+                    BlockExitStateChanged?.Invoke(false);
+                    LevelDone?.Invoke(stats);
+                });
+        }
+
+        private void SetLocals()
+        {
+            _seconds = Localization.Instance.GetLocalByKey(SecondsKey);
+            _of = Localization.Instance.GetLocalByKey(OfKey);
+        }
     }
 }

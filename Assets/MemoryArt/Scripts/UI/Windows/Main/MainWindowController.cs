@@ -1,61 +1,64 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
-using System;
+using MemoryArt.Global;
 
-public class MainWindowController : AWindowController<MainWindowView>
+namespace MemoryArt.UI.Windows
 {
-    private LevelsManager _levelsManager;
-
-    public override string WindowId { get; }
-
-    protected override void OnInitialize()
+    public class MainWindowController : AWindowController<MainWindowView>
     {
-        base.OnInitialize();
-        _levelsManager = LevelsManager.Instance;
-    }
+        private LevelsManager _levelsManager;
 
-    public override void BeforeShow()
-    {
-        ApplicationController.Instance.TopPanelController.Close();
-        view.SetMoneyBalance(MoneyController.Instance.MoneyBalance);
-    }
+        public override string WindowId { get; }
 
-    protected override void OnSubscribe()
-    {
-        view.OnLevelsTypeClicked += OnLevelTypeClicked;
-        view.OnSettingsClicked += OnSettingsClicked;
-        view.OnShopClicked += OnShopClicked;
-    }
-
-    protected override void OnUnSubscribe()
-    {
-        view.OnLevelsTypeClicked -= OnLevelTypeClicked;
-        view.OnSettingsClicked -= OnSettingsClicked;
-        view.OnShopClicked -= OnShopClicked;
-    }
-
-    private void OnShopClicked()
-    {
-        uiManager.Open<ShopWindowController>(true);
-    }
-
-    private void OnSettingsClicked()
-    {
-        uiManager.Open<SettingsWindowController>(true);
-    }
-
-    private void OnLevelTypeClicked(string key)
-    {
-        if (key == _levelsManager.BaseLevelsKey)
+        protected override void OnInitialize()
         {
-            var settings = new LevelsSequenceWindowSettings { Category = _levelsManager.GetCategoryByKey(key) };
-            uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
-                WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            base.OnInitialize();
+            _levelsManager = LevelsManager.Instance;
         }
-        else
+
+        public override void BeforeShow()
         {
-            uiManager.Open<CategoriesSequenceWindowController>(
-                WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            ApplicationController.Instance.TopPanelController.Close();
+            view.SetMoneyBalance(MoneyController.Instance.MoneyBalance);
+        }
+
+        protected override void OnSubscribe()
+        {
+            view.OnLevelsTypeClicked += OnLevelTypeClicked;
+            view.OnSettingsClicked += OnSettingsClicked;
+            view.OnShopClicked += OnShopClicked;
+        }
+
+        protected override void OnUnSubscribe()
+        {
+            view.OnLevelsTypeClicked -= OnLevelTypeClicked;
+            view.OnSettingsClicked -= OnSettingsClicked;
+            view.OnShopClicked -= OnShopClicked;
+        }
+
+        private void OnShopClicked()
+        {
+            uiManager.Open<ShopWindowController>(true);
+        }
+
+        private void OnSettingsClicked()
+        {
+            uiManager.Open<SettingsWindowController>(true);
+        }
+
+        private void OnLevelTypeClicked(string key)
+        {
+            if (key == _levelsManager.BaseLevelsKey)
+            {
+                var settings = new LevelsSequenceWindowSettings { Category = _levelsManager.GetCategoryByKey(key) };
+                uiManager.Open<LevelsSequenceWindowController, LevelsSequenceWindowSettings>(settings,
+                    WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            }
+            else
+            {
+                uiManager.Open<CategoriesSequenceWindowController>(
+                    WindowTransition.AnimateOpening | WindowTransition.AnimateClosing);
+            }
         }
     }
 }

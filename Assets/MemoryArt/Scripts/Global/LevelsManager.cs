@@ -1,91 +1,96 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MemoryArt.Game.Levels;
+using MemoryArt.Global.Patterns;
 using UnityEngine;
 
-public class LevelsManager : Singleton<LevelsManager>
+namespace MemoryArt.Global
 {
-    [SerializeField] private LevelsCategory _baseLevelsCategory;
-    [SerializeField] private List<LevelsCategory> _levelsCategories;
-
-    private Dictionary<string, LevelsProgress> _levelsProgress = new Dictionary<string, LevelsProgress>();
-
-    public string BaseLevelsKey => _baseLevelsCategory.Key;
-
-    //all categories except base
-    public List<LevelsCategory> LevelsCategories => _levelsCategories;
-
-    public bool IsCategoryProgressExists(string categoryKey)
+    public class LevelsManager : Singleton<LevelsManager>
     {
-        return PlayerPrefs.HasKey(categoryKey);
-    }
+        [SerializeField] private LevelsCategory _baseLevelsCategory;
+        [SerializeField] private List<LevelsCategory> _levelsCategories;
 
-    public LevelsCategory GetCategoryByKey(string categoryKey)
-    {
-        return _baseLevelsCategory.Key.Equals(categoryKey)
-            ? _baseLevelsCategory
-            : _levelsCategories.FirstOrDefault(x => x.Key.Equals(categoryKey));
-    }
+        private Dictionary<string, LevelsProgress> _levelsProgress = new Dictionary<string, LevelsProgress>();
 
-    //get progress from dictionary or get json from Player Prefs and save to dictionary
-    public LevelsProgress GetLevelsProgressByCategory(string categoryKey)
-    {
-        if (!_levelsProgress.ContainsKey(categoryKey))
+        public string BaseLevelsKey => _baseLevelsCategory.Key;
+
+        //all categories except base
+        public List<LevelsCategory> LevelsCategories => _levelsCategories;
+
+        public bool IsCategoryProgressExists(string categoryKey)
         {
-            var levelsJson = PlayerPrefs.GetString(categoryKey);
-
-            if (string.IsNullOrEmpty(levelsJson))
-            {
-                InitLevelsProgress(categoryKey);
-            }
-            else
-            {
-                try
-                {
-                    _levelsProgress.Add(categoryKey, JsonUtility.FromJson<LevelsProgress>(levelsJson));
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e);
-                    InitLevelsProgress(categoryKey);
-                }
-            }
+            return PlayerPrefs.HasKey(categoryKey);
         }
 
-        return _levelsProgress[categoryKey];
-    }
-
-    private void InitLevelsProgress(string categoryKey)
-    {
-        var levelsProgress = new LevelsProgress
+        public LevelsCategory GetCategoryByKey(string categoryKey)
         {
-            Levels = new List<LevelProgress>() { new LevelProgress() { IsPassed = false } }
-        };
-        _levelsProgress.Add(categoryKey, levelsProgress);
+            return _baseLevelsCategory.Key.Equals(categoryKey)
+                ? _baseLevelsCategory
+                : _levelsCategories.FirstOrDefault(x => x.Key.Equals(categoryKey));
+        }
 
-        SaveLevelsProgress(categoryKey);
-    }
+        //get progress from dictionary or get json from Player Prefs and save to dictionary
+        public LevelsProgress GetLevelsProgressByCategory(string categoryKey)
+        {
+            if (!_levelsProgress.ContainsKey(categoryKey))
+            {
+                var levelsJson = PlayerPrefs.GetString(categoryKey);
 
-    public void SetPassedLevel(string categoryKey, int levelIndex, float passedPercents)
-    {
-        var levelsProgress = GetLevelsProgressByCategory(categoryKey);
+                if (string.IsNullOrEmpty(levelsJson))
+                {
+                    InitLevelsProgress(categoryKey);
+                }
+                else
+                {
+                    try
+                    {
+                        _levelsProgress.Add(categoryKey, JsonUtility.FromJson<LevelsProgress>(levelsJson));
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogError(e);
+                        InitLevelsProgress(categoryKey);
+                    }
+                }
+            }
 
-        var passedLevel = levelsProgress.Levels[levelIndex];
-        passedLevel.PassedPercents = passedPercents;
-        passedLevel.IsPassed = true;
+            return _levelsProgress[categoryKey];
+        }
 
-        SaveLevelsProgress(categoryKey);
-    }
+        private void InitLevelsProgress(string categoryKey)
+        {
+            var levelsProgress = new LevelsProgress
+            {
+                Levels = new List<LevelProgress>() { new LevelProgress() { IsPassed = false } }
+            };
+            _levelsProgress.Add(categoryKey, levelsProgress);
 
-    public void SetNewLevelProgress(string categoryKey)
-    {
-        _levelsProgress[categoryKey].Levels.Add(new LevelProgress() { IsPassed = false });
-        SaveLevelsProgress(categoryKey);
-    }
+            SaveLevelsProgress(categoryKey);
+        }
 
-    private void SaveLevelsProgress(string categoryKey)
-    {
-        Debug.Log("SAVED! " + categoryKey + " : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
-        PlayerPrefs.SetString(categoryKey, JsonUtility.ToJson(_levelsProgress[categoryKey]));
+        public void SetPassedLevel(string categoryKey, int levelIndex, float passedPercents)
+        {
+            var levelsProgress = GetLevelsProgressByCategory(categoryKey);
+
+            var passedLevel = levelsProgress.Levels[levelIndex];
+            passedLevel.PassedPercents = passedPercents;
+            passedLevel.IsPassed = true;
+
+            SaveLevelsProgress(categoryKey);
+        }
+
+        public void SetNewLevelProgress(string categoryKey)
+        {
+            _levelsProgress[categoryKey].Levels.Add(new LevelProgress() { IsPassed = false });
+            SaveLevelsProgress(categoryKey);
+        }
+
+        private void SaveLevelsProgress(string categoryKey)
+        {
+            Debug.Log("SAVED! " + categoryKey + " : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+            PlayerPrefs.SetString(categoryKey, JsonUtility.ToJson(_levelsProgress[categoryKey]));
+        }
     }
 }

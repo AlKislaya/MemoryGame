@@ -4,75 +4,78 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TopPanelController : MonoBehaviour
+namespace MemoryArt.Global
 {
-    [SerializeField] private RectTransform _rectTransform;
-    [SerializeField] private TextMeshProUGUI _header;
-    [SerializeField] private Button _backButton;
-    [SerializeField] private float _shadowHeight;
-
-    [Header("Safe Area")] [SerializeField] RectTransform _canvasRect;
-    [SerializeField] SafeArea _safeArea;
-
-    private Tween _animation;
-    private bool _isClosed = true;
-    private float _topOffset;
-    private float _height;
-
-    public bool IsBackButtonInteractable
+    public class TopPanelController : MonoBehaviour
     {
-        get => _backButton.interactable;
-        set => _backButton.interactable = value;
-    }
+        [SerializeField] private RectTransform _rectTransform;
+        [SerializeField] private TextMeshProUGUI _header;
+        [SerializeField] private Button _backButton;
+        [SerializeField] private float _shadowHeight;
 
-    private void Awake()
-    {
-        _height = _rectTransform.sizeDelta.y;
-        _backButton.onClick.AddListener(OnBackButtonClicked);
+        [Header("Safe Area")] [SerializeField] RectTransform _canvasRect;
+        [SerializeField] SafeArea _safeArea;
 
-        _safeArea.Changed += OnSafeAreaChanged;
-    }
+        private Tween _animation;
+        private bool _isClosed = true;
+        private float _topOffset;
+        private float _height;
 
-    private void OnBackButtonClicked()
-    {
-        ApplicationController.Instance.UiManager.Back(
-            WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
-    }
+        public bool IsBackButtonInteractable
+        {
+            get => _backButton.interactable;
+            set => _backButton.interactable = value;
+        }
 
-    public void Show(string header)
-    {
-        _header.text = header;
-        _animation?.Kill();
-        _animation = _rectTransform
-            .DOAnchorPosY(-_height, .5f)
-            .SetEase(Ease.InSine);
-        _isClosed = false;
-    }
+        private void Awake()
+        {
+            _height = _rectTransform.sizeDelta.y;
+            _backButton.onClick.AddListener(OnBackButtonClicked);
 
-    public void Close()
-    {
-        _animation?.Kill();
-        _animation = _rectTransform
-            .DOAnchorPosY(_topOffset, .2f)
-            .SetEase(Ease.OutSine);
-        _isClosed = true;
-    }
+            _safeArea.Changed += OnSafeAreaChanged;
+        }
 
-    private void OnSafeAreaChanged()
-    {
-        var safeArea = ApplicationController.Instance.UiRoot.GetSafeArea();
-        _topOffset = _canvasRect.rect.height - (safeArea.height + safeArea.y) + _shadowHeight;
+        private void OnBackButtonClicked()
+        {
+            ApplicationController.Instance.UiManager.Back(
+                WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
+        }
 
-        var size = _rectTransform.sizeDelta;
-        size.y = _height + _topOffset;
-        _rectTransform.sizeDelta = size;
+        public void Show(string header)
+        {
+            _header.text = header;
+            _animation?.Kill();
+            _animation = _rectTransform
+                .DOAnchorPosY(-_height, .5f)
+                .SetEase(Ease.InSine);
+            _isClosed = false;
+        }
 
-        if (_isClosed)
+        public void Close()
         {
             _animation?.Kill();
-            var pos = _rectTransform.anchoredPosition;
-            pos.y = _topOffset;
-            _rectTransform.anchoredPosition = pos;
+            _animation = _rectTransform
+                .DOAnchorPosY(_topOffset, .2f)
+                .SetEase(Ease.OutSine);
+            _isClosed = true;
+        }
+
+        private void OnSafeAreaChanged()
+        {
+            var safeArea = ApplicationController.Instance.UiRoot.GetSafeArea();
+            _topOffset = _canvasRect.rect.height - (safeArea.height + safeArea.y) + _shadowHeight;
+
+            var size = _rectTransform.sizeDelta;
+            size.y = _height + _topOffset;
+            _rectTransform.sizeDelta = size;
+
+            if (_isClosed)
+            {
+                _animation?.Kill();
+                var pos = _rectTransform.anchoredPosition;
+                pos.y = _topOffset;
+                _rectTransform.anchoredPosition = pos;
+            }
         }
     }
 }

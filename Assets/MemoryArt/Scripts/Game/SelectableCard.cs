@@ -1,54 +1,57 @@
 ﻿using System;
-using UnityEngine;
 using DG.Tweening;
+using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectableCard : PlayableCard
+namespace MemoryArt.Game
 {
-    [HideInInspector] public int Index;
-
-    [SerializeField] private Button _button;
-    [SerializeField] private CanvasGroup _canvasGroup;
-
-    private RectTransform _parentRect;
-
-    public event Action<int> ButtonClick;
-
-    protected override void Awake()
+    public class SelectableCard : PlayableCard
     {
-        base.Awake();
-        _parentRect = _rectTransform.parent.GetComponent<RectTransform>();
-    }
+        [HideInInspector] public int Index;
 
-    private void Start()
-    {
-        _button.onClick.AddListener(() => ButtonClick?.Invoke(Index));
-    }
+        [SerializeField] private Button _button;
+        [SerializeField] private CanvasGroup _canvasGroup;
 
-    public Tween DoFade(float alpha, float duration)
-    {
-        return _canvasGroup.DOFade(alpha, duration);
-    }
+        private RectTransform _parentRect;
 
-    public void DoFade(float alpha)
-    {
-        _canvasGroup.alpha = alpha;
-    }
+        public event Action<int> ButtonClick;
 
-    public override void ResetCard()
-    {
-        base.ResetCard();
-        if (_parentRect != null)
+        protected override void Awake()
         {
-            SetParent(_parentRect);
-            DoStretch();
+            base.Awake();
+            _parentRect = _rectTransform.parent.GetComponent<RectTransform>();
         }
 
-        DoFade(1);
-    }
+        private void Start()
+        {
+            _button.onClick.AddListener(() => ButtonClick?.Invoke(Index));
+        }
 
-    public override void SetActive(bool isActive)
-    {
-        _parentRect.gameObject.SetActive(isActive);
+        public Tween DoFade(float alpha, float duration)
+        {
+            return _canvasGroup.DOFade(alpha, duration);
+        }
+
+        public void DoFade(float alpha)
+        {
+            _canvasGroup.alpha = alpha;
+        }
+
+        public override void ResetCard()
+        {
+            base.ResetCard();
+            if (_parentRect != null)
+            {
+                SetParent(_parentRect);
+                DoStretch();
+            }
+
+            DoFade(1);
+        }
+
+        public override void SetActive(bool isActive)
+        {
+            _parentRect.gameObject.SetActive(isActive);
+        }
     }
 }

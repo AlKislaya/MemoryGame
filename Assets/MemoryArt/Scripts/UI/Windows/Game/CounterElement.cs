@@ -3,88 +3,91 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CounterElement : MonoBehaviour
+namespace MemoryArt.UI.Windows
 {
-    [SerializeField] private TextMeshProUGUI _text;
-    [SerializeField] private Image _filledOutline;
-    [SerializeField] private Image _tickImage;
-
-    private Tween _animation;
-    private Sequence _transformToDoneAnimation;
-
-    //add button click listener, init transform to btn animation
-    private void Start()
+    public class CounterElement : MonoBehaviour
     {
-        _transformToDoneAnimation = DOTween.Sequence()
-            .AppendCallback(() =>
+        [SerializeField] private TextMeshProUGUI _text;
+        [SerializeField] private Image _filledOutline;
+        [SerializeField] private Image _tickImage;
+
+        private Tween _animation;
+        private Sequence _transformToDoneAnimation;
+
+        //add button click listener, init transform to btn animation
+        private void Start()
+        {
+            _transformToDoneAnimation = DOTween.Sequence()
+                .AppendCallback(() =>
+                {
+                    _tickImage.enabled = true;
+                    _text.enabled = false;
+                })
+                .Append(transform.DOScale(1.2f, .3f))
+                .Append(transform.DOScale(1f, .3f))
+                .Pause()
+                .SetAutoKill(false);
+        }
+
+        public void SetDefaults()
+        {
+            transform.localScale = Vector3.one;
+            _tickImage.enabled = false;
+            _text.enabled = true;
+        }
+
+        public void SetText(string text)
+        {
+            _text.text = text;
+        }
+
+        public Sequence TimerTween(int seconds, string secondsText)
+        {
+            var sequence = DOTween.Sequence();
+            sequence.Append(_filledOutline.DOFillAmount(0, seconds).SetEase(Ease.Linear));
+            for (int i = 0; i <= seconds; i++)
             {
-                _tickImage.enabled = true;
-                _text.enabled = false;
-            })
-            .Append(transform.DOScale(1.2f, .3f))
-            .Append(transform.DOScale(1f, .3f))
-            .Pause()
-            .SetAutoKill(false);
-    }
+                var currSeconds = seconds - i;
+                sequence.InsertCallback(i, () => SetText($"{currSeconds}{secondsText}"));
+            }
 
-    public void SetDefaults()
-    {
-        transform.localScale = Vector3.one;
-        _tickImage.enabled = false;
-        _text.enabled = true;
-    }
-
-    public void SetText(string text)
-    {
-        _text.text = text;
-    }
-
-    public Sequence TimerTween(int seconds, string secondsText)
-    {
-        var sequence = DOTween.Sequence();
-        sequence.Append(_filledOutline.DOFillAmount(0, seconds).SetEase(Ease.Linear));
-        for (int i = 0; i <= seconds; i++)
-        {
-            var currSeconds = seconds - i;
-            sequence.InsertCallback(i, () => SetText($"{currSeconds}{secondsText}"));
+            return sequence;
         }
 
-        return sequence;
-    }
-
-    public void SetAmount(float fillAmount, float duration = 0, Ease ease = Ease.Linear)
-    {
-        _animation?.Kill();
-        if (duration == 0)
+        public void SetAmount(float fillAmount, float duration = 0, Ease ease = Ease.Linear)
         {
-            _filledOutline.fillAmount = fillAmount;
+            _animation?.Kill();
+            if (duration == 0)
+            {
+                _filledOutline.fillAmount = fillAmount;
+            }
+            else
+            {
+                _animation = _filledOutline.DOFillAmount(fillAmount, duration).SetEase(ease);
+                _animation.Play();
+            }
         }
-        else
+
+        public void SetColor(Color color)
         {
-            _animation = _filledOutline.DOFillAmount(fillAmount, duration).SetEase(ease);
-            _animation.Play();
+            _filledOutline.color = color;
         }
-    }
 
-    public void SetColor(Color color)
-    {
-        _filledOutline.color = color;
-    }
-
-    public void TransformToDone(Color color)
-    {
-        if (_animation != null && _animation.IsPlaying())
+        public void TransformToDone(Color color)
         {
-            _animation.OnComplete(() =>
+            if (_animation != null && _animation.IsPlaying())
+            {
+                _animation.OnComplete(() =>
+                {
+                    SetColor(color);
+                    _transformToDoneAnimation.Restart();
+                });
+            }
+            else
             {
                 SetColor(color);
                 _transformToDoneAnimation.Restart();
-            });
-        }
-        else
-        {
-            SetColor(color);
-            _transformToDoneAnimation.Restart();
+            }
         }
     }
 }

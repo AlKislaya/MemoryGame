@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
-public class Level
+namespace MemoryArt.Game.Levels
 {
-    public Sprite Preview;
-    public TextAsset SvgAsset;
+    [Serializable]
+    public class Level
+    {
+        public Sprite Preview;
+        public TextAsset SvgAsset;
+    }
 }
