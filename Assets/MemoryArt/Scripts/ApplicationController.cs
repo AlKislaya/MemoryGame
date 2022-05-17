@@ -13,6 +13,11 @@ namespace MemoryArt
         [SerializeField] private UiManagerSettings _uiManagerSettings;
         [SerializeField] private TopPanelController _topPanelController;
 
+#if UNITY_EDITOR || DEV
+        [Header("[DEBUG]")] [SerializeField] private Tayx.Graphy.GraphyManager _graphyManagerPrefab;
+        [SerializeField] private LunarConsolePlugin.LunarConsole _lunarConsolePrefab;
+#endif
+
         private UiManager _uiManager;
 
         public Camera Camera => _camera;
@@ -28,6 +33,11 @@ namespace MemoryArt
 
             _uiManager = new UiManager(_uiRoot, _uiManagerSettings);
             _uiManager.Open<MainWindowController>(false, WindowTransition.None);
+
+#if DEV
+            Instantiate(_lunarConsolePrefab);
+            Instantiate(_graphyManagerPrefab);
+#endif
         }
     }
 }
