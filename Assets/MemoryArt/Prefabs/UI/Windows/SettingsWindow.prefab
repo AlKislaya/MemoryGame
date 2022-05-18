@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: -3389262206101103993}
   - component: {fileID: 1319807107088031176}
   m_Layer: 5
-  m_Name: Settings
+  m_Name: SettingsWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -303,6 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce2e436024c5bbc489932dc13b578eb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _mainContainer: {fileID: 8164801118211154448}
   _backgroundShadeButton: {fileID: 2461162359278476737}
   _closeButton: {fileID: 789142278868804512}

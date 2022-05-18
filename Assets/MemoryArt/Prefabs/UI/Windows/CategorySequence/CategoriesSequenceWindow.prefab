@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 6005901405617823367}
   - component: {fileID: 1476815604373585353}
   m_Layer: 5
-  m_Name: CategoriesSequence
+  m_Name: CategoriesSequenceWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95d49a1ffac5bfe49ad7f7b0558079c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _categoryPrefab: {fileID: 7279697685589249802, guid: bea9bb318d90d7f419e2aea60164351e,
     type: 3}
   _categoriesContainer: {fileID: 1477905910585742746}

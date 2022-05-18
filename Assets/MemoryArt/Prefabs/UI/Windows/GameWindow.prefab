@@ -1927,7 +1927,7 @@ GameObject:
   - component: {fileID: 5390558086187821440}
   - component: {fileID: 7063302891693008512}
   m_Layer: 5
-  m_Name: Game
+  m_Name: GameWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1988,6 +1988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5302fcc720912614ca7e111af6054246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _hintButton: {fileID: 3633772785638256727}
   _playableController: {fileID: 4654702493394893353}
   _tapToStartButton: {fileID: 1925096981986083900}
