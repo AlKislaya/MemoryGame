@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 8533906723199631019}
   - component: {fileID: 888864126290989925}
   m_Layer: 5
-  m_Name: Shop
+  m_Name: ShopWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -244,8 +244,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d76152dfc89ab8478ce5cef421c487d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _closeButton: {fileID: 4981351862995299969}
   _backgroundShadeButton: {fileID: 2461162359278476737}
+  _freeCoinsButton: {fileID: 2226797416653146521}
+  _freeCoinsAmountText: {fileID: 4363997261663370822}
 --- !u!114 &888864126290989925
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2710,12 +2713,36 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a28f4a4708b7b444ae3895504d0d339, type: 3}
+--- !u!114 &2226797416653146521 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2662432012497042104, guid: 6a28f4a4708b7b444ae3895504d0d339,
+    type: 3}
+  m_PrefabInstance: {fileID: 4185523819460293409}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4216652251900016700 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 40947312868199197, guid: 6a28f4a4708b7b444ae3895504d0d339,
     type: 3}
   m_PrefabInstance: {fileID: 4185523819460293409}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4363997261663370822 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 470063072592334183, guid: 6a28f4a4708b7b444ae3895504d0d339,
+    type: 3}
+  m_PrefabInstance: {fileID: 4185523819460293409}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6340028850965061388 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7920064944490277933, guid: 6a28f4a4708b7b444ae3895504d0d339,
