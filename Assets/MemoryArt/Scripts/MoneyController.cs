@@ -1,4 +1,5 @@
-﻿using MemoryArt.Global.Patterns;
+﻿using System;
+using MemoryArt.Global.Patterns;
 using UnityEngine;
 
 namespace MemoryArt
@@ -11,6 +12,8 @@ namespace MemoryArt
         private int _money;
 
         public int MoneyBalance => _money;
+
+        public event Action<int> BalanceChanged;
 
         protected override void Awake()
         {
@@ -31,6 +34,7 @@ namespace MemoryArt
         {
             _money += value;
             SaveToPrefs();
+            BalanceChanged?.Invoke(_money);
         }
 
         public bool GetMoney(int value)

@@ -14,6 +14,12 @@ namespace MemoryArt.UI.Windows
         {
             base.OnInitialize();
             _levelsManager = LevelsManager.Instance;
+            MoneyController.Instance.BalanceChanged += view.SetMoneyBalance;
+        }
+
+        public override void Dispose()
+        {
+            MoneyController.Instance.BalanceChanged -= view.SetMoneyBalance;
         }
 
         public override void BeforeShow()
