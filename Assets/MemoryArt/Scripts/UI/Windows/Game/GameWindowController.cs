@@ -113,13 +113,18 @@ namespace MemoryArt.UI.Windows
 
         private void ViewOnOnLevelDone(PassedLevelStats stats)
         {
-            uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(new LevelFinishedWindowSettings()
+            var adsController = ApplicationController.Instance.AdsController;
+            adsController.ShowInterstitial(null, () =>
             {
-                CategoryKey = _categoryKey,
-                LevelIndex = _levelIndex,
-                Stats = stats,
-                GameWindowController = this
-            }, true);
+                uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(
+                    new LevelFinishedWindowSettings
+                    {
+                        CategoryKey = _categoryKey,
+                        LevelIndex = _levelIndex,
+                        Stats = stats,
+                        GameWindowController = this
+                    }, true);
+            });
         }
 
         private void OnHintClicked()
