@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.appodeal.appodeal-unity-plugin-upm": {
+      "version": "https://github.com/appodeal/appodeal-unity-plugin-upm.git#feature/release-3.0.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "69e4fa6d16401ef3ce39830f54611a518de09b59"
+    },
     "com.dainty.modules.ads": {
       "version": "ssh://git@bitbucket.org/dainty_games/module.ads.git#1.0.2",
       "depth": 0,
@@ -15,6 +22,13 @@
       "source": "git",
       "dependencies": {},
       "hash": "f538c50a68e56db3b3bde9745471998743994995"
+    },
+    "com.google.external-dependency-manager": {
+      "version": "ssh://git@bitbucket.org/dainty_games/module.google.external-dependency-manager.git#1.2.169",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "313536807c2a14dbff7ad7be130df0dbc0a61801"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
