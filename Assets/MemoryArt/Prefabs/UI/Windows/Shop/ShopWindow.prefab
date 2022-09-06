@@ -1909,6 +1909,11 @@ PrefabInstance:
       propertyPath: m_text
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 2662432012497042104, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159559155893234177, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -1934,12 +1939,47 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItem (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 22baa032c4c8d854396ba3fcd707fbe3,
         type: 3}
+    - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: f7f88632c89972c4297a73c716aab1c8, type: 2}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: _isEnabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a28f4a4708b7b444ae3895504d0d339, type: 3}
 --- !u!224 &370917369808463588 stripped
@@ -2207,6 +2247,11 @@ PrefabInstance:
       propertyPath: m_text
       value: 250
       objectReference: {fileID: 0}
+    - target: {fileID: 2662432012497042104, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4159559155893234177, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -2227,6 +2272,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItem (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.85882354
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_Sprite
@@ -2235,7 +2300,22 @@ PrefabInstance:
         type: 3}
     - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: f7f88632c89972c4297a73c716aab1c8, type: 2}
+    - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
       propertyPath: m_PreserveAspect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: _isEnabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3026,6 +3106,16 @@ PrefabInstance:
       propertyPath: m_text
       value: 500
       objectReference: {fileID: 0}
+    - target: {fileID: 2662432012497042104, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793100381599836079, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4159559155893234177, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_SizeDelta.x
@@ -3046,12 +3136,47 @@ PrefabInstance:
       propertyPath: m_Name
       value: ShopItem (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 0.8584906
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 0.8584906
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 0.8584906
+      objectReference: {fileID: 0}
+    - target: {fileID: 6956774863993677168, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
         type: 3}
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 55f1c20ea840eb548a3a5b30ba399ed0,
         type: 3}
+    - target: {fileID: 7335250767711770735, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: f7f88632c89972c4297a73c716aab1c8, type: 2}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8189629892875553100, guid: 6a28f4a4708b7b444ae3895504d0d339,
+        type: 3}
+      propertyPath: _isEnabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a28f4a4708b7b444ae3895504d0d339, type: 3}
 --- !u!224 &8315682809038983614 stripped

@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: -3389262206101103993}
   - component: {fileID: 1093630315234837049}
   m_Layer: 5
-  m_Name: Alert
+  m_Name: AlertWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -167,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1406718f59cc734498f5b6982632e93a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _destroyAfterClose: 0
   _headerText: {fileID: 2528532998666938414}
   _dialogText: {fileID: 381620140795930655}
   _buttonsContainer: {fileID: 1147983631345049839}

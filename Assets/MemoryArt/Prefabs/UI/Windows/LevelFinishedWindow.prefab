@@ -203,7 +203,7 @@ GameObject:
   - component: {fileID: -4135673796195702792}
   - component: {fileID: 4147771656493004643}
   m_Layer: 5
-  m_Name: LevelFinished
+  m_Name: LevelFinishedWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
