@@ -113,7 +113,7 @@ namespace MemoryArt.UI.Windows
 
         private void ViewOnOnLevelDone(PassedLevelStats stats)
         {
-            uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(new LevelFinishedWindowSettings()
+            uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(new LevelFinishedWindowSettings
             {
                 CategoryKey = _categoryKey,
                 LevelIndex = _levelIndex,
@@ -129,35 +129,49 @@ namespace MemoryArt.UI.Windows
             {
                 //offer ads
                 uiManager.Open<AlertWindowController, AlertWindowSettings>(
-                    new AlertWindowSettings()
+                    new AlertWindowSettings
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelAdsTextKey),
                         OnBackButtonClicked = OnHintDeclined,
-                        Buttons = new List<AlertButtonSettings>() {
-                            new AlertButtonSettings() { Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White, Callback = OnHintDeclined },
-                            new AlertButtonSettings()
-                            { 
-                                Text = localization.GetLocalByKey(OkKey), 
-                                Color = AlertButtonColor.Green, 
-                                Callback = OnHintWatchAdsApproved }}
+                        Buttons = new List<AlertButtonSettings>
+                        {
+                            new AlertButtonSettings
+                            {
+                                Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White,
+                                Callback = OnHintDeclined
+                            },
+                            new AlertButtonSettings
+                            {
+                                Text = localization.GetLocalByKey(OkKey),
+                                Color = AlertButtonColor.Green,
+                                Callback = OnHintWatchAdsApproved
+                            }
+                        }
                     }, true);
             }
             else
             {
                 uiManager.Open<AlertWindowController, AlertWindowSettings>(
-                    new AlertWindowSettings()
+                    new AlertWindowSettings
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelMoneyTextKey),
                         OnBackButtonClicked = OnHintDeclined,
-                        Buttons = new List<AlertButtonSettings>() {
-                            new AlertButtonSettings() { Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White, Callback = OnHintDeclined },
-                            new AlertButtonSettings()
-                            { 
-                                Text = localization.GetLocalByKey(OkKey), 
-                                Color = AlertButtonColor.Green, 
-                                Callback = OnHintApproved }}
+                        Buttons = new List<AlertButtonSettings>
+                        {
+                            new AlertButtonSettings
+                            {
+                                Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White,
+                                Callback = OnHintDeclined
+                            },
+                            new AlertButtonSettings
+                            {
+                                Text = localization.GetLocalByKey(OkKey),
+                                Color = AlertButtonColor.Green,
+                                Callback = OnHintApproved
+                            }
+                        }
                     }, true);
             }
         }
@@ -170,7 +184,7 @@ namespace MemoryArt.UI.Windows
         private void OnHintWatchAdsApproved()
         {
             uiManager.Back();
-            ViewOnOnLevelDone(new PassedLevelStats()
+            ViewOnOnLevelDone(new PassedLevelStats
             {
                 SelectableCount = view.RoundsCount,
                 RightSelectablesCount = view.RoundsCount - 1
@@ -182,7 +196,7 @@ namespace MemoryArt.UI.Windows
             uiManager.Back();
             if (MoneyController.Instance.GetMoney(SkipPrice))
             {
-                ViewOnOnLevelDone(new PassedLevelStats()
+                ViewOnOnLevelDone(new PassedLevelStats
                 {
                     SelectableCount = view.RoundsCount,
                     RightSelectablesCount = view.RoundsCount - 1
@@ -201,6 +215,7 @@ namespace MemoryArt.UI.Windows
             {
                 return;
             }
+
             uiManager.Back(WindowTransition.AnimateClosing | WindowTransition.AnimateOpening);
         }
 
