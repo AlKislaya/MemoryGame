@@ -2,6 +2,8 @@
   <packages>
     <package>androidx.core:core:1.7.0</package>
     <package>com.adcolony:sdk:4.8.0</package>
+    <package>com.adjust.sdk:adjust-android:4.31.0</package>
+    <package>com.android.installreferrer:installreferrer:2.2</package>
     <package>com.applovin:applovin-sdk:11.4.4</package>
     <package>com.appodeal.ads.sdk.core:internal:3.0.0</package>
     <package>com.appodeal.ads.sdk.core:public:3.0.0</package>
@@ -21,6 +23,8 @@
     <package>com.appodeal.ads.sdk.networks:vast:3.0.0.0</package>
     <package>com.appodeal.ads.sdk.networks:vungle:3.0.0.4</package>
     <package>com.appodeal.ads.sdk.networks:yandex:3.0.0.3</package>
+    <package>com.appodeal.ads.sdk.services:adjust:3.0.0.1</package>
+    <package>com.appodeal.ads.sdk.services:appsflyer:3.0.0.2</package>
     <package>com.appodeal.ads.sdk.services:facebook_analytics:3.0.0.2</package>
     <package>com.appodeal.ads.sdk.services:firebase:3.0.0.1</package>
     <package>com.appodeal.ads.sdk.services:stack_analytics:3.0.0.0</package>
@@ -28,6 +32,9 @@
     <package>com.appodeal.ads:advertising:3.0.0</package>
     <package>com.appodeal.ads:consent:3.0.0</package>
     <package>com.appodeal.ads:network:3.0.0</package>
+    <package>com.appsflyer:adrevenue:6.5.4</package>
+    <package>com.appsflyer:af-android-sdk:6.8.0</package>
+    <package>com.explorestack.adjust:sdk-purchase:1.1.2</package>
     <package>com.explorestack:iab:0.9.8</package>
     <package>com.facebook.android:audience-network-sdk:6.11.0</package>
     <package>com.facebook.android:facebook-core:14.1.0</package>
