@@ -61,9 +61,9 @@ namespace MemoryArt.UI.Windows
 
         protected override void OnSubscribe()
         {
-            view.LevelDone += ViewOnOnLevelDone;
+            view.LevelDone += ViewOnLevelDone;
             view.BlockExitStateChanged += OnBlockExitStateChanged;
-            view.HintClicked += OnHintClicked;
+            view.SkipLevelClick += OnSkipLevelClick;
 
             ApplicationController.Instance.Camera.allowMSAA = true;
             ProcessLevel();
@@ -106,12 +106,12 @@ namespace MemoryArt.UI.Windows
 
         protected override void OnUnSubscribe()
         {
-            view.LevelDone -= ViewOnOnLevelDone;
+            view.LevelDone -= ViewOnLevelDone;
             view.BlockExitStateChanged -= OnBlockExitStateChanged;
-            view.HintClicked -= OnHintClicked;
+            view.SkipLevelClick -= OnSkipLevelClick;
         }
 
-        private void ViewOnOnLevelDone(PassedLevelStats stats)
+        private void ViewOnLevelDone(PassedLevelStats stats)
         {
             uiManager.Open<LevelFinishedWindowController, LevelFinishedWindowSettings>(new LevelFinishedWindowSettings
             {
@@ -122,7 +122,7 @@ namespace MemoryArt.UI.Windows
             }, true);
         }
 
-        private void OnHintClicked()
+        private void OnSkipLevelClick()
         {
             var localization = Localization.Instance;
             if (MoneyController.Instance.MoneyBalance < SkipPrice)
@@ -133,19 +133,19 @@ namespace MemoryArt.UI.Windows
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelAdsTextKey),
-                        OnBackButtonClicked = OnHintDeclined,
+                        OnBackButtonClicked = OnSkipLevelDeclined,
                         Buttons = new List<AlertButtonSettings>
                         {
                             new AlertButtonSettings
                             {
                                 Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White,
-                                Callback = OnHintDeclined
+                                Callback = OnSkipLevelDeclined
                             },
                             new AlertButtonSettings
                             {
                                 Text = localization.GetLocalByKey(OkKey),
                                 Color = AlertButtonColor.Green,
-                                Callback = OnHintWatchAdsApproved
+                                Callback = OnSkipLevelWatchAdsApproved
                             }
                         }
                     }, true);
@@ -157,46 +157,46 @@ namespace MemoryArt.UI.Windows
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelMoneyTextKey),
-                        OnBackButtonClicked = OnHintDeclined,
+                        OnBackButtonClicked = OnSkipLevelDeclined,
                         Buttons = new List<AlertButtonSettings>
                         {
                             new AlertButtonSettings
                             {
                                 Text = localization.GetLocalByKey(CancelKey), Color = AlertButtonColor.White,
-                                Callback = OnHintDeclined
+                                Callback = OnSkipLevelDeclined
                             },
                             new AlertButtonSettings
                             {
                                 Text = localization.GetLocalByKey(OkKey),
                                 Color = AlertButtonColor.Green,
-                                Callback = OnHintApproved
+                                Callback = SkipLevel
                             }
                         }
                     }, true);
             }
         }
 
-        private void OnHintDeclined()
+        private void OnSkipLevelDeclined()
         {
             uiManager.Back();
         }
 
-        private void OnHintWatchAdsApproved()
+        private void OnSkipLevelWatchAdsApproved()
         {
             uiManager.Back();
-            ViewOnOnLevelDone(new PassedLevelStats
+            ViewOnLevelDone(new PassedLevelStats
             {
                 SelectableCount = view.RoundsCount,
                 RightSelectablesCount = view.RoundsCount - 1
             });
         }
 
-        private void OnHintApproved()
+        private void SkipLevel()
         {
             uiManager.Back();
             if (MoneyController.Instance.GetMoney(SkipPrice))
             {
-                ViewOnOnLevelDone(new PassedLevelStats
+                ViewOnLevelDone(new PassedLevelStats
                 {
                     SelectableCount = view.RoundsCount,
                     RightSelectablesCount = view.RoundsCount - 1

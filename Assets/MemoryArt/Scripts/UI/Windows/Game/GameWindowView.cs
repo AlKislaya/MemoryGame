@@ -42,7 +42,7 @@ namespace MemoryArt.UI.Windows
 
         public event Action<PassedLevelStats> LevelDone;
         public event Action<bool> BlockExitStateChanged;
-        public event Action HintClicked;
+        public event Action SkipLevelClick;
 
         private void Awake()
         {
@@ -168,7 +168,7 @@ namespace MemoryArt.UI.Windows
 
         private void OnHintButtonClicked()
         {
-            HintClicked?.Invoke();
+            SkipLevelClick?.Invoke();
         }
 
         private void OnLevelDoneInvoked(PassedLevelStats stats)
