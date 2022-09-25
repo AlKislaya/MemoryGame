@@ -58,7 +58,7 @@ namespace MemoryArt.UI.Windows
                         {
                             HeaderText = localization.GetLocalByKey(NotEnoughtMoney_HeaderKey),
                             DialogText = localization.GetLocalByKey(NotEnoughtMoney_TextKey),
-                            OnBackButtonClicked = Back,
+                            BackButtonHandler = Back,
                             Buttons = new List<AlertButtonSettings>()
                             {
                                 new AlertButtonSettings()
@@ -87,7 +87,7 @@ namespace MemoryArt.UI.Windows
                         {
                             HeaderText = localization.GetLocalByKey(EnoughtMoney_HeaderKey),
                             DialogText = localization.GetLocalByKey(EnoughtMoney_TextKey),
-                            OnBackButtonClicked = Back,
+                            BackButtonHandler = Back,
                             Buttons = new List<AlertButtonSettings>()
                             {
                                 new AlertButtonSettings()

@@ -32,9 +32,9 @@ namespace MemoryArt.UI.Windows
             _headerText.text = data.HeaderText;
             _dialogText.text = data.DialogText;
 
-            if (data.OnBackButtonClicked != null)
+            if (data.BackButtonHandler != null)
             {
-                _backgroundButton.onClick.AddListener(data.OnBackButtonClicked);
+                _backgroundButton.onClick.AddListener(data.BackButtonHandler);
             }
 
             for (int i = 0; i < data.Buttons.Count; i++)

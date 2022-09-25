@@ -23,17 +23,32 @@ namespace MemoryArt.UI.Windows
     {
         public string HeaderText;
         public string DialogText;
-        public UnityAction OnBackButtonClicked;
+        public UnityAction BackButtonHandler;
         public List<AlertButtonSettings> Buttons;
     }
 
     public class AlertWindowController : AWindowController<AlertWindowView>, IConfigurableWindow<AlertWindowSettings>
     {
+        private AlertWindowSettings _settings;
+
         public override string WindowId { get; }
 
         public void Initialize(AlertWindowSettings data)
         {
+            _settings = data;
             view.InitializeAlert(data);
+        }
+
+        protected override void OnEscape()
+        {
+            if (_settings.BackButtonHandler != null)
+            {
+                _settings.BackButtonHandler();
+            }
+            else
+            {
+                uiManager.Back();
+            }
         }
     }
 }

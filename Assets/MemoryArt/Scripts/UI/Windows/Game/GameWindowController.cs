@@ -136,7 +136,7 @@ namespace MemoryArt.UI.Windows
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelAdsTextKey),
-                        OnBackButtonClicked = OnSkipLevelDeclined,
+                        BackButtonHandler = OnSkipLevelDeclined,
                         Buttons = new List<AlertButtonSettings>
                         {
                             new AlertButtonSettings
@@ -160,7 +160,7 @@ namespace MemoryArt.UI.Windows
                     {
                         HeaderText = localization.GetLocalByKey(SkipLevelHeaderKey),
                         DialogText = localization.GetLocalByKey(SkipLevelMoneyTextKey),
-                        OnBackButtonClicked = OnSkipLevelDeclined,
+                        BackButtonHandler = OnSkipLevelDeclined,
                         Buttons = new List<AlertButtonSettings>
                         {
                             new AlertButtonSettings
