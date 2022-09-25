@@ -47,6 +47,9 @@ namespace MemoryArt.UI.Windows
             _categoryKey = categoryKey;
             _levelIndex = levelIndex;
 
+            view.SkipLevelAvailable = LevelsManager.Instance.GetLevelsProgressByCategory(categoryKey).Levels.Count ==
+                                      levelIndex + 1;
+
             view.DestroyLevel();
             view.SetDefaults();
             view.ShowLoader(true);

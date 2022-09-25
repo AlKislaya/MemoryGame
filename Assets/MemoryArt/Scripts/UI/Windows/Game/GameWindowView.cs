@@ -39,6 +39,11 @@ namespace MemoryArt.UI.Windows
 
         public int RoundsCount => _playableController.RoundsCount;
         public bool BlockExit => _checkLevelAnimation != null && _checkLevelAnimation.IsPlaying();
+        public bool SkipLevelAvailable
+        {
+            get => _hintButton.gameObject.activeSelf;
+            set => _hintButton.gameObject.SetActive(value);
+        }
 
         public event Action<PassedLevelStats> LevelDone;
         public event Action<bool> BlockExitStateChanged;
