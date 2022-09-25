@@ -41,7 +41,7 @@ namespace MemoryArt.UI.Windows
             var levelsProgress = _levelsManager.GetLevelsProgressByCategory(data.CategoryKey).Levels;
             view.ShowAddedCoinsLabel(false);
         
-            if (_currentPercents > levelsProgress[levelIndex].PassedPercents)
+            if (data.Stats.Skipped || _currentPercents > levelsProgress[levelIndex].PassedPercents)
             {
                 _levelsManager.SetPassedLevel(data.CategoryKey, levelIndex, _currentPercents);
                 if (levelsProgress.Count - 1 == levelIndex
@@ -62,7 +62,8 @@ namespace MemoryArt.UI.Windows
 
 
             view.SetProgress(_currentPercents);
-            view.SetActivePlayButton(!((_currentPercents == 0 && levelsProgress.Count - 1 == levelIndex)
+            view.SetActivePlayButton(data.Stats.Skipped ||
+                                     !((_currentPercents == 0 && levelsProgress.Count - 1 == levelIndex)
                                        || data.LevelIndex == categoryLevelsCount - 1));
         }
 

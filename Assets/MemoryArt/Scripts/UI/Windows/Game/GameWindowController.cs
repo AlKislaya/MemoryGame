@@ -201,8 +201,9 @@ namespace MemoryArt.UI.Windows
             {
                 ViewOnLevelDone(new PassedLevelStats
                 {
+                    Skipped = true,
                     SelectableCount = view.RoundsCount,
-                    RightSelectablesCount = view.RoundsCount - 1
+                    RightSelectablesCount = 0
                 });
             }
         }

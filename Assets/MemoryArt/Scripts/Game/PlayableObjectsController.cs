@@ -10,6 +10,7 @@ namespace MemoryArt.Game
 {
     public class PassedLevelStats
     {
+        public bool Skipped;
         public int SelectableCount;
         public int RightSelectablesCount;
     }
