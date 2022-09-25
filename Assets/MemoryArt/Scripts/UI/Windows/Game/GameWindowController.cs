@@ -228,7 +228,13 @@ namespace MemoryArt.UI.Windows
             _loadingToken?.Cancel();
             view.StopAnimations();
             view.DestroyLevel();
-            ApplicationController.Instance.Camera.allowMSAA = false;
+
+            var camera = ApplicationController.Instance.Camera;
+            if (camera != null)
+            {
+                camera.allowMSAA = false;
+            }
+
             base.Dispose();
         }
     }
