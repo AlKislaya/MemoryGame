@@ -11,6 +11,7 @@ namespace MemoryArt.UI.Windows
     {
         private const string HeaderKey = "categories_sequence";
         private const string CancelKey = "cancel";
+        private const string OkKey = "ok";
         private const string NotEnoughtMoney_HeaderKey = "alert_not_enought_money_header";
         private const string NotEnoughtMoney_TextKey = "alert_not_enought_money_text";
         private const string GoToShopKey = "go_to_shop";
@@ -64,19 +65,19 @@ namespace MemoryArt.UI.Windows
                                 new AlertButtonSettings()
                                 {
                                     Callback = Back,
-                                    Text = localization.GetLocalByKey(CancelKey),
-                                    Color = AlertButtonColor.White
-                                },
-                                new AlertButtonSettings()
-                                {
-                                    Callback = () =>
-                                    {
-                                        Back();
-                                        uiManager.Open<ShopWindowController>(true);
-                                    },
-                                    Text = localization.GetLocalByKey(GoToShopKey),
+                                    Text = localization.GetLocalByKey(OkKey),
                                     Color = AlertButtonColor.Green
-                                }
+                                },
+                                // new AlertButtonSettings()
+                                // {
+                                //     Callback = () =>
+                                //     {
+                                //         Back();
+                                //         uiManager.Open<ShopWindowController>(true);
+                                //     },
+                                //     Text = localization.GetLocalByKey(GoToShopKey),
+                                //     Color = AlertButtonColor.Green
+                                // }
                             }
                         }, true);
                 }

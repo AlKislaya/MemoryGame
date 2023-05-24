@@ -527,7 +527,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a7359cd2f957c943bcd79f60b3a0565, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _destroyAfterClose: 0
   _shopButton: {fileID: 2888312440549649661}
   _moneyBalanceText: {fileID: 6538525128092812027}
   _settingsButton: {fileID: 5359934787517429850}
@@ -935,8 +934,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1.3, y: -0.000024319}
-  m_SizeDelta: {x: 29.63, y: 26.09}
+  m_AnchoredPosition: {x: 7, y: 0}
+  m_SizeDelta: {x: 41, y: 26.09}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3334347275598073574
 CanvasRenderer:
@@ -1442,7 +1441,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3152284312122692026
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1522,7 +1521,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1654610524185613562
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1933,6 +1932,11 @@ PrefabInstance:
       propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 819409014053397758, guid: 9f5225377f667df4c95568bddad7c94e,
+        type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3403739154731783515, guid: 9f5225377f667df4c95568bddad7c94e,
         type: 3}
       propertyPath: m_Pivot.x
@@ -2086,6 +2090,11 @@ PrefabInstance:
     - target: {fileID: 6137807373541806738, guid: 9f5225377f667df4c95568bddad7c94e,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6776390321445066506, guid: 9f5225377f667df4c95568bddad7c94e,
+        type: 3}
+      propertyPath: _isEnabled
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8003497132806609949, guid: 9f5225377f667df4c95568bddad7c94e,
