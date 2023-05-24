@@ -17,7 +17,7 @@ namespace MemoryArt.UI.Windows
     {
         public override string WindowId { get; }
 
-        private const int CoinsValue = 10;
+        private const int CoinsValue = 5;
 
         private LevelsManager _levelsManager;
         private GameWindowController _gameWindowController;
@@ -36,7 +36,7 @@ namespace MemoryArt.UI.Windows
             _gameWindowController = data.GameWindowController;
             _settings = data;
             var levelIndex = data.LevelIndex;
-            _currentPercents = (float)data.Stats.RightSelectablesCount / (float)data.Stats.SelectableCount;
+            _currentPercents = (float) data.Stats.RightSelectablesCount / data.Stats.SelectableCount;
             var categoryLevelsCount = _levelsManager.GetCategoryByKey(data.CategoryKey).LevelsSequence.Levels.Count;
             var levelsProgress = _levelsManager.GetLevelsProgressByCategory(data.CategoryKey).Levels;
             view.ShowAddedCoinsLabel(false);

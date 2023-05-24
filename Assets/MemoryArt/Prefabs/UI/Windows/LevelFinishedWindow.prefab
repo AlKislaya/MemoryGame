@@ -282,7 +282,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a8db065400a6e54cb09f13faa5e570c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _destroyAfterClose: 0
   _menuButton: {fileID: 8798708131195284727}
   _playButton: {fileID: 5935030615282253696}
   _replayButton: {fileID: 8117692919671767112}
@@ -785,7 +784,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +20
+  m_text: +10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dd1a6b83aac372d459534b3b28934f2b, type: 2}
   m_sharedMaterial: {fileID: -3875946142917555539, guid: dd1a6b83aac372d459534b3b28934f2b,

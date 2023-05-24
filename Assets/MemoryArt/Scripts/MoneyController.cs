@@ -6,7 +6,7 @@ namespace MemoryArt
     public class MoneyController : Singleton<MoneyController>
     {
         private const string MoneyPrefsKey = "money_balance";
-        private const int _firstBalance = 150;
+        private const int _firstBalance = 50;
 
         private int _money;
 
