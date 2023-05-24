@@ -63,7 +63,7 @@
                 },
                 {
                     "key" : "skip_level_money_text",
-                    "value": "for 10 coins"
+                    "value": "Skip level for 10 coins?"
                 },
                 {
                     "key" : "skip_level_ads_text",
@@ -91,7 +91,7 @@
                 },
                 {
                     "key" : "alert_not_enought_money_text",
-                    "value": "Coins can be obtained for completing levels or in the store"
+                    "value": "Coins can be obtained for completing levels"
                 },
                 {
                     "key" : "go_to_shop",
@@ -99,7 +99,7 @@
                 },
                 {
                     "key" : "alert_enought_money_header",
-                    "value": "Open category?"
+                    "value": "Unlock category?"
                 },
                 {
                     "key" : "alert_enought_money_text",
@@ -132,6 +132,10 @@
                 {
                     "key" : "lc_handdrawn",
                     "value": "Hand-Drawn"
+                },
+                {
+                    "key" : "lc_coming_soon",
+                    "value": "New levels coming soon!"
                 }
             ]
         },
@@ -197,11 +201,11 @@
                 },
                 {
                     "key" : "skip_level_money_text",
-                    "value": "за 10 монеток"
+                    "value": "Пропустить уровень за 10 монеток?"
                 },
                 {
                     "key" : "skip_level_ads_text",
-                    "value": "Здесь может быть ваша реклама"
+                    "value": "Ads"
                 },
                 {
                     "key" : "result_zero",
@@ -225,7 +229,7 @@
                 },
                 {
                     "key" : "alert_not_enought_money_text",
-                    "value": "Монеты можно получить за прохождение уровней или пополнить в магазине"
+                    "value": "Монеты можно получить за прохождение уровней"
                 },
                 {
                     "key" : "go_to_shop",
@@ -266,6 +270,10 @@
                 {
                     "key" : "lc_handdrawn",
                     "value": "Hand-Drawn"
+                },
+                {
+                    "key" : "lc_coming_soon",
+                    "value": "Новые уровни скоро!"
                 }
             ]
         }
