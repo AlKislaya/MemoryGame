@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -50,27 +48,23 @@ namespace MemoryArt.Game
         }
 
         //loading svg
-        public async Task LoadLevel(TextAsset levelAsset, CancellationToken token)
+        public void LoadLevel(TextAsset levelAsset)
         {
-            await _svgLoader.ImportSVGAsync(levelAsset);
-
-            _vectorImages = await _svgLoader.GetSpritesArrange(token);
+            _svgLoader.ImportSVG(levelAsset);
+            _vectorImages = _svgLoader.GetSpritesArrange();
 
             if (_vectorImages == null || _vectorImages.Count == 0)
             {
                 Debug.LogError("0 sprites");
                 return;
             }
-            _maxSelectablesCount = _vectorImages.Max(x =>
-            {
+            _maxSelectablesCount = _vectorImages.Max(x => {
                 if (x is SelectableImages selectable)
                 {
                     return selectable.Children.Count;
                 }
-                else
-                {
-                    return 0;
-                }
+
+                return 0;
             });
         }
 

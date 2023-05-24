@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Unity.VectorGraphics;
 using UnityEngine;
 
@@ -36,16 +35,13 @@ namespace MemoryArt.Game
         private SVGParser.SceneInfo _sceneInfo;
         private VectorUtils.TessellationOptions _tesselationSettings;
 
-        public async Task ImportSVGAsync(TextAsset textAsset)
-        {
-            var text = textAsset.text;
-            var dpi = Screen.dpi; // a hack to run SVGParser.ImportSVG() on a background thread :)
-            _sceneInfo = await Task.Run(() =>
-                SVGParser.ImportSVG(new StringReader(text), ViewportOptions.OnlyApplyRootViewBox, dpi));
+        public void ImportSVG(TextAsset textAsset)
+        { 
+            _sceneInfo = SVGParser.ImportSVG(new StringReader(textAsset.text), ViewportOptions.OnlyApplyRootViewBox);
             _tesselationSettings = CalculateTesselationSettings(_sceneInfo.Scene.Root, PixelsPerUnit, TargetResolution);
         }
 
-        public async Task<List<VectorImage>> GetSpritesArrange(CancellationToken token)
+        public List<VectorImage> GetSpritesArrange()
         {
             var sceneRect = _sceneInfo.SceneViewport;
             var selectableShapes = new List<SceneNode>();
@@ -62,11 +58,6 @@ namespace MemoryArt.Game
 
             foreach (var rootChild in _sceneInfo.Scene.Root.Children)
             {
-                if (token.IsCancellationRequested)
-                {
-                    return null;
-                }
-
                 var selectable = selectableShapes.FirstOrDefault(x => x == rootChild);
 
                 VectorImage vectorImage;
@@ -80,14 +71,14 @@ namespace MemoryArt.Game
 
                     vectorImage = new SelectableImages
                     {
-                        Children = await GetSpritesFromSceneNodesAsync(rootChild.Children, sceneRect)
+                        Children = GetSpritesFromSceneNodes(rootChild.Children, sceneRect)
                     };
                 }
                 else
                 {
                     vectorImage = new StaticVectorImage
                     {
-                        Sprite = await GetSpriteFromSceneNodeAsync(rootChild, sceneRect)
+                        Sprite = GetSpriteFromSceneNode(rootChild, sceneRect)
                     };
                 }
 
@@ -97,32 +88,30 @@ namespace MemoryArt.Game
             return vectorImages;
         }
 
-        private async Task<Sprite> GetSpriteFromSceneNodeAsync(SceneNode node, Rect sceneRect)
+        private Sprite GetSpriteFromSceneNode(SceneNode node, Rect sceneRect)
         {
-            var geometry = await Task.Run(() => VectorUtils.TessellateScene(
+            var geometry = VectorUtils.TessellateScene(
                 new Scene
                 {
                     Root = node
                 },
                 _tesselationSettings,
-                _sceneInfo.NodeOpacity));
+                _sceneInfo.NodeOpacity);
 
             return VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,
                 SpriteAlignment, SpritePivot, GradientResolution, FlipYAxis);
         }
 
-        private async Task<List<Sprite>> GetSpritesFromSceneNodesAsync(IList<SceneNode> nodes, Rect sceneRect)
+        private List<Sprite> GetSpritesFromSceneNodes(IList<SceneNode> nodes, Rect sceneRect)
         {
-            var geometryList = await Task.Run(() => nodes
+            var geometryList = nodes
                 .Select(node => VectorUtils.TessellateScene(
-                    new Scene
-                    {
+                    new Scene {
                         Root = node
                     },
                     _tesselationSettings,
                     _sceneInfo.NodeOpacity))
-                .ToList()
-            );
+                .ToList();
 
             return geometryList
                 .Select(geometry => VectorUtils.BuildSprite(geometry, sceneRect, PixelsPerUnit,

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Dainty.UI.WindowBase;
 using DG.Tweening;
 using MemoryArt.Game;
@@ -78,9 +76,9 @@ namespace MemoryArt.UI.Windows
             _tapToStartButton.onClick.RemoveAllListeners();
         }
 
-        public Task InitLevel(Level levelAsset, CancellationToken token)
+        public void InitLevel(Level levelAsset)
         {
-            return _playableController.LoadLevel(levelAsset.SvgAsset, token);
+            _playableController.LoadLevel(levelAsset.SvgAsset);
         }
 
         public void ShowLoader(bool show)

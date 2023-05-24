@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Dainty.UI;
 using Dainty.UI.WindowBase;
 using MemoryArt.Game;
 using MemoryArt.Global;
-using UnityEngine;
 
 namespace MemoryArt.UI.Windows
 {
@@ -22,10 +19,6 @@ namespace MemoryArt.UI.Windows
         public override string WindowId { get; }
         private string _categoryKey;
         private int _levelIndex;
-        private bool _waitingForLevelLoad;
-        private bool _waitingForLevelShow;
-        private CancellationTokenSource _loadingToken;
-        private Task _loadingTask;
         private TopPanelController _topPanelController;
         private string _levelHeader;
 
@@ -39,7 +32,7 @@ namespace MemoryArt.UI.Windows
         public void ReplayLevel()
         {
             view.SetDefaults();
-            _waitingForLevelShow = true;
+            view.PlaceObjects();
         }
 
         public void LoadLevel(string categoryKey, int levelIndex)
@@ -53,13 +46,14 @@ namespace MemoryArt.UI.Windows
             view.DestroyLevel();
             view.SetDefaults();
             view.ShowLoader(true);
-            _waitingForLevelLoad = true;
 
             var levelAsset = LevelsManager.Instance.GetCategoryByKey(_categoryKey).LevelsSequence.Levels[_levelIndex];
-            _loadingToken = new CancellationTokenSource();
-            _loadingTask = view.InitLevel(levelAsset, _loadingToken.Token);
+            view.InitLevel(levelAsset);
 
             ApplicationController.Instance.TopPanelController.Show($"{_levelHeader} {levelIndex + 1}");
+            
+            view.ShowLoader(false);
+            view.PlaceObjects();
         }
 
         protected override void OnSubscribe()
@@ -69,42 +63,6 @@ namespace MemoryArt.UI.Windows
             view.SkipLevelClick += OnSkipLevelClick;
 
             ApplicationController.Instance.Camera.allowMSAA = true;
-            ProcessLevel();
-        }
-
-        private void ProcessLevel()
-        {
-            if (_waitingForLevelShow)
-            {
-                _waitingForLevelShow = false;
-                view.PlaceObjects();
-            }
-
-            if (_waitingForLevelLoad)
-            {
-                _waitingForLevelLoad = false;
-                if (_loadingTask.Status != TaskStatus.RanToCompletion)
-                {
-                    _loadingTask.ContinueWith(task =>
-                    {
-                        if (task.Exception != null)
-                        {
-                            Debug.LogException(task.Exception);
-                            return;
-                        }
-
-                        Debug.Log("Task Done");
-                        view.ShowLoader(false);
-                        view.PlaceObjects();
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
-                }
-                else
-                {
-                    Debug.Log("Task Done Before animation ended");
-                    view.ShowLoader(false);
-                    view.PlaceObjects();
-                }
-            }
         }
 
         protected override void OnUnSubscribe()
@@ -225,7 +183,6 @@ namespace MemoryArt.UI.Windows
 
         public override void Dispose()
         {
-            _loadingToken?.Cancel();
             view.StopAnimations();
             view.DestroyLevel();
 
