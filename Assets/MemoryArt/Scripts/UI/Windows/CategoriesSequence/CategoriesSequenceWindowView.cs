@@ -30,7 +30,7 @@ namespace MemoryArt.UI.Windows
                 return;
             }
 
-            var newCategoryInstance = Instantiate(_categoryPrefab, _categoriesContainer);
+            var newCategoryInstance = Instantiate(categoryData.UseCustomPrefab ? categoryData.CustomPrefab : _categoryPrefab, _categoriesContainer);
             newCategoryInstance.Initialize(categoryData, OnCategoryClick);
 
             newCategoryInstance.SetAvailableState(isOpened);

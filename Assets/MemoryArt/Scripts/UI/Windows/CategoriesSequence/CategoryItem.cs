@@ -40,7 +40,9 @@ namespace MemoryArt.UI.Windows
         public void SetAvailableState(bool isOpened)
         {
             _isOpened = isOpened;
-            _pricePanel.SetActive(!isOpened);
+            if (_pricePanel) {
+                _pricePanel.SetActive(!isOpened);
+            }
             _lockElements.ForEach(x => x.SetActive(!isOpened));
         }
 

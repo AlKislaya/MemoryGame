@@ -1,4 +1,5 @@
 using System;
+using MemoryArt.UI.Windows;
 using UnityEngine;
 
 namespace MemoryArt.Game.Levels
@@ -10,5 +11,7 @@ namespace MemoryArt.Game.Levels
         public int Price;
         public Sprite Preview;
         public LevelsSequence LevelsSequence;
+        public bool UseCustomPrefab;
+        public CategoryItem CustomPrefab;
     }
 }

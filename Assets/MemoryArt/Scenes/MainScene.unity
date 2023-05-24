@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -310,7 +311,7 @@ GameObject:
   - component: {fileID: 282481936}
   - component: {fileID: 282481935}
   m_Layer: 0
-  m_Name: LocalizationSingletone
+  m_Name: LocalizationSingleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -482,7 +483,7 @@ Canvas:
   m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
@@ -776,17 +777,31 @@ MonoBehaviour:
     Preview: {fileID: 3286163911610860551, guid: 76c83d794a691414da52ff2c20301158,
       type: 3}
     LevelsSequence: {fileID: 11400000, guid: 02228bb863e05744c8582b89a5b6b4ec, type: 2}
+    UseCustomPrefab: 0
+    CustomPrefab: {fileID: 0}
   _levelsCategories:
   - Key: lc_summer
     Price: 100
     Preview: {fileID: 3286163911610860551, guid: 6333c2e4b998da049a42f883765f7fe4,
       type: 3}
     LevelsSequence: {fileID: 11400000, guid: 1a2864692564367428bdfb654ea33a35, type: 2}
+    UseCustomPrefab: 0
+    CustomPrefab: {fileID: 0}
   - Key: lc_handdrawn
     Price: 100
     Preview: {fileID: 3286163911610860551, guid: 1ab5c053edfd47d47b94e2e451641f56,
       type: 3}
     LevelsSequence: {fileID: 11400000, guid: 5cdb5353802a84948967cb4e7f66467d, type: 2}
+    UseCustomPrefab: 0
+    CustomPrefab: {fileID: 0}
+  - Key: lc_coming_soon
+    Price: 1000
+    Preview: {fileID: 3286163911610860551, guid: 9a397483f08aec14a9f28d5d50d4a2fa,
+      type: 3}
+    LevelsSequence: {fileID: 11400000, guid: c3dfb30869bdd47438ebac36b5c87656, type: 2}
+    UseCustomPrefab: 1
+    CustomPrefab: {fileID: 832360857775567692, guid: 15bf4e87d578d478dbd97ff2be049649,
+      type: 3}
 --- !u!4 &1410480237
 Transform:
   m_ObjectHideFlags: 0
@@ -908,7 +923,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 1, b: 1, a: 0}
+  m_BackGroundColor: {r: 1, g: 0.9647059, b: 0.9372549, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -967,7 +982,7 @@ GameObject:
   - component: {fileID: 1793412325}
   - component: {fileID: 1793412324}
   m_Layer: 0
-  m_Name: MoneySingletone
+  m_Name: MoneySingleton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
