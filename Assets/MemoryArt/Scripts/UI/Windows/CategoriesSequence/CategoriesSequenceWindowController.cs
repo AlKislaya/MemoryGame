@@ -108,7 +108,7 @@ namespace MemoryArt.UI.Windows
                                             view.CreateOrUpdateCategory(category, true, 0);
                                         }
                                     },
-                                    Text = localization.GetLocalByKey(BuyKey),
+                                    Text = localization.GetLocalByKey(OkKey),
                                     Color = AlertButtonColor.Green
                                 }
                             }

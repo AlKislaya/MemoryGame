@@ -13,7 +13,7 @@ namespace MemoryArt.UI.Windows
     {
         private const string SecondsKey = "seconds";
         private const string OfKey = "of";
-        private const int TimerSeconds = 2;
+        private const int TimerSeconds = 3;
 
         [SerializeField] private AnimatedButton _hintButton;
         [SerializeField] private PlayableObjectsController _playableController;

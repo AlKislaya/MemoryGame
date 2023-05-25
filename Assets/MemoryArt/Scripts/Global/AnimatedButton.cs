@@ -14,6 +14,7 @@ namespace MemoryArt.Global
         [SerializeField] private Vector3 _targetShadowPosition;
         [SerializeField] private float _duration;
         [SerializeField] private bool _isEnabled = true;
+        [SerializeField] private AudioSource _audioSource;
 
         private Button _button;
         private Vector3 _startScale;
@@ -50,6 +51,7 @@ namespace MemoryArt.Global
             }
 
             StartAnimation(_targetScale, _targetShadowPosition);
+            _audioSource.Play();
         }
 
         public void OnPointerUp(PointerEventData eventData)
