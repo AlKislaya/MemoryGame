@@ -4,6 +4,7 @@ using System.Linq;
 using MemoryArt.Game.Levels;
 using MemoryArt.Global.Patterns;
 using UnityEngine;
+using YG;
 
 namespace MemoryArt.Global
 {
@@ -11,9 +12,11 @@ namespace MemoryArt.Global
     {
         [SerializeField] private LevelsCategory _baseLevelsCategory;
         [SerializeField] private List<LevelsCategory> _levelsCategories;
-
+#if UNITY_WEBGL
+        private Dictionary<string, LevelsProgress> _levelsProgress => YandexGame.savesData.LevelsProgress;
+#else
         private Dictionary<string, LevelsProgress> _levelsProgress = new Dictionary<string, LevelsProgress>();
-
+#endif
         public string BaseLevelsKey => _baseLevelsCategory.Key;
 
         //all categories except base
@@ -21,7 +24,11 @@ namespace MemoryArt.Global
 
         public bool IsCategoryProgressExists(string categoryKey)
         {
+#if UNITY_WEBGL
+            return _levelsProgress.ContainsKey(categoryKey);
+#else
             return PlayerPrefs.HasKey(categoryKey);
+#endif
         }
 
         public LevelsCategory GetCategoryByKey(string categoryKey)
@@ -34,6 +41,11 @@ namespace MemoryArt.Global
         //get progress from dictionary or get json from Player Prefs and save to dictionary
         public LevelsProgress GetLevelsProgressByCategory(string categoryKey)
         {
+#if UNITY_WEBGL
+            if (!IsCategoryProgressExists(categoryKey)) {
+                InitLevelsProgress(categoryKey);
+            }
+#else
             if (!_levelsProgress.ContainsKey(categoryKey))
             {
                 var levelsJson = PlayerPrefs.GetString(categoryKey);
@@ -55,7 +67,7 @@ namespace MemoryArt.Global
                     }
                 }
             }
-
+#endif
             return _levelsProgress[categoryKey];
         }
 
@@ -66,7 +78,7 @@ namespace MemoryArt.Global
                 Levels = new List<LevelProgress>() { new LevelProgress() { IsPassed = false } }
             };
             _levelsProgress.Add(categoryKey, levelsProgress);
-
+            
             SaveLevelsProgress(categoryKey);
         }
 
@@ -89,8 +101,13 @@ namespace MemoryArt.Global
 
         private void SaveLevelsProgress(string categoryKey)
         {
-            Debug.Log("SAVED! " + categoryKey + " : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+#if UNITY_WEBGL
+            YandexGame.SaveProgress();
+            Debug.Log("SAVED! " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+#else
             PlayerPrefs.SetString(categoryKey, JsonUtility.ToJson(_levelsProgress[categoryKey]));
+            Debug.Log("SAVED! " + categoryKey + " : " + JsonUtility.ToJson(_levelsProgress[categoryKey]));
+#endif
         }
     }
 }

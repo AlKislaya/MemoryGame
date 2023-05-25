@@ -1,4 +1,4 @@
-﻿//#define JSON_NET_ENABLED
+﻿#define JSON_NET_ENABLED
 using UnityEngine;
 using System.Runtime.InteropServices;
 using UnityEngine.Events;

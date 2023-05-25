@@ -1,6 +1,7 @@
 using Dainty.UI;
 using Dainty.UI.WindowBase;
 using MemoryArt.Global;
+using YG;
 
 namespace MemoryArt.UI.Windows
 {
@@ -19,8 +20,18 @@ namespace MemoryArt.UI.Windows
         public override void BeforeShow()
         {
             ApplicationController.Instance.TopPanelController.Close();
+#if UNITY_WEBGL
+            YandexGame.GetDataEvent += GetDataEvent;
+#endif
             view.SetMoneyBalance(MoneyController.Instance.MoneyBalance);
         }
+        
+#if UNITY_WEBGL
+        private void GetDataEvent()
+        {
+            view.SetMoneyBalance(MoneyController.Instance.MoneyBalance);
+        }
+#endif
 
         protected override void OnSubscribe()
         {
@@ -34,6 +45,9 @@ namespace MemoryArt.UI.Windows
             view.OnLevelsTypeClicked -= OnLevelTypeClicked;
             view.OnSettingsClicked -= OnSettingsClicked;
             view.OnShopClicked -= OnShopClicked;
+#if UNITY_WEBGL
+            YandexGame.GetDataEvent -= GetDataEvent;
+#endif
         }
 
         private void OnShopClicked()

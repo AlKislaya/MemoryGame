@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MemoryArt.Global.Patterns;
 using UnityEngine;
+using YG;
 
 namespace MemoryArt.Global
 {
@@ -40,18 +41,20 @@ namespace MemoryArt.Global
         private Language _currentLanguage;
         private string _languageKey;
 
-        public SystemLanguage CurrentLanguage => _languageKey.Equals("EN")
-            ? SystemLanguage.English
-            : SystemLanguage.Russian;
+        public SystemLanguage CurrentLanguage => GetSystemLanguageByCode(_languageKey);
 
         public event Action LanguageChanged;
 
         protected override void Awake()
         {
             base.Awake();
-
+            
             _languages = JsonUtility.FromJson<LanguagesWrapper>(_json.text).languages;
 
+#if UNITY_WEBGL
+            _languageKey = YandexGame.savesData.LanguageKey;
+            YandexGame.GetDataEvent += GetDataEvent;
+#else
             if (PlayerPrefs.HasKey(LocalPrefsKey))
             {
                 _languageKey = PlayerPrefs.GetString(LocalPrefsKey);
@@ -62,7 +65,13 @@ namespace MemoryArt.Global
                 SaveLocalKey();
             }
 
+#endif
             _currentLanguage = _languages.First(x => x.languageKey.Equals(_languageKey));
+        }
+
+        private void GetDataEvent()
+        {
+            ChangeLanguage(GetSystemLanguageByCode(YandexGame.savesData.LanguageKey));
         }
 
         public void ChangeLanguage(SystemLanguage language)
@@ -73,7 +82,7 @@ namespace MemoryArt.Global
             }
 
             _languageKey = language == SystemLanguage.Russian ? "RU" : "EN";
-
+            
             SaveLocalKey();
 
             _currentLanguage = _languages.First(x => x.languageKey.Equals(_languageKey));
@@ -96,7 +105,26 @@ namespace MemoryArt.Global
 
         private void SaveLocalKey()
         {
+#if UNITY_WEBGL
+            YandexGame.savesData.LanguageKey = _languageKey;
+            YandexGame.SaveProgress();
+#else
             PlayerPrefs.SetString(LocalPrefsKey, _languageKey);
+#endif
         }
+
+        private SystemLanguage GetSystemLanguageByCode(string code)
+        {
+            return code.Equals("EN")
+                ? SystemLanguage.English
+                : SystemLanguage.Russian;
+        }
+        
+#if UNITY_WEBGL
+        private void OnDestroy()
+        {
+            YandexGame.GetDataEvent -= GetDataEvent;
+        }
+#endif
     }
 }
